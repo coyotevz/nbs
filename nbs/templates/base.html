@@ -1,0 +1,26 @@
+<!doctype html>
+<html class="no-js" lang="es-ar">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Nobix Server Application</title>
+    <meta name="description" content="">
+    <meta name="author" content="Augusto Roccasalva augusto@rocctech.com.ar">
+    <meta name="viewport" content="width=device-with,initial-scale=1">
+
+    <script type="text/javascript" charset="utf-8">
+      var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+  </head>
+
+  <body class="visible-desktop">
+
+    {% block header %}{% endblock %} 
+    {% block content %}{% endblock %} 
+    {% block footer %}{% endblock %} 
+
+    <!-- page-specific script -->
+    {% block js %}{% endblock %}
+    <!-- end page-specific script -->
+  </body>
+</html>

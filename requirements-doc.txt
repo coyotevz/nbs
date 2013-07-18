@@ -1,0 +1,3 @@
+-r requirements.txt
+Sphinx
+sphinxcontrib-httpdomain>=1.1.8

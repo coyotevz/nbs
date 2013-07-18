@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul>
+  {% for supplier in pagination.items %}
+  <li><b>{{ supplier.name }}</b> ({{ supplier.payment_term }})</li>
+  {% endfor %}
+  </ul>
+{% endblock %}
+{# vim: ft=jinja:sw=2
+#}
