@@ -25,6 +25,8 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.ext.associationproxy import AssociationProxy
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from nbs.utils import is_json
+
 
 class RestException(HTTPException):
 
@@ -278,8 +280,7 @@ def get_params(spec=None):
         rest_abort(400, message=u'Unable to decode data')
 
 def get_data():
-    content_type = request.headers.get('Content-Type', '')
-    if not content_type.startswith('application/json'):
+    if not is_json(request):
         msg = u'Request must have "Content-Type: application/json" header'
         rest_abort(415, message=msg)
 
@@ -295,7 +296,8 @@ def get_to_update(model, params):
     cols = get_columns(model)
     for field in params:
         if field not in cols:
-            msg = "Model '%s' does not have field '%s'" % (model.__name__, field)
+            msg = "Model '%s' does not have field '%s'" % (model.__name__,
+                                                           field)
             rest_abort(400, message=msg)
 
     props = set(cols).intersection(params.keys())
@@ -379,6 +381,21 @@ def get_columns(model):
         columns += [key for key, value in parent.__dict__.iteritems()
                     if isinstance(value, hybrid_property)]
     return columns
+
+
+def get_required_columns(model):
+    return [c.key for c in class_mapper(model).columns if \
+            ((c.nullable is False) and (c.primary_key is False))]
+
+
+def get_instance(model, data):
+    cols = get_to_update(model, data)
+    required = set(get_required_columns(model))
+    if required.intersection(cols.keys()) != required:
+        msg = "Missing fields for model '%s'" % (model.__name__,)
+        rest_abort(400, message=msg)
+    return model(**cols)
+
 
 def get_relations(model):
     return [p.key for p in class_mapper(model).iterate_properties
