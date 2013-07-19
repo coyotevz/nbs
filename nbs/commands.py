@@ -8,6 +8,7 @@
 
 from flask import current_app
 from flask.ext.script import Manager, Shell, prompt_bool
+from flask.ext.script import Command, Option
 
 from nbs import create_app
 from nbs.models import db
@@ -40,9 +41,48 @@ def shell_make_context():
         datetime=datetime
     )
 
-def main():
-    manager.run()
-
 manager.add_command("shell", Shell(make_context=shell_make_context))
 manager.add_option('-c', '--config', dest='config', required=False,
                    help='config file')
+
+class GunicornServer(Command):
+
+    description = u'Run the app within Gunicorn'
+
+    def __init__(self, host='127.0.0.1', port=8000, workers=4):
+        self.port = port
+        self.host = host
+        self.workers = workers
+
+    def get_options(self):
+        return (
+            Option('-H', '--host', dest='host', default=self.host),
+            Option('-p', '--port', dest='port', default=self.port),
+            Option('-w', '--workers', dest='workers', default=self.workers),
+        )
+
+    def handle(self, app, host, port, workers):
+        from gunicorn import version_info
+
+        if version_info < (0, 9, 0):
+            print "We can't run this yet"
+        else:
+            from gunicorn.app.base import Application
+
+            class FlaskApplication(Application):
+                def init(self, parser, options, args):
+                    return {
+                        'bind': '{0}:{1}'.format(host, port),
+                        'workers': workers,
+                    }
+
+                def load(self):
+                    return app
+
+            FlaskApplication().run()
+
+manager.add_command("gunicorn", GunicornServer())
+
+def main():
+    manager.run()
+
