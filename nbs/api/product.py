@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, jsonify, json, current_app
-from nbs.models import Product
+from nbs.models import db, Product
 from nbs.auth import Need, Permission, permission_required
 from nbs.lib import rest
 from nbs.utils import is_json, jsonify_status_code
@@ -35,7 +35,10 @@ def get(id):
 def add():
     # read parameters for the model from the body of the request
     data = rest.get_data()
-    print data
     obj = rest.get_instance(Product, data)
-    print obj
-    return 'POST'
+    try:
+        db.session.add(obj)
+        db.session.commit()
+        return jsonify_status_code(201, **rest.to_dict(obj))
+    except:
+        return rest.rest_abort(409, message='Conflict')
