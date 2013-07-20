@@ -10,6 +10,7 @@
 import inspect
 import datetime
 import uuid
+import decimal
 
 from flask import Blueprint, request, current_app, json, make_response, abort
 from flask.ext.sqlalchemy import Pagination
@@ -371,6 +372,17 @@ def to_dict(obj, fields=None):
     result.update(dict((m[0], m[1](obj)) for m in fields\
                   if isinstance(m, tuple)))
 
+    # Check for objects in the dictionary that may not be serializable by
+    # default. Specifically, convert datetime and date objects to ISO8601
+    # format, UUID objects to exadecimal and Decimal objects to string.
+    for key, value in result.items():
+        if isinstance(value, datetime.date):
+            result[key] = value.isoformat()
+        elif isinstance(value, (uuid.UUID, decimal.Decimal)):
+            result[key] = str(value)
+        elif is_mapped_class(type(value)):
+            result[key] = to_dict(value)
+
     return result
 
 
@@ -400,6 +412,14 @@ def get_instance(model, data):
 def get_relations(model):
     return [p.key for p in class_mapper(model).iterate_properties
             if isinstance(p, RelationshipProperty)]
+
+
+def is_mapped_class(cls):
+    try:
+        class_mapper(cls)
+        return True
+    except:
+        return False
 
 
 def to_dict_list_getter(field_name, fields=None):
