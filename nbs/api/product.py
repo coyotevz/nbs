@@ -8,6 +8,18 @@ from nbs.utils import is_json, jsonify_status_code
 
 product_api = Blueprint('api.product', __name__, url_prefix='/api/product')
 
+list_products_permission   = Permission(Need('list',    'product'))
+get_products_permission    = Permission(Need('get',     'product'))
+add_products_permission    = Permission(Need('add',     'product'))
+update_products_permission = Permission(Need('update',  'product'))
+delete_products_permission = Permission(Need('delete',  'product'))
+
+# fields permissions
+read_cost_permission   = Permission(Need('read',  'product.cost'))
+write_cost_permission  = Permission(Need('write', 'product.cost'))
+read_price_permission  = Permission(Need('read',  'product.price'))
+write_price_permission = Permission(Need('write', 'product.price'))
+
 _spec = {
     'map': {},
     'required': ['id', 'sku'],
