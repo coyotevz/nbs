@@ -17,6 +17,14 @@ update_products_permission = Permission(Need('update',  'product'))
 delete_products_permission = Permission(Need('delete',  'product'))
 
 # fields permissions
+def build_fields_permissions(model):
+    perms = []
+    tname = model.__tablename__
+    for col in rest.get_columns(model):
+        perms.append(Permission(Need('read',  '{0}.{1}'.format(tname, col))))
+        perms.append(Permission(Need('write', '{0}.{1}'.format(tname, col))))
+    return perms
+
 read_cost_permission   = Permission(Need('read',  'product.cost'))
 write_cost_permission  = Permission(Need('write', 'product.cost'))
 read_price_permission  = Permission(Need('read',  'product.price'))
