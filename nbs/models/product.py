@@ -163,6 +163,7 @@ class Product(db.Model):
             secondary=lambda: product_pricecomponent)
 
     #: suppliers_info field is added by ProductSupplierInfo class
+    #: images field is added by ProductImage class
 
     # listener for cost change, for automatic price recalc
     @hybrid_property
