@@ -4,7 +4,7 @@ import decimal
 
 from flask.ext.wtf import (
     Form, HiddenField, BooleanField, TextField, PasswordField, SubmitField,
-    DecimalField, Required
+    DecimalField, Required, NumberRange
 )
 
 from .models import User
@@ -45,4 +45,4 @@ class ProductForm(Form):
 
     sku = TextField(u'SKU', [Required(message='You must provide sku')])
     description = TextField(u'Description', validators=[Required()])
-    price = DecimalField(validators=[Required()])
+    price = DecimalField(u'Price', [Required(), NumberRange(min=0)])
