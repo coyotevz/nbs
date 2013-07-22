@@ -2,12 +2,13 @@
 
 import decimal
 
+from wtforms.ext.sqlalchemy.orm import model_form
 from flask.ext.wtf import (
     Form, HiddenField, BooleanField, TextField, PasswordField, SubmitField,
     DecimalField, Required, NumberRange
 )
 
-from .models import User
+from .models import db, User, Product
 
 
 class LoginForm(Form):
@@ -41,8 +42,11 @@ class LoginForm(Form):
         return True
 
 
-class ProductForm(Form):
-
-    sku = TextField(u'SKU', [Required(message='You must provide sku')])
-    description = TextField(u'Description', validators=[Required()])
-    price = DecimalField(u'Price', [Required(), NumberRange(min=0)])
+ProductForm = model_form(Product, db.session, Form,
+    field_args={
+        'price': { 'validators': [Required(), NumberRange(min=0)] },
+    },
+    exclude=[
+        'id', '_cost', 'unit', 'category', 'tax_constant', 'suppliers_info',
+        'markup_components', 'images'
+    ])
