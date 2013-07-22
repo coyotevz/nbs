@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, request, jsonify, json, current_app
+from werkzeug.datastructures import MultiDict
 from nbs.models import db, Product
 from nbs.auth import Need, Permission, permission_required
 from nbs.lib import rest
-from nbs.utils import is_json, jsonify_status_code
+from nbs.utils import is_json, jsonify_status_code, jsonify_form
+from nbs.forms import ProductForm
 
 product_api = Blueprint('api.product', __name__, url_prefix='/api/product')
 
@@ -46,11 +48,13 @@ def get(id):
 @product_api.route('', methods=['POST'])
 def add():
     # read parameters for the model from the body of the request
-    data = rest.get_data()
-    obj = rest.get_instance(Product, data)
-    try:
-        db.session.add(obj)
-        db.session.commit()
-        return jsonify_status_code(201, **rest.to_dict(obj))
-    except:
-        return rest.rest_abort(409, message='Conflict')
+    form = ProductForm(MultiDict(request.json), csrf_enabled=False)
+    if form.validate_on_submit():
+        obj = rest.get_instance(Product, form.data)
+        try:
+            db.session.add(obj)
+            db.session.commit()
+            return jsonify_status_code(201, **rest.to_dict(obj))
+        except:
+            return rest.rest_abort(409, message='Conflict')
+    return jsonify_form(form)
