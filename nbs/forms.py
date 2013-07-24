@@ -2,7 +2,10 @@
 
 import decimal
 
-from wtforms.ext.sqlalchemy.orm import model_form
+from wtforms_alchemy import model_form_factory
+import wtforms_json
+wtforms_json.init() # Patch some WTForm classes
+
 from flask.ext.wtf import (
     Form, HiddenField, BooleanField, TextField, PasswordField, SubmitField,
     DecimalField, Required, NumberRange
@@ -10,6 +13,7 @@ from flask.ext.wtf import (
 
 from .models import db, User, Product
 
+ModelForm = model_form_factory(Form)
 
 class LoginForm(Form):
     next = HiddenField()
@@ -41,12 +45,6 @@ class LoginForm(Form):
         self.user = user
         return True
 
-
-ProductForm = model_form(Product, db.session, Form,
-    field_args={
-        'price': { 'validators': [Required(), NumberRange(min=0)] },
-    },
-    exclude=[
-        'id', '_cost', 'unit', 'category', 'tax_constant', 'suppliers_info',
-        'markup_components', 'images'
-    ])
+class ProductForm(ModelForm):
+    class Meta:
+        model = Product

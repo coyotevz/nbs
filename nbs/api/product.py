@@ -56,13 +56,15 @@ def get(id):
 @product_api.route('', methods=['POST'])
 def add():
     # read parameters for the model from the body of the request
-    form = ProductForm(MultiDict(request.json), csrf_enabled=False)
+    form = ProductForm.from_json(request.json if request.data else {},
+                                 csrf_enabled=False)
     if form.validate_on_submit():
-        obj = rest.get_instance(Product, form.data)
+        obj = rest.get_instance(Product, form.patch_data)
         try:
             db.session.add(obj)
             db.session.commit()
             return jsonify_status_code(201, **rest.to_dict(obj))
-        except:
+        except Exception, e:
+            current_app.logger.exception(e.message)
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
