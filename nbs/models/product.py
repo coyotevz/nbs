@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from decimal import Decimal
 from sqlalchemy.ext.hybrid import hybrid_property
 from nbs.models import db
-
-dq = Decimal('0.01')
+from nbs.utils import dq
 
 
 class ProductCategory(db.Model):

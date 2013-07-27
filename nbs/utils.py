@@ -5,6 +5,10 @@ import uuid
 import decimal
 from flask import json, jsonify
 
+#: Default quantize value
+#: To use with value.quantize(dq)
+dq = decimal.Decimal('0.01')
+
 def jsonify_status_code(status_code, headers=None, *args, **kwargs):
     """Returns a jsonified response with the specified HTTP status code.
 
