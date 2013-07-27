@@ -68,3 +68,17 @@ def add():
             current_app.logger.exception(e.message)
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
+
+@product_api.route('/<int:id>', methods=['PUT', 'PATCH'])
+def update(id):
+    product = Product.query.get_or_404(id)
+    form = ProductForm(obj=product, csrf_enabled=False)
+    if form.validate_on_submit():
+        form.patch_obj(product)
+        try:
+            db.session.commit()
+            return jsonify_status_code(201, **rest.to_dict(product))
+        except Exception, e:
+            current_app.logger.exception(e.message)
+            return rest.rest_abort(409, message='Conflict')
+    return jsonify_form(form)

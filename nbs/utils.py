@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+import uuid
+import decimal
 from flask import json, jsonify
 
 def jsonify_status_code(status_code, headers=None, *args, **kwargs):
@@ -8,6 +11,15 @@ def jsonify_status_code(status_code, headers=None, *args, **kwargs):
     The positional and keyword arguments are passed directly to the
     :func:`flask.jsonify` function which creates the response.
     """
+
+    for key, value in kwargs.items():
+        if isinstance(value, datetime.date):
+            kwrags[key] = value.isoformat()
+        elif isinstance(value, (uuid.UUID, decimal.Decimal)):
+            kwargs[key] = str(value)
+        elif is_mapped_class(type(value)):
+            kwargs[key] = to_dict(value)
+
     response = jsonify(*args, **kwargs)
     response.status_code = status_code
     if headers:
@@ -25,7 +37,8 @@ def jsonify_form(form):
         data = {'errors': form.errors}
     else:
         code = 200
-        data = {'form': form.data}
+        #data = {'form': form.data}
+        data = form.patch_data
 
     if form.csrf_enabled and code == 200:
         data['form']['csrf_token'] = str(form.csrf_token.current_token)
@@ -34,3 +47,6 @@ def jsonify_form(form):
 
 def is_json(req):
     return req.mimetype == 'application/json'
+
+# circular dependencies
+from nbs.lib.rest import is_mapped_class, to_dict
