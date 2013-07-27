@@ -11,4 +11,4 @@ class Branch(db.Model):
     name = db.Column(db.Unicode, nullable=False)
 
     manager_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    manager = db.relationship('User', lazy='dynamic')
+    manager = db.relationship('User')
