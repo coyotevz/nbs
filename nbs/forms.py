@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import decimal
-
-from wtforms_alchemy import model_form_factory
-import wtforms_json
-wtforms_json.init() # Patch some WTForm classes
+from nbs.lib.forms import Form, ModelForm
 
 from flask.ext.wtf import (
-    Form, HiddenField, BooleanField, TextField, PasswordField, SubmitField,
+    HiddenField, BooleanField, TextField, PasswordField, SubmitField,
     DecimalField, Required, NumberRange
 )
 
 from .models import db, User, Product
 
-ModelForm = model_form_factory(Form)
 
 class LoginForm(Form):
     next = HiddenField()
