@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from nbs.models import db
+from nbs.models.entity import Entity
 
 
-class Branch(db.Model):
+class Branch(Entity):
     __tablename__ = 'branch'
+    __mapper_args__ = {'polymorphic_identity': u'branch'}
 
-    branch_id = db.Column(db.Integer, primary_key=True)
+    branch_id = db.Column(db.Integer, db.ForeignKey('entity.id'),
+                          primary_key=True)
 
-    name = db.Column(db.Unicode, nullable=False)
+    name = Entity._name_1
 
-    manager_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    manager = db.relationship('User')
+    manager_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    manager = db.relationship('User', lazy='dynamic',
+                              primaryjoin="User.user_id==Branch.manager_id")

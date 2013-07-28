@@ -7,6 +7,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask.ext.sqlalchemy import BaseQuery
 
 from nbs.models import db
+from nbs.models.entity import Entity
 
 
 class UserQuery(BaseQuery):
@@ -18,12 +19,18 @@ class UserQuery(BaseQuery):
         return user, (user.check_password(password) if user else False)
 
 
-class User(db.Model):
+class User(Entity):
     __tablename__ = 'user'
+    __mapper_args__ = {'polymorphic_identity': u'user'}
 
     query_class = UserQuery
 
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('entity.id'),
+                        primary_key=True)
+
+    first_name = Entity._name_1
+    last_name = Entity._name_2
+
     username = db.Column(db.Unicode(60), unique=True, nullable=False)
 
     # auto role & permissions
@@ -50,6 +57,11 @@ class User(db.Model):
         if self.password is None:
             return False
         return check_password_hash(self.password, password)
+
+    @hybrid_property
+    def full_name(self):
+        ln = " {0}".format(self.last_name) if self.last_name else ""
+        return u"{0}{1}".format(self.first_name, ln)
 
     def has_role(self, role):
         if isinstance(role, basestring):
@@ -111,14 +123,14 @@ class Permission(db.Model):
 
 
 userpermission_table = db.Table('user_permission', db.Model.metadata,
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'),
               primary_key=True),
     db.Column('permission_id', db.Integer, db.ForeignKey('permission.id'),
               primary_key=True)
 )
 
 userrole_table = db.Table('user_role', db.Model.metadata,
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'),
               primary_key=True),
     db.Column('role_id', db.Integer, db.ForeignKey('role.id'),
               primary_key=True)
@@ -132,7 +144,7 @@ rolepermission_table = db.Table('role_permission', db.Model.metadata,
 )
 
 def create_admin_user():
-    admin = User(username=u'admin', password=u'admin')
+    admin = User(username=u'admin', password=u'admin', first_name=u'Admin')
     admin_role = Role(name=u'superuser', description=u'Administration Role')
     admin.roles.append(admin_role)
     db.session.add(admin)
