@@ -22,4 +22,4 @@ class Entity(db.Model):
     notes = db.Column(db.UnicodeText)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     modified = db.Column(db.DateTime, onupdate=datetime.utcnow)
-    __mapper_args__ = {'polymorphic_on', entity_type}
+    __mapper_args__ = {'polymorphic_on': entity_type}
