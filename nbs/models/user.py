@@ -40,9 +40,6 @@ class User(Entity):
                                   secondary=lambda: userpermission_table,
                                   lazy='joined', backref='users')
 
-    created = db.Column(db.DateTime, default=datetime.utcnow)
-    modified = db.Column(db.DateTime)
-
     _pw_hash = db.Column('pw_hash', db.Unicode(80))
 
     @hybrid_property
@@ -57,11 +54,6 @@ class User(Entity):
         if self.password is None:
             return False
         return check_password_hash(self.password, password)
-
-    @hybrid_property
-    def full_name(self):
-        ln = " {0}".format(self.last_name) if self.last_name else ""
-        return u"{0}{1}".format(self.first_name, ln)
 
     def has_role(self, role):
         if isinstance(role, basestring):
