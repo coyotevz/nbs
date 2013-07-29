@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from nbs.models import db
+from nbs.models.misc import TimestampMixin
 
 
-class Entity(db.Model):
+class Entity(db.Model, TimestampMixin):
     """
     Base class for entity submodels.
 
@@ -20,6 +22,9 @@ class Entity(db.Model):
     _name_2 = db.Column('name_2', db.Unicode)
     entity_type = db.Column(db.Unicode(50))
     notes = db.Column(db.UnicodeText)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
-    modified = db.Column(db.DateTime, onupdate=datetime.utcnow)
     __mapper_args__ = {'polymorphic_on': entity_type}
+
+    @hybrid_property
+    def full_name(self):
+        ln = " {0}".format(self._name_2) if self._name_2 else ""
+        return u"{0}{1}".format(self._name_1, ln)
