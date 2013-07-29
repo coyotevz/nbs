@@ -14,5 +14,5 @@ class Branch(Entity):
     name = Entity._name_1
 
     manager_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
-    manager = db.relationship('User', lazy='dynamic',
+    manager = db.relationship('User', lazy='joined',
                               primaryjoin="User.user_id==Branch.manager_id")
