@@ -62,7 +62,7 @@ class ProductCategory(db.Model):
         return children
 
     def __repr__(self):
-        return "<ProductCategory('{0}')>".format(self.description)
+        return "<ProductCategory({0})>".format(self.description.encode('utf-8'))
 
 
 class Product(db.Model):
@@ -162,6 +162,7 @@ class Product(db.Model):
 
     #: suppliers_info field is added by ProductSupplierInfo class
     #: images field is added by ProductImage class
+    #: current_stock field is added by CurrentStockItem class
 
     # listener for cost change, for automatic price recalc
     @hybrid_property
@@ -198,7 +199,7 @@ class Product(db.Model):
         return self._product_types[self.product_type]
 
     def __repr__(self):
-        return "<Product({0})>".format(self.sku)
+        return "<Product({0})>".format(self.sku.encode('utf-8'))
 
 
 class ProductSupplierInfo(db.Model):
@@ -240,8 +241,8 @@ class ProductSupplierInfo(db.Model):
                             onupdate=datetime.now)
 
     def __repr__(self):
-        return '<ProductSupplierInfo(product_id=%s, supplier_id=%s)>' %\
-                (self.product_id, self.supplier_id)
+        return "<ProductSupplierInfo({0}, {1})>".format(
+                             self.product, self.supplier)
 
 
 class PriceComponent(db.Model):
@@ -308,13 +309,16 @@ class ProductUnit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     #: The unit description
-    description = db.Column(db.Unicode)
+    description = db.Column(db.Unicode, nullable=False)
     plural = db.Column(db.Unicode)
-    abbr = db.Column(db.Unicode)
+    abbr = db.Column(db.Unicode, nullable=False)
     allow_fraction = db.Column(db.Boolean, default=False)
     
     unit_type = db.Column(db.Enum(*_unit_types.keys(), name='unit_type_enum'),
                           default=UNIT_TYPE_CUSTOM)
+
+    def __repr__(self):
+        return "<ProductUnit({0}, {1})>".format(self.abbr, self.description)
 
 
 def create_primitive_units():
