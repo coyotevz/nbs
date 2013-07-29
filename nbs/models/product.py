@@ -204,7 +204,7 @@ class Product(db.Model):
 class ProductSupplierInfo(db.Model):
     __tablename__ = 'product_supplier_info'
 
-    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'),
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.supplier_id'),
                             primary_key=True)
     supplier = db.relationship('Supplier', backref=db.backref('products_info',
                                                         lazy='dynamic'))
