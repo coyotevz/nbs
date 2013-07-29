@@ -7,7 +7,7 @@ from nbs.models.misc import TimestampMixin
 from nbs.utils import dq
 
 
-class CurrentStockItem(db.Model, TimestampMixin):
+class CurrentStock(db.Model, TimestampMixin):
     __tablename__ = 'current_stock'
 
     #: Product that this stock belong
@@ -23,3 +23,7 @@ class CurrentStockItem(db.Model, TimestampMixin):
 
     #: quatity for this stock item
     quantity = db.Column(db.Numeric(10, 2), nullable=False)
+
+    def __repr__(self):
+        return "<CurrentStock({0}, {1}, quantity={2})>".format(
+                    self.product, self.branch, self.quantity)

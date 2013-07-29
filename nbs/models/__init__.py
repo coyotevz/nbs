@@ -14,7 +14,7 @@ from nbs.models.product import (
     ProductCategory, Product, ProductSupplierInfo, PriceComponent,
     ProductUnit, ProductImage
 )
-from nbs.models.stock import CurrentStockItem
+from nbs.models.stock import CurrentStock
 from nbs.models.branch import Branch
 from nbs.models.contact import Contact
 from nbs.models.misc import Address, Email, Phone, ExtraField
