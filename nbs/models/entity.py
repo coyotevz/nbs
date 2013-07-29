@@ -28,3 +28,6 @@ class Entity(db.Model, TimestampMixin):
     def full_name(self):
         ln = " {0}".format(self._name_2) if self._name_2 else ""
         return u"{0}{1}".format(self._name_1, ln)
+
+    def __repr__(self):
+        return "<{0} '{1}'>".format(self.__class__.__name__, self.full_name)
