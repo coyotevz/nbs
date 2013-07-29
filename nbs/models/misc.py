@@ -1,6 +1,31 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+from sqlalchemy.ext.declarative import declared_attr
+
 from nbs.models import db
+
+
+class TimestampMixin(object):
+
+    created = db.Column(db.DateTime, default=datetime.now)
+    modified = db.Column(db.DateTime, default=datetime.now,
+                         onupdate=datetime.now)
+
+
+class RefEntityMixin(object):
+
+    @declared_attr
+    def entity_id(cls):
+        return db.Column('entity_id', db.Integer, db.ForeignKey('entity.id'),
+                         nullable=False)
+
+    @declared_attr
+    def entity(cls):
+        name = cls.__name__.lower()
+        return db.relationship('Entity',
+                               backref=db.backref(name, lazy='joined'),
+                               lazy='joined')
 
 
 class FiscalDataMixin(object):
@@ -32,7 +57,7 @@ class FiscalDataMixin(object):
                                     self.FISCAL_RESPONSABLE_INSCRIPTO)
 
 
-class Address(db.Model):
+class Address(RefEntityMixin, db.Model):
     """Stores addresses information"""
     __tablename__ = 'address'
 
@@ -53,7 +78,7 @@ class Address(db.Model):
         return retval
 
 
-class Phone(db.Model):
+class Phone(RefEntityMixin, db.Model):
     """Model to store phone information"""
     __tablename__ = 'phone'
 
@@ -73,7 +98,7 @@ class Phone(db.Model):
         return retval
 
 
-class Email(db.Model):
+class Email(RefEntityMixin, db.Model):
     """Model to store email information"""
     __tablename__ = 'email'
 
@@ -87,7 +112,7 @@ class Email(db.Model):
         return retval
 
 
-class ExtraField(db.Model):
+class ExtraField(RefEntityMixin, db.Model):
     """Model to store information of additional data"""
     __tablename__ = 'extra_field'
     id = db.Column(db.Integer, primary_key=True)
