@@ -3,6 +3,7 @@
 from datetime import datetime
 from sqlalchemy.ext.hybrid import hybrid_property
 from nbs.models import db
+from nbs.models.misc import TimestampMixin
 from nbs.utils import dq
 
 
@@ -65,7 +66,7 @@ class ProductCategory(db.Model):
         return "<ProductCategory({0})>".format(self.description.encode('utf-8'))
 
 
-class Product(db.Model):
+class Product(db.Model, TimestampMixin):
     """Product that can be selled and stored"""
     __tablename__ = 'product'
 
@@ -151,9 +152,8 @@ class Product(db.Model):
     product_type = db.Column(db.Enum(*_product_types.keys(),
                              name='product_type_enum'), default=TYPE_PERMANENT)
 
-    #: Last update for this product
-    last_update = db.Column(db.DateTime, default=datetime.now,
-                            onupdate=datetime.now)
+    #: 'created' field added by TimestampMixin
+    #: 'modified' field added by TimestampMixin
 
     #: PriceComponents for automatic price calculation
     markup_components = db.relationship('PriceComponent',
