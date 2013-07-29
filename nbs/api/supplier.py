@@ -13,7 +13,7 @@ add_suppliers_permission    = Permission(Need('add',    'supplier'))
 update_suppliers_permission = Permission(Need('update', 'supplier'))
 delete_suppliers_permission = Permission(Need('delete', 'supplier'))
 
-_cf = ['id', 'display_name', 'notes']
+_cf = ['id', 'full_name', 'notes']
 def _supplier_contacts(supplier, fields=None):
     return [dict(rest.to_dict(sc.contact, fields or _cf).items() +
                  [('role', sc.role)]) for sc in supplier.supplier_contacts]
