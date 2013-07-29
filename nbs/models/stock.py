@@ -3,10 +3,11 @@
 from datetime import datetime
 
 from nbs.models import db
+from nbs.models.misc import TimestampMixin
 from nbs.utils import dq
 
 
-class CurrentStockItem(db.Model):
+class CurrentStockItem(db.Model, TimestampMixin):
     __tablename__ = 'current_stock'
 
     #: Product that this stock belong
@@ -22,5 +23,3 @@ class CurrentStockItem(db.Model):
 
     #: quatity for this stock item
     quantity = db.Column(db.Numeric(10, 2), nullable=False)
-    last_update = db.Column(db.DateTime, default=datetime.now,
-                            onupdate=datetime.now)

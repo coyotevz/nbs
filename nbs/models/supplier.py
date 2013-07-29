@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from nbs.models import db
+from nbs.models.entity import Entity
 from nbs.models.misc import FiscalDataMixin
 from nbs.models.product import (
     productsupplierinfo_pricecomponent, PriceComponent, ProductSupplierInfo
 )
 
 
-class Supplier(db.Model, FiscalDataMixin):
+class Supplier(Entity, FiscalDataMixin):
     __tablename__ = 'supplier'
+    __mapper_args__ = {'polymorphic_identity': u'supplier'}
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Unicode, nullable=False)
-    fancy_name = db.Column(db.Unicode)
-    notes = db.Column(db.UnicodeText)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('entity.id'),
+                            primary_key=True)
+    name = Entity._name_1
+    fancy_name = Entity._name_2
+
     payment_term = db.Column(db.Integer)
     supplier_contacts = db.relationship('SupplierContact',
                                         cascade='all,delete-orphan',
@@ -24,12 +28,10 @@ class Supplier(db.Model, FiscalDataMixin):
 
     #: products_info field added by products.ProductSupplierInfo relationship
 
-    @property
-    def display_name(self):
-        retval = self.name
-        if self.fancy_name:
-            retval += u" ({})".format(self.fancy_name)
-        return retval
+    @hybrid_property
+    def full_name(self):
+        fn = u" ({0})".format(self.fancy_name) if self.fancy_name else u""
+        return u"{0}{1}".format(self.name, fn)
 
     def add_contact(self, contact, role):
         self.supplier_contacts.append(SupplierContact(contact, role))
@@ -44,9 +46,9 @@ class Supplier(db.Model, FiscalDataMixin):
 
 class SupplierContact(db.Model):
     __tablename__ = 'supplier_contact'
-    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'),
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.supplier_id'),
                             primary_key=True)
-    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'),
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.contact_id'),
                            primary_key=True)
     role = db.Column(db.Unicode)
 
