@@ -59,3 +59,10 @@ class SupplierContact(db.Model):
     def __init__(self, contact, role):
         self.contact = contact
         self.role = role
+
+    def __repr__(self):
+        return "<SupplierContact {0}, {1}, {2}>".format(
+            self.supplier.name.encode('utf-8'),
+            self.role.encode('utf-8'),
+            self.contact.full_name.encode('utf-8')
+        )
