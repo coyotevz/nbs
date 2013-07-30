@@ -6,6 +6,11 @@ from nbs.models._sqlite_numeric import Numeric
 db = SQLAlchemy()
 db.Numeric = Numeric
 
+__all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
+    'ProductSupplierInfo', 'PriceComponent', 'ProductUnit', 'ProductImage',
+    'CurrentStock', 'Branch', 'Contact', 'Address', 'Email', 'Phone',
+    'ExtraField', 'Supplier', 'SupplierContact', 'TaxConstant']
+
 def configure_db(app):
     db.init_app(app)
 
