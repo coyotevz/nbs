@@ -30,4 +30,5 @@ class Entity(db.Model, TimestampMixin):
         return u"{0}{1}".format(self._name_1, ln)
 
     def __repr__(self):
-        return "<{0} '{1}'>".format(self.__class__.__name__, self.full_name)
+        return "<{0} '{1}'>".format(self.__class__.__name__,
+                                    self.full_name.encode('utf-8'))
