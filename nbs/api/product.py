@@ -56,8 +56,7 @@ def get(id):
 @product_api.route('', methods=['POST'])
 def add():
     # read parameters for the model from the body of the request
-    form = ProductForm.from_json(request.json if request.data else {},
-                                 csrf_enabled=False)
+    form = ProductForm(csrf_enabled=False)
     if form.validate_on_submit():
         obj = rest.get_instance(Product, form.patch_data)
         try:
