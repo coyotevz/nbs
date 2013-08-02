@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from sqlalchemy import event
 from sqlalchemy.ext.hybrid import hybrid_property
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
@@ -325,6 +326,31 @@ productsupplierinfo_pricecomponent = db.Table(
         ['product_supplier_info.supplier_id',
          'product_supplier_info.product_id']),
 )
+
+
+class ProductPriceHistory(db.Model):
+    __tablename__ = 'product_price_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship('Product', backref='price_history')
+
+    date = db.Column(db.DateTime, default=datetime.now)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+
+    def __repr__(self):
+        return "<ProductPriceHistory({0}, {1}, {2})>".format(
+                    self.product,
+                    self.date.isoformat() if self.date else "<DATE>",
+                    self.price
+        )
+
+#: listener for price change
+def _product_price_change(target, value, oldvalue, initiator):
+    hist = ProductPriceHistory(product=target, price=value)
+    db.session.add(hist)
+
+event.listen(Product.price, 'set', _product_price_change)
 
 
 class ProductUnit(db.Model):
