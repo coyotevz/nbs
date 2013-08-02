@@ -220,11 +220,19 @@ class ProductSupplierInfo(db.Model):
     description = db.Column(db.Unicode, nullable=False)
     #: supplier notes for this product
     notes = db.Column(db.UnicodeText)
-    #: the cost which helps the purchaser to define the main cost of a certain
-    #: product. Each product have multiple |suppliers| and for each |supplier|
-    #: a base_cost is available. The purchaser in this case must decide how
-    #: to define the main cost in the base cost averange of all suppliers.
-    base_cost = db.Column(db.Numeric(10, 2))
+    #: supplier base price for this product (list price)
+    _base_cost = db.Column('base_cost', db.Numeric(10, 2))
+    #: supplier final price for this product (bonus formula applied)
+    _cost = db.Column('cost', db.Numeric(10, 2))
+    #: use bonus formula to calculate final cost???
+    automatic_cost = db.Column(db.Boolean, default=False)
+
+    #: components for automatic final cost calculation
+    bonus_components = db.relationship('PriceComponent',
+        backref=db.backref("supplier_bonus", lazy='dynamic'),
+        secondary=lambda: productsupplierinfo_pricecomponent
+    )
+
     #: the minimum amount that we can buy from this supplier.
     minimum_purchase = db.Column(db.Integer, default=1)
     #: package size to buy this product
@@ -243,6 +251,36 @@ class ProductSupplierInfo(db.Model):
     def __repr__(self):
         return "<ProductSupplierInfo({0}, {1})>".format(
                              self.product, self.supplier)
+
+    @hybrid_property
+    def base_cost(self):
+        return self._base_cost
+
+    @base_cost.setter
+    def base_cost(self, value):
+        self._base_cost = value
+        self._recalc_cost()
+
+    def _calc_cost(self):
+        cost = self.base_cost
+        for comp in self.bunus_components:
+            cost = cost * (1 - comp.value/100)
+        return cost.quantize(dq)
+
+    def _recalc_cost(self):
+        if self.base_cost and self.automatic_cost and\
+                len(self.bunus_components):
+            self.cost = self._calc_cost()
+
+    @hybrid_property
+    def cost(self):
+        return self._cost
+
+    @cost.setter
+    def cost(self, value):
+        self._cost = value
+        if self.product.automatic_cost:
+            self.product.cost = self.cost
 
 
 class PriceComponent(db.Model):
