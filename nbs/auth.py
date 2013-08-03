@@ -4,7 +4,6 @@ from functools import wraps
 from collections import namedtuple
 
 from flask import current_app, request, url_for, render_template, redirect, g
-from werkzeug.datastructures import MultiDict
 
 from flask.ext.principal import Principal, Permission, PermissionDenied, Need
 from flask.ext.principal import RoleNeed, UserNeed, AnonymousIdentity
@@ -16,6 +15,9 @@ from nbs.forms import LoginForm
 from nbs.utils import jsonify, jsonify_status_code, jsonify_form, is_json
 
 principals = Principal(use_sessions=False, skip_static=True)
+
+# Super power permission
+superuser_permission = Permission(RoleNeed('superuser'))
 
 class Identity(object):
     """Represents the user's identity.
@@ -35,7 +37,7 @@ class Identity(object):
         self.provides = set()
 
     def can(self, permission):
-        return permission.allows(self)
+        return permission.allows(self) or superuser_permission.allows(self)
 
     def __repr__(self):
         return '<{0} id="{1}" private_token="{2}" provides={3}>'.format(
@@ -110,8 +112,8 @@ def on_identity_loaded(sender, identity):
 ## VIEWS ##
 
 def login_view():
-    if is_json(request) and request.data:
-        form = LoginForm(MultiDict(request.json), csrf_enabled=False)
+    if is_json(request):
+        form = LoginForm(csrf_enabled=False)
     else:
         form = LoginForm()
 
