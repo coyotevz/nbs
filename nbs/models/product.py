@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from sqlalchemy import event
-from sqlalchemy.ext.hybrid import hybrid_property
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
 from nbs.utils import dq
@@ -123,7 +122,7 @@ class Product(db.Model, TimestampMixin):
     automatic_price = db.Column(db.Boolean, default=False)
 
     #: cost of this product
-    _cost = db.Column('cost', db.Numeric(10, 2))
+    cost = db.Column(db.Numeric(10, 2))
 
     #: Use ProductSupplierInfo.cost to calculate cost
     automatic_cost = db.Column(db.Boolean, default=False)
@@ -158,22 +157,12 @@ class Product(db.Model, TimestampMixin):
 
     #: PriceComponents for automatic price calculation
     markup_components = db.relationship('PriceComponent',
-            backref=db.backref("product_pricecomponent", lazy='dynamic'),
+            backref=db.backref("product_markup", lazy='dynamic'),
             secondary=lambda: product_pricecomponent)
 
     #: suppliers_info field is added by ProductSupplierInfo class
     #: images field is added by ProductImage class
     #: current_stock field is added by CurrentStockItem class
-
-    # listener for cost change, for automatic price recalc
-    @hybrid_property
-    def cost(self):
-        return self._cost
-
-    @cost.setter
-    def cost(self, value):
-        self._cost = value
-        self._recalc_price()
 
     def _recalc_price(self):
         if self.cost and self.automatic_price and len(self.markup_components):
@@ -202,6 +191,15 @@ class Product(db.Model, TimestampMixin):
     def __repr__(self):
         return "<Product({0})>".format(self.sku.encode('utf-8'))
 
+#: listener for cost change, for automatic price recalc
+def _product_cost_set(target, value, oldvalue, initiator):
+    """Update product price based on new cost value"""
+    if value == oldvalue:
+        return
+    target._recalc_price()
+
+event.listen(Product.cost, 'set', _product_cost_set)
+
 
 class ProductSupplierInfo(db.Model):
     __tablename__ = 'product_supplier_info'
@@ -222,9 +220,9 @@ class ProductSupplierInfo(db.Model):
     #: supplier notes for this product
     notes = db.Column(db.UnicodeText)
     #: supplier base price for this product (list price)
-    _base_cost = db.Column('base_cost', db.Numeric(10, 2))
+    base_cost = db.Column(db.Numeric(10, 2))
     #: supplier final price for this product (bonus formula applied)
-    _cost = db.Column('cost', db.Numeric(10, 2))
+    cost = db.Column(db.Numeric(10, 2))
     #: use bonus formula to calculate final cost???
     automatic_cost = db.Column(db.Boolean, default=False)
 
@@ -253,15 +251,6 @@ class ProductSupplierInfo(db.Model):
         return "<ProductSupplierInfo({0}, {1})>".format(
                              self.product, self.supplier)
 
-    @hybrid_property
-    def base_cost(self):
-        return self._base_cost
-
-    @base_cost.setter
-    def base_cost(self, value):
-        self._base_cost = value
-        self._recalc_cost()
-
     def _calc_cost(self):
         cost = self.base_cost
         for comp in self.bunus_components:
@@ -273,15 +262,26 @@ class ProductSupplierInfo(db.Model):
                 len(self.bunus_components):
             self.cost = self._calc_cost()
 
-    @hybrid_property
-    def cost(self):
-        return self._cost
 
-    @cost.setter
-    def cost(self, value):
-        self._cost = value
-        if self.product and self.product.automatic_cost:
-            self.product.cost = self.cost
+#: listener for ProductSupplierInfo.base_cost change
+def _psi_base_cost_set(target, value, oldvalue, initiator):
+    """Update ProductSupplierInfo.cost based on new base_cost"""
+    if value == oldvalue:
+        return
+    target._recalc_cost()
+
+event.listen(ProductSupplierInfo.base_cost, 'set', _psi_base_cost_set)
+
+
+#: listener for ProductSupplierInfo.cost change
+def _psi_cost_set(target, value, oldvalue, initiator):
+    """Update product cost"""
+    if oldvalue == value:
+        return
+    if target.product and target.product.automatic_cost:
+        target.product.cost = value
+
+event.listen(ProductSupplierInfo.cost, 'set', _psi_cost_set)
 
 
 class PriceComponent(db.Model):
@@ -289,19 +289,21 @@ class PriceComponent(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
-    _value = db.Column('value', db.Numeric(10, 2), nullable=False)
+    value = db.Column(db.Numeric(10, 2), nullable=False)
+    #: supplier_bonus field is added by ProductSupplierInfo.bonus_components
+    #: product_markup field is added by Product.markup_components
 
-    @hybrid_property
-    def value(self):
-        return self._value
+#: listener for PriceComponent.value change
+def _pc_value_set(target, value, oldvalue, initiator):
+    """Update Product/ProductSupplierInfo price/cost on value change"""
+    if value == oldvalue:
+        return
+    for product in target.product_markup:
+        product._recalc_price()
+    for supplier_info in self.supplier_bonus:
+        supplier_info._recalc_cost()
 
-    @value.setter
-    def value(self, value):
-        self._value = value
-        for product in self.products_markups:
-            product._recalc_price()
-        for supplier_info in self.supplier_bonifications:
-            supplier_info._recalc_cost()
+event.listen(PriceComponent.value, 'set', _pc_value_set)
 
 
 # Product markup component <--> Price component relation
@@ -312,7 +314,7 @@ product_pricecomponent = db.Table('product_pricecomponent', db.Model.metadata,
               db.ForeignKey('price_component.id'), primary_key=True)
 )
 
-# ProductSupplierInfo bonification component <--> Price component relation
+# ProductSupplierInfo bonus component <--> Price component relation
 productsupplierinfo_pricecomponent = db.Table(
     'productsupplierinfo_pricecomponent',
     db.Model.metadata,
@@ -346,11 +348,14 @@ class ProductPriceHistory(db.Model):
         )
 
 #: listener for price change
-def _product_price_change(target, value, oldvalue, initiator):
+def _product_price_set(target, value, oldvalue, initiator):
+    """Creates an entry in product price history table."""
+    if oldvalue == value:
+        return
     hist = ProductPriceHistory(product=target, price=value)
     db.session.add(hist)
 
-event.listen(Product.price, 'set', _product_price_change)
+event.listen(Product.price, 'set', _product_price_set)
 
 
 class ProductUnit(db.Model):
