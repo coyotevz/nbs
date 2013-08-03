@@ -303,7 +303,7 @@ def get_to_update(model, params):
 
     props = set(cols).intersection(params.keys())
     return dict((p, params[p]) for p in props)
-        
+
 def get_query(model, params):
     return SQLQueryBuilder.create_query(model, params)
 
@@ -361,12 +361,17 @@ def get_result(query, params):
         'objects': [to_dict(i, filtered) for i in result.items],
     }
 
+def _getcol(obj, column):
+    if hasattr(obj, "{}_str".format(column)):
+        return getattr(obj, "{}_str".format(column))
+    return getattr(obj, column)
+
 def to_dict(obj, fields=None):
 
     if fields is None:
         fields = get_columns(object_mapper(obj).class_)
 
-    result = dict((col, getattr(obj, col)) for col in fields\
+    result = dict((col, _getcol(obj, col)) for col in fields\
                   if isinstance(col, basestring))
 
     result.update(dict((m[0], m[1](obj)) for m in fields\
