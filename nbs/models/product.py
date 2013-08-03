@@ -280,7 +280,7 @@ class ProductSupplierInfo(db.Model):
     @cost.setter
     def cost(self, value):
         self._cost = value
-        if self.product.automatic_cost:
+        if self.product and self.product.automatic_cost:
             self.product.cost = self.cost
 
 
