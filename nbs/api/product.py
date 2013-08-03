@@ -2,11 +2,11 @@
 
 from flask import Blueprint, request, jsonify, json, current_app
 from werkzeug.datastructures import MultiDict
-from nbs.models import db, Product
+from nbs.models import db, Product, ProductSupplierInfo
 from nbs.auth import Need, Permission, permission_required
 from nbs.lib import rest
 from nbs.utils import is_json, jsonify_status_code, jsonify_form
-from nbs.forms import ProductForm
+from nbs.forms import ProductForm, ProductSupplierInfoForm
 
 product_api = Blueprint('api.product', __name__, url_prefix='/api/product')
 
@@ -67,6 +67,24 @@ def add():
             current_app.logger.exception(e.message)
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
+
+@product_api.route('/<int:id>/supplierinfo', methods=['POST'])
+def add_supplier_info(id):
+    product = Product.query.get_or_404(id)
+    form = ProductSupplierInfoForm(product_id=product.id, csrf_enabled=False)
+    if form.validate_on_submit():
+        data = dict(form.patch_data, product_id=product.id)
+        print "data:", data
+        obj = rest.get_instance(ProductSupplierInfo, data)
+        try:
+            db.session.add(obj)
+            db.session.commit()
+            return jsonify_status_code(201, **rest.to_dict(obj))
+        except Exception, e:
+            current_app.logger.exception(e.message)
+            return rest.rest_abort(409, message='Conflict')
+    return jsonify_form(form)
+
 
 @product_api.route('/<int:id>', methods=['PUT', 'PATCH'])
 def update(id):

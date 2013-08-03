@@ -7,7 +7,7 @@ from flask.ext.wtf import (
     DecimalField, Required, NumberRange
 )
 
-from .models import db, User, Product
+from .models import db, User, Product, ProductSupplierInfo
 
 
 class LoginForm(Form):
@@ -41,5 +41,13 @@ class LoginForm(Form):
         return True
 
 class ProductForm(ModelForm):
+
     class Meta:
         model = Product
+
+
+class ProductSupplierInfoForm(ModelForm):
+
+    class Meta:
+        model = ProductSupplierInfo
+        include = ['product_id', 'supplier_id']
