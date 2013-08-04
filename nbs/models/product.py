@@ -196,7 +196,7 @@ class Product(db.Model, TimestampMixin):
         return self._statuses[self.status]
 
     @property
-    def type_str(self):
+    def product_type_str(self):
         return self._product_types[self.product_type]
 
     def __repr__(self):
