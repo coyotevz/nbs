@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from sqlalchemy import event
+from sqlalchemy.ext.hybrid import hybrid_property
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
 from nbs.utils import dq
@@ -122,7 +123,7 @@ class Product(db.Model, TimestampMixin):
     automatic_price = db.Column(db.Boolean, default=False)
 
     #: cost of this product
-    cost = db.Column(db.Numeric(10, 2))
+    _cost = db.Column('cost', db.Numeric(10, 2))
 
     #: Use ProductSupplierInfo.cost to calculate cost
     automatic_cost = db.Column(db.Boolean, default=False)
@@ -174,6 +175,18 @@ class Product(db.Model, TimestampMixin):
             price = price * (1 + comp.value/100)
         return price.quantize(dq)
 
+    @hybrid_property
+    def cost(self):
+        return self._cost
+
+    @cost.setter
+    def cost(self, value):
+        """Update product price based on new cost value"""
+        if self._cost == value:
+            return
+        self._cost = value
+        self._recalc_price()
+
     def increase_stock(self, branch, qty, cost):
         pass
 
@@ -190,15 +203,6 @@ class Product(db.Model, TimestampMixin):
 
     def __repr__(self):
         return "<Product({0})>".format(self.sku.encode('utf-8'))
-
-#: listener for cost change, for automatic price recalc
-def _product_cost_set(target, value, oldvalue, initiator):
-    """Update product price based on new cost value"""
-    if value == oldvalue:
-        return
-    target._recalc_price()
-
-event.listen(Product.cost, 'set', _product_cost_set)
 
 
 class ProductSupplierInfo(db.Model):
@@ -220,9 +224,9 @@ class ProductSupplierInfo(db.Model):
     #: supplier notes for this product
     notes = db.Column(db.UnicodeText)
     #: supplier base price for this product (list price)
-    base_cost = db.Column(db.Numeric(10, 2))
+    _base_cost = db.Column('base_cost', db.Numeric(10, 2))
     #: supplier final price for this product (bonus formula applied)
-    cost = db.Column(db.Numeric(10, 2))
+    _cost = db.Column('cost', db.Numeric(10, 2))
     #: use bonus formula to calculate final cost???
     automatic_cost = db.Column(db.Boolean, default=False)
 
@@ -251,37 +255,48 @@ class ProductSupplierInfo(db.Model):
         return "<ProductSupplierInfo({0}, {1})>".format(
                              self.product, self.supplier)
 
+    @hybrid_property
+    def base_cost(self):
+        return self._base_cost
+
+    @base_cost.setter
+    def base_cost(self, value):
+        """Update ProductSupplierInfo.cost based on new base_cost"""
+        if self._base_cost == value:
+            return
+        self._recalc_cost()
+
+    @hybrid_property
+    def cost(self):
+        return self._cost
+
+    @cost.setter
+    def cost(self, value):
+        """Update product cost"""
+        if self._cost == value:
+            return
+        self._cost = value
+        if self.product and self.product.automatic_cost:
+            self.product.cost = value
+
     def _calc_cost(self):
         cost = self.base_cost
-        for comp in self.bunus_components:
+        for comp in self.bonus_components:
             cost = cost * (1 - comp.value/100)
         return cost.quantize(dq)
 
-    def _recalc_cost(self):
-        if self.base_cost and self.automatic_cost and\
-                len(self.bunus_components):
+    def _recalc_cost(self, force=False):
+        if self.base_cost and (self.automatic_cost or force) and\
+                len(self.bonus_components):
             self.cost = self._calc_cost()
 
 
-#: listener for ProductSupplierInfo.base_cost change
-def _psi_base_cost_set(target, value, oldvalue, initiator):
-    """Update ProductSupplierInfo.cost based on new base_cost"""
-    if value == oldvalue:
-        return
-    target._recalc_cost()
+#: listener for ProductSupplierInfo.automatic_cost change
+def _psi_auto_cost_set(target, value, oldvalue, initiator):
+    if value and value != oldvalue:
+        target._recalc_cost(True)
 
-event.listen(ProductSupplierInfo.base_cost, 'set', _psi_base_cost_set)
-
-
-#: listener for ProductSupplierInfo.cost change
-def _psi_cost_set(target, value, oldvalue, initiator):
-    """Update product cost"""
-    if oldvalue == value:
-        return
-    if target.product and target.product.automatic_cost:
-        target.product.cost = value
-
-event.listen(ProductSupplierInfo.cost, 'set', _psi_cost_set)
+event.listen(ProductSupplierInfo.automatic_cost, 'set', _psi_auto_cost_set)
 
 
 class PriceComponent(db.Model):
@@ -289,21 +304,35 @@ class PriceComponent(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
-    value = db.Column(db.Numeric(10, 2), nullable=False)
+    _value = db.Column('value', db.Numeric(10, 2), nullable=False)
     #: supplier_bonus field is added by ProductSupplierInfo.bonus_components
     #: product_markup field is added by Product.markup_components
 
-#: listener for PriceComponent.value change
-def _pc_value_set(target, value, oldvalue, initiator):
-    """Update Product/ProductSupplierInfo price/cost on value change"""
-    if value == oldvalue:
-        return
-    for product in target.product_markup:
-        product._recalc_price()
-    for supplier_info in self.supplier_bonus:
-        supplier_info._recalc_cost()
+    @hybrid_property
+    def value(self):
+        return self._value
 
-event.listen(PriceComponent.value, 'set', _pc_value_set)
+    @value.setter
+    def value(self, value):
+        """Update Product/ProductSupplierInfo price/cost on value change"""
+        if self._value == value:
+            return
+        self._value = value
+        for product in self.product_markup:
+            product._recalc_price()
+        for supplier_info in self.supplier_bonus:
+            supplier_info._recalc_cost()
+
+    def __repr__(self):
+        other = []
+        if self.product_markup.count():
+            other = self.product_markup.all()
+        elif self.supplier_bonus.count():
+            other = self.supplier_bonus.all()
+        if len(other) > 3:
+            other = other[:3] + ['...']
+        return "<PriceComponent of {0}, {1}, {2} %>".format(
+                repr(other), self.name, self.value)
 
 
 # Product markup component <--> Price component relation
