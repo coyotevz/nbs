@@ -41,11 +41,10 @@ def jsonify_form(form):
         data = {'errors': form.errors}
     else:
         code = 200
-        #data = {'form': form.data}
-        data = form.patch_data
+        data = form.patch_data or form.data
 
     if form.csrf_enabled and code == 200:
-        data['form']['csrf_token'] = str(form.csrf_token.current_token)
+        data['csrf_token'] = str(form.csrf_token.current_token)
 
     return jsonify_status_code(code, **data)
 
