@@ -68,6 +68,23 @@ def add():
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
 
+@product_api.route('/<int:id>', methods=['PUT', 'PATCH'])
+def update(id):
+    product = Product.query.get_or_404(id)
+    form = ProductForm(obj=product, csrf_enabled=False)
+    if form.validate_on_submit():
+        form.patch_obj(product)
+        try:
+            db.session.commit()
+            return jsonify_status_code(201, **rest.to_dict(product))
+        except Exception, e:
+            current_app.logger.exception(e.message)
+            return rest.rest_abort(409, message='Conflict')
+    return jsonify_form(form)
+
+
+## ProductSupplierInfo interface ##
+
 @product_api.route('/<int:id>/supplierinfo', methods=['POST'])
 def add_supplier_info(id):
     product = Product.query.get_or_404(id)
@@ -85,17 +102,11 @@ def add_supplier_info(id):
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
 
+## PriceHistory getter ##
 
-@product_api.route('/<int:id>', methods=['PUT', 'PATCH'])
-def update(id):
+@product_api.route('/<int:id>/pricehistory', methods=['GET'])
+def list_price_history(id):
+    """Returns price history data for this product"""
     product = Product.query.get_or_404(id)
-    form = ProductForm(obj=product, csrf_enabled=False)
-    if form.validate_on_submit():
-        form.patch_obj(product)
-        try:
-            db.session.commit()
-            return jsonify_status_code(201, **rest.to_dict(product))
-        except Exception, e:
-            current_app.logger.exception(e.message)
-            return rest.rest_abort(409, message='Conflict')
-    return jsonify_form(form)
+    result = [rest.to_dict(h, ['date', 'price']) for h in product.price_history]
+    return jsonify({'price_history': result})
