@@ -30,10 +30,11 @@ def create_app(config=None, app_name=None):
 
 def configure_app(app, config=None):
 
-    app.config.from_object('nbs.config.DevelopmentConfig')
 
     if config is not None:
         app.config.from_object(config)
+    else:
+        app.config.from_object('nbs.config.DevelopmentConfig')
 
     @app.route('/urls')
     def show_urls():
