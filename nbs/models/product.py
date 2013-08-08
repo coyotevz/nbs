@@ -165,8 +165,9 @@ class Product(db.Model, TimestampMixin):
     #: images field is added by ProductImage class
     #: current_stock field is added by CurrentStockItem class
 
-    def _recalc_price(self):
-        if self.cost and self.automatic_price and len(self.markup_components):
+    def _recalc_price(self, force=False):
+        if self.cost and (self.automatic_price or force) and\
+                len(self.markup_components):
             self.price = self._calc_price()
 
     def _calc_price(self):
@@ -203,6 +204,29 @@ class Product(db.Model, TimestampMixin):
 
     def __repr__(self):
         return "<Product({0})>".format(self.sku.encode('utf-8'))
+
+
+def product_instances(iter_):
+    for obj in iter_:
+        if isinstance(obj, Product):
+            yield obj
+
+
+def _try_assert_price(session, flush_context=None, instances=None):
+    changed = list(session.new) + list(session.dirty)
+    for product in product_instances(changed):
+        if product.price is None:
+            product._recalc_price()
+
+event.listen(db.session.__class__, 'before_commit', _try_assert_price)
+
+
+#: listener for Product.automatic_price change
+def _product_auto_price_set(target, value, oldvalue, initiator):
+    if value and value != oldvalue:
+        target._recalc_price(True)
+
+event.listen(Product.automatic_price, 'set', _product_auto_price_set)
 
 
 class ProductSupplierInfo(db.Model):
