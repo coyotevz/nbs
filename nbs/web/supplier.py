@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request
 
 from nbs.models import db, Supplier
 
-supplier = Blueprint('supplier', __name__, url_prefix='/supplier')
+supplier = Blueprint('web.supplier', __name__, url_prefix='/supplier')
 
 @supplier.route('/')
 def index():

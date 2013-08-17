@@ -5,7 +5,7 @@ from flask import Blueprint, render_template
 from nbs.models import db, Product
 from nbs.forms import ProductForm
 
-product = Blueprint('product', __name__, url_prefix='/product')
+product = Blueprint('web.product', __name__, url_prefix='/product')
 
 
 @product.route('/')

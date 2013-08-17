@@ -7,7 +7,7 @@ from flask import Flask, request
 from nbs.models import configure_db
 from nbs.auth import configure_auth
 from nbs.api import configure_api
-from nbs.views import configure_views
+from nbs.web import configure_web
 
 DEFAULT_APPNAME = 'nbs'
 
@@ -23,7 +23,7 @@ def create_app(config=None, app_name=None):
     configure_db(app)
     configure_auth(app)
     configure_api(app)
-    configure_views(app)
+    configure_web(app)
 
     return app
 
