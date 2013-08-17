@@ -6,6 +6,7 @@
 
 """
 
+import sys
 from flask import current_app
 from flask.ext.script import Manager, Shell, prompt_bool
 from flask.ext.script import Command, Option
@@ -82,6 +83,18 @@ class GunicornServer(Command):
             FlaskApplication().run()
 
 manager.add_command("gunicorn", GunicornServer())
+
+
+class PyTest(Command):
+
+    description = u'Run py.test over the entire project'
+
+    def handle(self, app):
+        import pytest
+        errno = pytest.main(sys.argv[2:])
+        sys.exit(errno)
+
+manager.add_command("test", PyTest())
 
 def main():
     manager.run()
