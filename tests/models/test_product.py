@@ -50,3 +50,11 @@ class TestProduct(TestCase):
         p.cost = Decimal('2.00')
         self.db.session.commit()
         assert p.price == Decimal('2.86')
+
+
+class TestProductSupplierInfo(TestCase):
+    pass
+
+
+class TestPriceComponent(TestCase):
+    pass
