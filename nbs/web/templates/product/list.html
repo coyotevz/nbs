@@ -11,6 +11,13 @@
     <td>{{ product.description }}</td>
     <td style="text-align: right;">{{ product.price }}</td>
   </tr>
+  {% for psi in product.suppliers_info %}
+  <tr>
+    <td></td>
+    <td>{{ psi.sku }}, {{ psi.supplier.full_name }}</td>
+    <td>{{ psi.cost }}</td>
+  </tr>
+  {% endfor %}
   {% endfor %}
 </table>
 {% endblock %}
