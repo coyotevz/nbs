@@ -12,6 +12,7 @@ require.config({
     'backbone':    'vendor/backbone-1.0.0',
     'chaplin':     'vendor/chaplin-0.10.0',
     'nunjucks':    'vendor/nunjucks-dev-0.1.10',
+    'bootstrap':   'vendor/bootstrap.js',
   },
 
   // For non AMD-capable per default, declare dependencies.
@@ -34,6 +35,10 @@ require.config({
 });
 
 // Bootstrap the application
-require(['application','routes'], function(Application, routes) {
+require([
+  'application',
+  'routes',
+  'bootstrap'
+], function(Application, routes) {
   var app = new Application({routes: routes});
 });
