@@ -13,6 +13,9 @@ require.config({
     'chaplin':     'vendor/chaplin-0.10.0',
     'nunjucks':    'vendor/nunjucks-dev-0.1.10',
     'bootstrap':   'vendor/bootstrap.js',
+
+    // List internal paths
+    // 'ClientModel':  'models/client',
   },
 
   // For non AMD-capable per default, declare dependencies.
@@ -26,6 +29,10 @@ require.config({
     },
     'nunjucks': {
       exports: 'nunjucks',
+    },
+    'bootstrap': {
+      deps: ['jquery'],
+      exports: 'bootstrap'
     }
   }
 
