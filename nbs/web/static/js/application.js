@@ -1,5 +1,6 @@
 define([
-  'chaplin'
+  'chaplin',
+  'bootstrap',
 ], function(Chaplin) {
   'use strict';
 
