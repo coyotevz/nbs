@@ -13,6 +13,11 @@ def list():
     products = Product.query.order_by(Product.sku).all()
     return render_template('product/list.html', products=products)
 
+@product.route('/<id>')
+def view(id):
+    product = Product.query.get_or_404(id)
+    return render_template('product/view.html', product=product)
+
 @product.route('/new/')
 def new():
     form = ProductForm()

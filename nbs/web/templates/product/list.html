@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<table>
-  <tr>
-    <th>Código</th><th>Descripción</th><th>Precio</th>
-  </tr>
-  {% for product in products %}
-  <tr>
-    <td>{{ product.sku }}</td>
-    <td>{{ product.description }}</td>
-    <td style="text-align: right;">{{ product.price }}</td>
-  </tr>
-  {% for psi in product.suppliers_info %}
-  <tr>
-    <td></td>
-    <td>{{ psi.sku }}, {{ psi.supplier.full_name }}</td>
-    <td>{{ psi.cost }}</td>
-  </tr>
-  {% endfor %}
-  {% endfor %}
+<div class="page-header">
+  <h1>Productos</h1>
+</div>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Descripción</th>
+      <th>Vigencia</th>
+      <th class="text-right">Precio</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td><a href="{{ url_for('web.product.view', id=product.id) }}">{{ product.sku }}</a></td>
+      <td>{{ product.description }}</td>
+      <td>{{ product.modified|datefmt }}</td>
+      <td class="text-right">{{ product.price|moneyfmt(curr='$ ') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}
