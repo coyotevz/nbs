@@ -12,7 +12,7 @@ require.config({
     'backbone':    'vendor/backbone-1.0.0',
     'chaplin':     'vendor/chaplin-0.10.0',
     'nunjucks':    'vendor/nunjucks-dev-0.1.10',
-    'bootstrap':   'vendor/bootstrap.js',
+    'bootstrap':   'vendor/bootstrap',
 
     // List internal paths
     // 'ClientModel':  'models/client',
@@ -45,7 +45,7 @@ require.config({
 require([
   'application',
   'routes',
-  'bootstrap'
+  'bootstrap',
 ], function(Application, routes) {
   var app = new Application({routes: routes});
 });
