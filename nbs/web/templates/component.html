@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<header>
+  <nav class="appbar">
+    <ul>
+      <li><a href="#"><span>Fibra</span></a></li>
+    </ul>
+  </nav>
+</header>
+{% endblock %}
+
+{% block page %}
+<div id="page" class="clearfix">
+  <aside></aside>
+  <section id="main">
+    {% block toolbar %}{% endblock %}
+    <div id="content_wrapper">
+      <div id="scroll_wrapper">
+        <div id="content">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

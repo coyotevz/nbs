@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Layout{% endblock %}
+
+{% block module_style %}
+<link rel="stylesheet/less" href="/static/less/bootstrap/bootstrap.less" type="text/css" />
+<link rel="stylesheet/less" href="/static/less/custom/nobix.less" />
+{% endblock %}
+
+{% block module_js %}
+<script type="text/javascript">
+  less = {
+    'env': "development", // or "production"
+    'async': false,
+    'fileAsync': false,
+  };
+</script>
+<script src="/static/js/vendor/less.js"></script>
+{% block page_js %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+  {% block header %}{% endblock %}
+  {% block page %}{% endblock %}
+  {% block footer %}{% endblock %}
+</div>
+<!-- page-specific script -->
+{% block js %}{% endblock %}
+<!-- end page-specific script -->
+{% endblock %}
