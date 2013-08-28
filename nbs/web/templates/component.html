@@ -18,13 +18,20 @@
 
 {% block page %}
 <div id="page" class="clearfix">
-  <aside></aside>
-  <section id="main">
-    {% block toolbar %}{% endblock %}
+  <aside>{% block sidebar %}{% endblock %}</aside>
+  <div class="main">
+    <div class="toolbar">{% block toolbar %}{% endblock %}</div>
     <div id="content_wrapper">
       <div id="scroll_wrapper">
         <div id="content">
           {% block content %}{% endblock %}
+          <footer>
+            <span class="copy-notice">©2013 Rocctech</span>
+            -
+            <a href="http://www.rocctech.com.ar" target="_blank">Condiciones</a>
+            -
+            <a href="http://www.rocctech.com.ar" target="_blank">Políticas de Privacidad</a>
+          </footer>
         </div>
       </div>
     </div>

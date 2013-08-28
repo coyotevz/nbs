@@ -4935,3 +4935,20 @@ header .banner {
   background-color: #f1f1f1;
   border-bottom: 1px solid #e5e5e5;
   height: 45px; }
+
+#page {
+  padding-top: 5px; }
+
+.main .toolbar {
+  border-bottom: 1px solid #e5e5e5;
+  margin-left: -400px;
+  margin-top: 2px;
+  padding: 0 16px 7px 400px;
+  height: 30px; }
+  .main .toolbar.fixed {
+    -webkit-box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); }
+  .main .toolbar .btn-group {
+    float: left; }
+    .main .toolbar .btn-group.pull-right {
+      float: right; }

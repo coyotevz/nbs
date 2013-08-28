@@ -1,26 +1,77 @@
 {% extends "component.html" %}
+{% from "macros.html" import render_alpha_pagination with context %}
+
+{% block toolbar %}
+<div class="btn-group">
+  <button name="btn-test1" title="Test Button 1" rel="tooltip">Button 1</button>
+  <button name="btn-test2" title="Test Button 2" rel="tooltip">Button 2</button>
+</div>
+<div class="btn-group">
+  <button class="dropdown-toggle" data-toggle="dropdown" name="button-more">Más <i class="icon-caret-down"></i></button>
+  <ul class="dropdown-menu">
+    <li><a id="remove-product">Eliminar producto</a></li>
+    <li class="divider"></li>
+    <li><a id="export-product">Exportar...</a></li>
+    <li><a id="import-product">Importar...</a></li>
+  </ul>
+</div>
+<div class="btn-group pull-right">
+  <a class="btn btn-primary" href="#">Guardar ahora</a>
+</div>
+{#{{ render_alpha_pagination(pagination, 'name') }}#}
+{% endblock %}
+
+{% block sidebar %}
+<header>
+  <div class="title dropdown">
+    <span class="dropdown-toggle" data-toggle="dropdown">Productos <i class="icon-caret-down"></i></span>
+    <ul class="dropdown-menu" role="menu">
+      <li><a tabindex="-1" href="#" disabled>Proveedores</a></li>
+      <li><a tabindex="-1" href="#" disabled>Clientes</a></li>
+      <li><a tabindex="-1" href="#" disabled>Contactos</a></li>
+      <li class="current"><a tabindex="-1" href="#">Productos</a></li>
+      <li><a tabindex="-1" href="#" disabled>Inventarios</a></li>
+      <li><a tabindex="-1" href="#" disabled>Libros</a></li>
+    </ul>
+  </div>
+</header>
+<div class="content">
+  <div class="action">
+    <button class="btn btn-danger">Nuevo Producto</button>
+  </div>
+  <div class="sidenav"></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>Productos</h1>
-</div>
-
-<table class="table table-condensed table-hover">
-  <thead>
+<table id="products-list" class="table table-condensed table-hover">
+  <colgroup>
+    <col class="col0" style="width: 2px;">
+    <col class="col1" style="width: 30px;">
+    <col class="col2">
+    <col class="col3">
+    <col class="col4">
+    <col class="col5">
+  </colgroup>
+  {#<thead>
     <tr>
+      <th></th>
+      <th></th>
       <th>Código</th>
       <th>Descripción</th>
       <th>Vigencia</th>
       <th class="text-right">Precio</th>
     </tr>
-  </thead>
+  </thead>#}
   <tbody>
     {% for product in products %}
     <tr>
+      <td></td>
+      <td></td>
       <td><a href="{{ url_for('web.product.view', id=product.id) }}">{{ product.sku }}</a></td>
       <td>{{ product.description }}</td>
       <td>{{ product.modified|datefmt }}</td>
-      <td class="text-right">{{ product.price|moneyfmt(curr='$ ') }}</td>
+      <td class="text-right">{{ product.price|moneyfmt }}</td>
     </tr>
     {% endfor %}
   </tbody>

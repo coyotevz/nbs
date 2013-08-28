@@ -11,3 +11,18 @@
   {%- if field.description %}<p class="fieldinfo">{{ field.description }}</p>{% endif %}
 </div>
 {% endmacro %}
+
+{% macro render_alpha_pagination(p, field='name') %}
+{%- if p.pages > 1 %}
+<div class="pager pull-right">
+  <div class="pages">
+    <span>{{ p.items[0][field].split()[0] }}</span>
+    -
+    <span>{{ p.items[-1][field].split()[0] }}</span>
+  </div>
+  <div class="btn-group">
+    <button name="prev-page" data-target="{{ url_for(request.endpoint, page=p.prev_num, per_page=p.per_page if p.per_page != 25 else None) if p.has_prev else '#' }}" rel="tooltip" title="Anterior" data-placement="bottom" class="btn-thin"{% if not p.has_prev %} disabled{% endif %}><i class="icon-chevron-left"></i></button>
+  </div>
+</div>
+{%- endif %}
+{% endmacro %}
