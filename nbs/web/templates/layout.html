@@ -3,19 +3,10 @@
 {% block title %}Layout{% endblock %}
 
 {% block module_style %}
-<link rel="stylesheet/less" href="/static/less/bootstrap/bootstrap.less" type="text/css" />
-<link rel="stylesheet/less" href="/static/less/custom/nobix.less" />
+<link rel="stylesheet" type="text/css" href="/static/css/nobix.css">
 {% endblock %}
 
 {% block module_js %}
-<script type="text/javascript">
-  less = {
-    'env': "development", // or "production"
-    'async': false,
-    'fileAsync': false,
-  };
-</script>
-<script src="/static/js/vendor/less.js"></script>
 {% block page_js %}{% endblock %}
 {% endblock %}
 
