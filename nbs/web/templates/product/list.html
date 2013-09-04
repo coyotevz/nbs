@@ -1,13 +1,22 @@
 {% extends "component.html" %}
 {% from "macros.html" import render_alpha_pagination with context %}
 
+{% block page_js %}
+<script src="/static/js/vendor/require.js"></script>
+<script src="/static/js/config.js"></script>
+<script type="text/javascript" charset="utf-8">
+  require(['bootstrap']);
+</script>
+{% endblock %}
+
 {% block toolbar %}
 <div class="btn-group">
   <button name="btn-test1" title="Test Button 1" rel="tooltip">Button 1</button>
   <button name="btn-test2" title="Test Button 2" rel="tooltip">Button 2</button>
 </div>
 <div class="btn-group">
-  <button class="dropdown-toggle" data-toggle="dropdown" name="button-more">Más <i class="icon-caret-down"></i></button>
+  <button name="btn-test3" title="Test Button 3" rel="tooltip">Button 3</button>
+  <button class="dropdown-toggle" data-toggle="dropdown" name="button-more" type="button">Más <span class="caret"></span></button>
   <ul class="dropdown-menu">
     <li><a id="remove-product">Eliminar producto</a></li>
     <li class="divider"></li>
@@ -24,7 +33,7 @@
 {% block sidebar %}
 <header>
   <div class="title dropdown">
-    <span class="dropdown-toggle" data-toggle="dropdown">Productos <i class="icon-caret-down"></i></span>
+    <span class="dropdown-toggle" data-toggle="dropdown">Productos <span class="caret"></span></span>
     <ul class="dropdown-menu" role="menu">
       <li><a tabindex="-1" href="#" disabled>Proveedores</a></li>
       <li><a tabindex="-1" href="#" disabled>Clientes</a></li>
