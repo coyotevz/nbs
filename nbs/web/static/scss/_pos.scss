@@ -1,0 +1,130 @@
+/* Point of Sale Application */
+
+$test-color-1:  #ff99cc;
+$test-border-1: #cc0066;
+$test-color-2:  #ffcccc;
+$test-border-2: #990000;
+$test-color-3:  #ffcc99;
+$test-border-3: #cc6600;
+$test-color-4:  #ffffcc;
+$test-border-4: #999900;
+$test-color-5:  #ccff99;
+$test-border-5: #66cc00;
+$test-color-6:  #ccffcc;
+$test-border-6: #009900;
+$test-color-7:  #99ffcc;
+$test-border-7: #00cc66;
+$test-color-8:  #ccffff;
+$test-border-8: #009999;
+$test-color-9:  #99ccff;
+$test-border-9: #0066cc;
+$test-color-10:  #ccccff;
+$test-border-10: #0000cc;
+$test-color-11:  #cc99ff;
+$test-border-11: #6600cc;
+$test-color-12:  #ffccff;
+$test-border-12: #cc00cc;
+
+$header-height: 60px;
+$footer-height: 60px;
+
+
+#pos {
+  font-family: 'Roboto',arial,sans-serif;
+
+  header {
+    background-color: $test-color-1;
+    border: 1px solid $test-border-1;
+    height: $header-height;
+    width: 100%;
+    top: 0;
+    position: fixed;
+  }
+
+  #content {
+    border: 3px solid $test-border-5;
+    position: fixed;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    .item-list {
+      font-family: 'RobotoCondensed',arial,sans-serif;
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        height: 44px;
+        font-size: 28px;
+
+        &.odd {
+          background-color: #ddd;
+        }
+
+        div {
+          display: inline-block;
+        }
+
+        .code-description {
+          .code { width: 14ex; }
+        }
+        .quantity {
+          width: 100px;
+        }
+        .unit-price {
+          width: 125px;
+        }
+        .row-price {
+          width: 125px;
+        }
+        .quantity, .unit-price, .row-price {
+          display: inline-block;
+          text-align: right;
+        }
+      }
+    }
+
+  }
+
+  // FORMS ELEMENTS
+
+  // Field width two or more elements, one input and other element (span, etc)
+  
+  .composed-field {
+    height: 44px;
+    border: 2px solid transparent;
+
+    &:active,&:focus,&.focused {
+      border-color: orange;
+    }
+
+    input, span {
+      border: none;
+      height: 40px;
+    }
+  }
+
+  input {
+    outline: none;
+    font-size: 28px;
+    height: 44px;
+    border: 2px solid transparent;
+    background-color: transparent;
+    @include box-shadow(none);
+    border-radius: 0;
+    padding: 0 2px;
+
+    &:active,&:focus {
+      border-color: orange;
+    }
+  }
+
+  footer {
+    background-color: $test-color-9;
+    border: 1px solid $test-border-9;
+    height: $footer-height;
+    width: 100%;
+    bottom: 0;
+    position: fixed;
+  }
+}

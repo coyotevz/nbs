@@ -2,7 +2,7 @@
 
 from flask import Blueprint
 from .jinjafilters import configure_jinja
-from .views import dashboard, product, supplier
+from .views import dashboard, product, supplier, pos
 
 # Only holds static and templates folders
 web = Blueprint('web', __name__,
@@ -15,3 +15,4 @@ def configure_web(app):
     app.register_blueprint(dashboard)
     app.register_blueprint(product)
     app.register_blueprint(supplier)
+    app.register_blueprint(pos)

@@ -3,3 +3,4 @@
 from .dashboard import dashboard
 from .product import product
 from .supplier import supplier
+from .pos import pos
