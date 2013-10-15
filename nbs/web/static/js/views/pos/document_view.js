@@ -38,8 +38,6 @@ define([
       }));
 
       this.setupHtml();
-
-      //_.bindAll(this, "onAppend");
     },
 
     setupHtml: function() {
