@@ -49,6 +49,16 @@ $footer-height: 60px;
     border: 1px solid $test-border-9;
     height: $footer-height;
     bottom: 0;
+
+    .total-container {
+      float: right;
+      font-size: 40px;
+      padding-right: 15px;
+
+      .sign: {
+        color: #aaa;
+      }
+    }
   }
 
   #content {
