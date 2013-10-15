@@ -1,4 +1,4 @@
-/* Point of Sale Application */
+/* Point of Sale Application module */
 
 $test-color-1:  #ff99cc;
 $test-border-1: #cc0066;
@@ -28,103 +28,88 @@ $test-border-12: #cc00cc;
 $header-height: 60px;
 $footer-height: 60px;
 
-
 #pos {
-  font-family: 'Roboto',arial,sans-serif;
+
+  font-family: 'RobotoCondensed',arial,sans-serif;
+
+  header, footer {
+    width: 100%;
+    position: fixed;
+  }
 
   header {
     background-color: $test-color-1;
     border: 1px solid $test-border-1;
     height: $header-height;
-    width: 100%;
     top: 0;
-    position: fixed;
-  }
-
-  #content {
-    border: 3px solid $test-border-5;
-    position: fixed;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-
-    .item-list {
-      font-family: 'RobotoCondensed',arial,sans-serif;
-      list-style: none;
-      padding-left: 0;
-
-      li {
-        height: 44px;
-        font-size: 28px;
-
-        &.odd {
-          background-color: #ddd;
-        }
-
-        div {
-          display: inline-block;
-        }
-
-        .code-description {
-          .code { width: 14ex; }
-        }
-        .quantity {
-          width: 100px;
-        }
-        .unit-price {
-          width: 125px;
-        }
-        .row-price {
-          width: 125px;
-        }
-        .quantity, .unit-price, .row-price {
-          display: inline-block;
-          text-align: right;
-        }
-      }
-    }
-
-  }
-
-  // FORMS ELEMENTS
-
-  // Field width two or more elements, one input and other element (span, etc)
-  
-  .composed-field {
-    height: 44px;
-    border: 2px solid transparent;
-
-    &:active,&:focus,&.focused {
-      border-color: orange;
-    }
-
-    input, span {
-      border: none;
-      height: 40px;
-    }
-  }
-
-  input {
-    outline: none;
-    font-size: 28px;
-    height: 44px;
-    border: 2px solid transparent;
-    background-color: transparent;
-    @include box-shadow(none);
-    border-radius: 0;
-    padding: 0 2px;
-
-    &:active,&:focus {
-      border-color: orange;
-    }
   }
 
   footer {
     background-color: $test-color-9;
     border: 1px solid $test-border-9;
     height: $footer-height;
-    width: 100%;
     bottom: 0;
-    position: fixed;
   }
+
+  #content {
+    visibility: hidden;
+    position: fixed;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 2px;
+
+    .item-list {
+      width: 100%;
+      border-collapse: separate;
+      margin-bottom: 3px;
+
+      .col-quantity { width: 5em; }
+      .col-unit-price { width: 9em; }
+      .col-total-price { width: 10em; }
+
+      tr {
+        font-size: 28px;
+        border: 1px solid #ddd;
+
+        td {
+          height: 40px;
+          padding: 0;
+          vertical-align: middle;
+          border: 2px solid transparent;
+
+          &.focused {
+            border: 2px solid orange;
+          }
+
+          input {
+            outline: none;
+            height: 40px;
+            border-width: 0px;
+            background-color: transparent;
+
+            &.code {
+              width: 14ex;
+            }
+            &.quantity {
+              text-align: right;
+              width: 5ex;
+            }
+          }
+        }
+
+        .unit-price, .total-price {
+          text-align: right;
+          visibility: visible;
+        }
+
+        &#appender {
+          .unit-price, .total-price {
+            visibility: hidden;
+          }
+        }
+      }
+    }
+  }
+
 }

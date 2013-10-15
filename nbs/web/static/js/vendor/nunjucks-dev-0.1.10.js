@@ -100,7 +100,7 @@ exports.withPrettyErrors = function(path, withInternals, func) {
 
         throw e;
     }
-};
+}
 
 exports.TemplateError = function(message, lineno, colno) {
     var err = this;
@@ -114,7 +114,7 @@ exports.TemplateError = function(message, lineno, colno) {
         }
     }
 
-    err.name = 'Template render error';
+    err.name = "Template render error";
     err.message = message;
     err.lineno = lineno;
     err.colno = colno;
@@ -252,64 +252,6 @@ exports.map = function(obj, func) {
     return results;
 };
 
-exports.asyncParallel = function(funcs, done) {
-    var count = funcs.length,
-        result = new Array(count),
-        current = 0;
-
-    var makeNext = function(i) {
-        return function(res) {
-            result[i] = res;
-            current += 1;
-
-            if (current === count) {
-                done(result);
-            }
-        };
-    };
-
-    for (var i = 0; i < count; i++) {
-        funcs[i](makeNext(i));
-    }
-};
-
-exports.asyncEach = function(arr, iter, cb) {
-    var i = -1;
-    
-    function next() {
-        i++;
-
-        if(i < arr.length) {
-            iter(arr[i], i, next, cb);
-        }
-        else {
-            cb();
-        }
-    }
-
-    next();
-};
-
-exports.asyncFor = function(obj, iter, cb) {
-    var keys = exports.keys(obj);
-    var len = keys.length;
-    var i = -1;
-
-    function next() {
-        i++;
-        var k = keys[i];
-
-        if(i < len) {
-            iter(k, obj[k], i, len, next);
-        }
-        else {
-            cb();
-        }
-    }
-
-    next();
-};
-
 if(!Array.prototype.indexOf) {
     Array.prototype.indexOf = function(array, searchElement /*, fromIndex */) {
         if (array == null) {
@@ -340,27 +282,6 @@ if(!Array.prototype.indexOf) {
         }
         return -1;
     };
-}
-
-if(!Array.prototype.map) {
-    Array.prototype.map = function() {
-        throw new Error("map is unimplemented for this js engine");
-    };
-}
-
-exports.keys = function(obj) {
-    if(Object.prototype.keys) {
-        return obj.keys();
-    }
-    else {
-        var keys = [];
-        for(var k in obj) {
-            if(obj.hasOwnProperty(k)) {
-                keys.push(k);
-            }
-        }
-        return keys;
-    }
 }
 })();
 (function() {
@@ -453,10 +374,8 @@ var Pair = Node.extend("Pair", { fields: ['key', 'value'] });
 var Dict = NodeList.extend("Dict");
 var LookupVal = Node.extend("LookupVal", { fields: ['target', 'val'] });
 var If = Node.extend("If", { fields: ['cond', 'body', 'else_'] });
-var IfAsync = If.extend("IfAsync");
 var InlineIf = Node.extend("InlineIf", { fields: ['cond', 'body', 'else_'] });
 var For = Node.extend("For", { fields: ['arr', 'name', 'body'] });
-var ForAsync = For.extend("ForAsync");
 var Macro = Node.extend("Macro", { fields: ['name', 'args', 'body'] });
 var Import = Node.extend("Import", { fields: ['template', 'target'] });
 var FromImport = Node.extend("FromImport", {
@@ -470,12 +389,8 @@ var FromImport = Node.extend("FromImport", {
 });
 var FunCall = Node.extend("FunCall", { fields: ['name', 'args'] });
 var Filter = FunCall.extend("Filter");
-var FilterAsync = Filter.extend("FilterAsync", {
-    fields: ['name', 'args', 'symbol']
-});
 var KeywordArgs = Dict.extend("KeywordArgs");
 var Block = Node.extend("Block", { fields: ['name', 'body'] });
-var Super = Node.extend("Super", { fields: ['blockName', 'symbol'] });
 var TemplateRef = Node.extend("TemplateRef", { fields: ['template'] });
 var Extends = TemplateRef.extend("Extends");
 var Include = TemplateRef.extend("Include");
@@ -607,19 +522,15 @@ modules['nodes'] = {
     Output: Output,
     TemplateData: TemplateData,
     If: If,
-    IfAsync: IfAsync,
     InlineIf: InlineIf,
     For: For,
-    ForAsync: ForAsync,
     Macro: Macro,
     Import: Import,
     FromImport: FromImport,
     FunCall: FunCall,
     Filter: Filter,
-    FilterAsync: FilterAsync,
     KeywordArgs: KeywordArgs,
     Block: Block,
-    Super: Super,
     Extends: Extends,
     Include: Include,
     Set: Set,
@@ -877,32 +788,10 @@ function contextOrFrameLookup(context, frame, name) {
 
 function handleError(error, lineno, colno) {
     if(error.lineno) {
-        return error;
+        throw error;
     }
     else {
-        return new lib.TemplateError(error, lineno, colno);
-    }
-}
-
-function asyncIter(arr, dimen, iter, cb) {
-    if(lib.isArray(arr)) {
-        var len = arr.length;
-
-        lib.asyncEach(arr, function(item, i, next) {
-            switch(dimen) {
-            case 1: iter(item, i, len, next); break;
-            case 2: iter(item[0], item[1], i, len, next); break;
-            case 3: iter(item[0], item[1], item[2], i, len, next); break;
-            default:
-                item.push(i, next);
-                iter.apply(this, item);
-            }
-        }, cb);
-    }
-    else {
-        lib.asyncFor(arr, function(key, val, i, len, next) {
-            iter(key, val, i, len, next);
-        }, cb);
+        throw new lib.TemplateError(error, lineno, colno);
     }
 }
 
@@ -917,12 +806,9 @@ modules['runtime'] = {
     callWrap: callWrap,
     handleError: handleError,
     isArray: lib.isArray,
-    asyncEach: lib.asyncEach,
-    keys: lib.keys,
     SafeString: SafeString,
     copySafeness: copySafeness,
-    markSafe: markSafe,
-    asyncIter: asyncIter
+    markSafe: markSafe
 };
 })();
 (function() {
@@ -1478,17 +1364,11 @@ var Parser = Object.extend({
 
     parseFor: function() {
         var forTok = this.peekToken();
-        var node;
+        if(!this.skipSymbol('for')) {
+            this.fail("parseFor: expected for", forTok.lineno, forTok.colno);
+        }
 
-        if(this.skipSymbol('for')) {
-            node = new nodes.For(forTok.lineno, forTok.colno);
-        }
-        else if(this.skipSymbol('forAsync')) {
-            node = new nodes.ForAsync(forTok.lineno, forTok.colno);            
-        }
-        else {
-            this.fail("parseFor: expected for{Async}", forTok.lineno, forTok.colno);
-        }
+        var node = new nodes.For(forTok.lineno, forTok.colno);
 
         node.name = this.parsePrimary();
 
@@ -1690,19 +1570,13 @@ var Parser = Object.extend({
 
     parseIf: function() {
         var tag = this.peekToken();
-        var node;
-
-        if(this.skipSymbol('if') || this.skipSymbol('elif')) {
-            node = new nodes.If(tag.lineno, tag.colno);
-        }
-        else if(this.skipSymbol('ifAsync')) {
-            node = new nodes.IfAsync(tag.lineno, tag.colno);
-        }
-        else {
+        if(!this.skipSymbol('if') && !this.skipSymbol('elif')) {
             this.fail("parseIf: expected if or elif",
                       tag.lineno,
                       tag.colno);
         }
+
+        var node = new nodes.If(tag.lineno, tag.colno);
 
         node.cond = this.parseExpression();
         this.advanceAfterBlockEnd(tag.value);
@@ -1775,12 +1649,8 @@ var Parser = Object.extend({
 
         switch(tok.value) {
         case 'raw': return this.parseRaw();
-        case 'if':
-        case 'ifAsync':
-            return this.parseIf();
-        case 'for': 
-        case 'forAsync':
-            return this.parseFor();
+        case 'if': return this.parseIf();
+        case 'for': return this.parseFor();
         case 'block': return this.parseBlock();
         case 'extends': return this.parseExtends();
         case 'include': return this.parseInclude();
@@ -2314,7 +2184,7 @@ var Parser = Object.extend({
                           tok.colno);
             }
             else {
-                var arg = this.parseExpression();
+                var arg = this.parsePrimary();
 
                 if(this.skipValue(lexer.TOKEN_OPERATOR, '=')) {
                     kwargs.addChild(
@@ -2421,8 +2291,8 @@ var Parser = Object.extend({
 //     console.log(util.inspect(t));
 // }
 
-// var p = new Parser(lexer.lex('sdfsdf {{ baz(foo | bar(5)) }}'));
-// var n = p.parseAsRoot();
+// var p = new Parser(lexer.lex('{% macro foo(x) %}{{ x }}{% endmacro %}{{ foo(5) }}'));
+// var n = p.parse();
 // nodes.printNodes(n);
 
 modules['parser'] = {
@@ -2436,230 +2306,8 @@ modules['parser'] = {
 };
 })();
 (function() {
-var nodes = modules["nodes"];
-
-var sym = 0;
-function gensym() {
-    return 'hole_' + sym++;
-}
-
-// copy-on-write version of map
-function mapCOW(arr, func) {
-    var res = null;
-
-    for(var i=0; i<arr.length; i++) {
-        var item = func(arr[i]);
-
-        if(item !== arr[i]) {
-            if(!res) {
-                res = arr.slice();
-            }
-
-            res[i] = item;
-        }
-    }
-
-    return res || arr;
-}
-
-function walk(ast, func, depthFirst) {
-    if(!(ast instanceof nodes.Node)) {
-        return ast;
-    }
-
-    if(!depthFirst) {
-        var astT = func(ast);
-        
-        if(astT && astT !== ast) {
-            return astT;
-        }
-    }
-    
-    if(ast instanceof nodes.NodeList) {
-        var children = mapCOW(ast.children, function(node) {
-            return walk(node, func, depthFirst);
-        });
-
-        if(children !== ast.children) {
-            ast = new nodes[ast.typename](ast.lineno, ast.colno, children);
-        }
-    }
-    else {
-        var props = ast.fields.map(function(field) {
-            return ast[field];
-        });
-
-        var propsT = mapCOW(props, function(prop) {
-            return walk(prop, func, depthFirst);
-        });
-
-        if(propsT !== props) {
-            ast = new nodes[ast.typename](ast.lineno, ast.colno);
-
-            propsT.forEach(function(prop, i) {
-                ast[ast.fields[i]] = prop;
-            });
-        }
-    }
-
-    return depthFirst ? (func(ast) || ast) : ast;
-}
-
-function depthWalk(ast, func) {
-    return walk(ast, func, true);
-}
-
-function _liftFilters(node, asyncFilters, prop) {
-    var children = [];
-
-    var walked = depthWalk(prop ? node[prop] : node, function(node) {
-        if(node instanceof nodes.Block) {
-            return node;
-        }
-        else if(node instanceof nodes.Filter &&
-                asyncFilters.indexOf(node.name.value) !== -1) {
-            var symbol = new nodes.Symbol(node.lineno,
-                                          node.colno,
-                                          gensym());
-
-            children.push(new nodes.FilterAsync(node.lineno,
-                                                node.colno,
-                                                node.name, 
-                                                node.args,
-                                                symbol));
-            return symbol;
-        }
-    });
-
-    if(prop) {
-        node[prop] = walked;
-    }
-    else {
-        node = walked;
-    }
-
-    if(children.length) {
-        children.push(node);
-
-        return new nodes.NodeList(
-            node.lineno,
-            node.colno,
-            children
-        );
-    }
-    else {
-        return node;
-    }
-}
-
-function liftFilters(ast, asyncFilters) {
-    return walk(ast, function(node) {
-        if(node instanceof nodes.Output) {
-            return _liftFilters(node, asyncFilters);
-        }
-        else if(node instanceof nodes.For) {
-            return _liftFilters(node, asyncFilters, 'arr');
-        }
-        else if(node instanceof nodes.If) {
-            return _liftFilters(node, asyncFilters, 'cond');
-        }
-    });
-}
-
-function liftSuper(ast) {
-    return walk(ast, function(blockNode) {
-        if(!(blockNode instanceof nodes.Block)) {
-            return;
-        }
-
-        var hasSuper = false;
-        var symbol = gensym();
-
-        blockNode.body = walk(blockNode.body, function(node) {
-            if(node instanceof nodes.FunCall &&
-               node.name.value == 'super') {
-                hasSuper = true;
-                return new nodes.Symbol(node.lineno, node.colno, symbol);
-            }
-        });
-
-        if(hasSuper) {
-            blockNode.body.children.unshift(new nodes.Super(
-                0, 0, blockNode.name, new nodes.Symbol(0, 0, symbol)
-            ));
-        }
-    });
-}
-
-function convertStatements(ast) {
-    return depthWalk(ast, function(node) {
-        if(!(node instanceof nodes.If) &&
-           !(node instanceof nodes.For)) {
-            return;
-        }
-
-        var async = false;
-        walk(node, function(node) {
-            if(node instanceof nodes.FilterAsync) {
-                async = true;
-                // Stop iterating by returning the node
-                return node;
-            }
-        });
-
-        if(async) {
-	        if(node instanceof nodes.If) {
-                return new nodes.IfAsync(
-                    node.lineno,
-                    node.colno,
-                    node.cond,
-                    node.body,
-                    node.else_
-                );
-            }
-            else if(node instanceof nodes.For) {
-                return new nodes.ForAsync(
-                    node.lineno,
-                    node.colno,
-                    node.arr,
-                    node.name,
-                    node.body
-                );
-            }
-        }
-    });
-}
-
-function cps(ast, asyncFilters) {
-    return convertStatements(liftSuper(liftFilters(ast, asyncFilters)));
-}
-
-function transform(ast, asyncFilters, extensions, name) {
-    // Run the extension preprocessors against the source.
-    if(extensions && extensions.length) {
-        for(var i=0; i<extensions.length; i++) {
-            if('preprocess' in extensions[i]) {
-                src = extensions[i].preprocess(src, name);
-            }
-        }
-    }
-
-    return cps(ast, asyncFilters || []);
-}
-
-// var parser = modules["parser"];
-// var src = '{% block content %}hello{% endblock %} {{ tmpl | getContents }}';
-// var ast = transform(parser.parse(src), ['getContents']);
-// nodes.printNodes(ast);
-
-modules['transformer'] = {
-    transform: transform
-};
-})();
-(function() {
 var lib = modules["lib"];
 var parser = modules["parser"];
-var transformer = modules["transformer"];
 var nodes = modules["nodes"];
 var Object = modules["object"];
 var Frame = modules["runtime"].Frame;
@@ -2698,7 +2346,6 @@ var Compiler = Object.extend({
         this.buffer = null;
         this.bufferStack = [];
         this.isChild = false;
-        this.scopeClosers = '';
 
         this.extensions = extensions || [];
     },
@@ -2736,8 +2383,7 @@ var Compiler = Object.extend({
 
     emitFuncBegin: function(name) {
         this.buffer = 'output';
-        this.scopeClosers = '';
-        this.emitLine('function ' + name + '(env, context, frame, runtime, cb) {');
+        this.emitLine('function ' + name + '(env, context, frame, runtime) {');
         this.emitLine('var lineno = null;');
         this.emitLine('var colno = null;');
         this.emitLine('var ' + this.buffer + ' = "";');
@@ -2746,41 +2392,14 @@ var Compiler = Object.extend({
 
     emitFuncEnd: function(noReturn) {
         if(!noReturn) {
-            this.emitLine('cb(null, ' + this.buffer +');');
+            this.emitLine('return ' + this.buffer + ';');
         }
 
-        this.closeScopeLevels();
         this.emitLine('} catch (e) {');
-        this.emitLine('  cb(runtime.handleError(e, lineno, colno));');
+        this.emitLine('  runtime.handleError(e, lineno, colno);');
         this.emitLine('}');
         this.emitLine('}');
         this.buffer = null;
-    },
-
-    addScopeLevel: function(closingDelim) {
-        this.scopeClosers += closingDelim || '})';
-    },
-
-    closeScopeLevels: function() {
-        this.emitLine(this.scopeClosers + ';');
-        this.scopeClosers = '';
-    },
-
-    withScopedSyntax: function(func) {
-        var scopeClosers = this.scopeClosers;
-        this.scopeClosers = '';
-
-        func.call(this);
-
-        this.closeScopeLevels();
-        this.scopeClosers = scopeClosers;
-    },
-
-    makeCallback: function(res) {
-        var err = this.tmpid();
-
-        return 'function(' + err + (res ? ',' + res : '') + ') {\n' +
-            'if(' + err + ') { cb(' + err + '); return; }';
     },
 
     tmpid: function() {
@@ -2846,8 +2465,7 @@ var Compiler = Object.extend({
             nodes.Pow,
             nodes.Neg,
             nodes.Pos,
-            nodes.Compare,
-            nodes.NodeList
+            nodes.Compare
         );
         this.compile(node, frame);
     },
@@ -3105,20 +2723,6 @@ var Compiler = Object.extend({
         this.emit(')');
     },
 
-    compileFilterAsync: function(node, frame) {
-        var name = node.name;
-        this.assertType(name, nodes.Symbol);
-
-        var symbol = node.symbol.value;
-        frame.set(symbol, symbol);
-
-        this.emit('env.getFilter("' + name.value + '").call(context, ');
-        this._compileAggregate(node.args, frame);
-        this.emitLine(', ' + this.makeCallback(symbol));
-
-        this.addScopeLevel();
-    },
-
     compileKeywordArgs: function(node, frame) {
         var names = [];
 
@@ -3173,44 +2777,32 @@ var Compiler = Object.extend({
         }, this);
     },
 
-    compileIf: function(node, frame, async) {
+    compileIf: function(node, frame) {
         this.emit('if(');
         this._compileExpression(node.cond, frame);
         this.emitLine(') {');
-
-        this.withScopedSyntax(function() {
-            this.compile(node.body, frame);
-
-            if(async) {
-                this.emit('cb()');
-            }
-        });
+        this.compile(node.body, frame);
 
         if(node.else_) {
             this.emitLine('}\nelse {');
-
-            this.withScopedSyntax(function() {
-                this.compile(node.else_, frame);
-
-                if(async) {
-                    this.emit('cb()');
-                }
-            });
+            this.compile(node.else_, frame);
         }
 
         this.emitLine('}');
     },
 
-    compileIfAsync: function(node, frame) {
-        this.emit('(function(cb) {');
-        this.compileIf(node, frame, true);
-        this.emit('})(function() {');
-        this.addScopeLevel();
-    },
+    compileFor: function(node, frame) {
+        var i = this.tmpid();
+        var arr = this.tmpid();
+        frame = frame.push();
 
-    scanLoop: function(node) {
+        this.emitLine('frame = frame.push();');
+
+        this.emit('var ' + arr + ' = ');
+        this._compileExpression(node.arr, frame);
+        this.emitLine(';');
+
         var loopUses = {};
-
         node.iterFields(function(field) {
             var lookups = field.findAll(nodes.LookupVal);
 
@@ -3223,176 +2815,119 @@ var Compiler = Object.extend({
             });
         });
 
-        return loopUses;
-    },
-
-    emitLoopBindings: function(node, loopUses, arr, i, len) {
-        len = len || arr + '.length';
-
-        var bindings = {
-            index: i + ' + 1',
-            index0: i,
-            revindex: len + ' - ' + i,
-            revindex0: len + ' - ' + i + ' - 1',
-            first: i + ' === 0',
-            last: i + ' === ' + len + ' - 1',
-            length: len
-        };
-
-        for(var name in bindings) {
-            if(name in loopUses) {
-                this.emitLine('frame.set("loop.' + name + '", ' + bindings[name] + ');');
-            }
-        }
-    },
-
-    compileFor: function(node, frame) {
-        // Some of this code is ugly, but it keeps the generated code
-        // as fast as possible. ForAsync also shares some of this, but
-        // not much.
-
-        var i = this.tmpid();
-        var len = this.tmpid();
-        var arr = this.tmpid();
-        var loopUses = this.scanLoop(node);
-        frame = frame.push();
-
-        this.emitLine('frame = frame.push();');
-
-        this.emit('var ' + arr + ' = ');
-        this._compileExpression(node.arr, frame);
-        this.emitLine(';');
-
         this.emit('if(' + arr + ') {');
 
-        // If multiple names are passed, we need to bind them
-        // appropriately
         if(node.name instanceof nodes.Array) {
+            // key/value iteration. the user could have passed a dict
+            // amd two elements to be unpacked - "for k,v in { a: b }"
+            // or they could have passed an array of arrays -
+            // for a,b,c in [[a,b,c],[c,d,e]] where the number of
+            // elements to be unpacked is variable.
+            //
+            // we cant known in advance which has been passed so we
+            // have to emit code that handles both cases
             this.emitLine('var ' + i + ';');
 
-            // The object could be an arroy or object. Note that the
-            // body of the loop is duplicated for each condition, but
-            // we are optimizing for speed over size.
-            this.emitLine('if(runtime.isArray(' + arr + ')) {'); {
-                this.emitLine('for(' + i + '=0; ' + i + ' < ' + arr + '.length; '
-                              + i + '++) {');
+            // did they pass an array of tuples or a dict?
+            this.emitLine('if (runtime.isArray(' + arr + ')) {');
 
-                // Bind each declared var
-                for (var u=0; u < node.name.children.length; u++) {
-                    var tid = this.tmpid();
-                    this.emitLine('var ' + tid + ' = ' + arr + '[' + i + '][' + u + ']');
-                    this.emitLine('frame.set("' + node.name.children[u].value
-                                  + '", ' + arr + '[' + i + '][' + u + ']' + ');');
-                    frame.set(node.name.children[u].value, tid);
-                }
+            // array of tuples
+            this.emitLine('for (' + i + '=0; ' + i + ' < ' + arr + '.length; '
+                            + i + '++) {');
 
-                this.emitLoopBindings(node, loopUses, arr, i);
-                this.compile(node.body, frame);
-                this.emitLine('}');
+            // create one frame var for each element in the unpacking expr
+            for (var u=0; u < node.name.children.length; u++) {
+                var tid = this.tmpid();
+                this.emitLine('var ' + tid + ' = ' + arr + '[' + i + '][' + u + ']');
+                this.emitLine('frame.set("' + node.name.children[u].value
+                    + '", ' + arr + '[' + i + '][' + u + ']' + ');');
+                frame.set(node.name.children[u].value, tid);
             }
 
-            this.emitLine('} else {'); {
-                // Iterate over the key/values of an object
-                var key = node.name.children[0];
-                var val = node.name.children[1];
-                var k = this.tmpid();
-                var v = this.tmpid();
-                frame.set(key.value, k);
-                frame.set(val.value, v);
-
-                this.emitLine(i + ' = -1;');
-
-                if(loopUses['revindex'] || loopUses['revindex0'] ||
-                   loopUses['last'] || loopUses['length']) {
-                    this.emitLine('var ' + len + ' = runtime.keys(' + arr + ').length;');
-                }
-
-                this.emitLine('for(var ' + k + ' in ' + arr + ') {');
-                this.emitLine(i + '++;');
-                this.emitLine('var ' + v + ' = ' + arr + '[' + k + '];');
-                this.emitLine('frame.set("' + key.value + '", ' + k + ');');
-                this.emitLine('frame.set("' + val.value + '", ' + v + ');');
-
-                this.emitLoopBindings(node, loopUses, arr, i, len);
-                this.compile(node.body, frame);
-                this.emitLine('}');
+            if ('index' in loopUses) {
+                this.emitLine('frame.set("loop.index", ' + i + ' + 1);');
+            }
+            if ('index0' in loopUses) {
+                this.emitLine('frame.set("loop.index0", ' + i + ');');
+            }
+            if ('first' in loopUses) {
+                this.emitLine('frame.set("loop.first", ' + i + ' === 0);');
             }
 
-            this.emitLine('}');
+            this.compile(node.body, frame);
+
+            this.emitLine('}'); // end for
+
+            this.emitLine('} else {');
+
+            // caller passed a dict
+            this.emitLine(i + ' = -1;');
+
+            var key = node.name.children[0];
+            var val = node.name.children[1];
+            var k = this.tmpid();
+            var v = this.tmpid();
+
+            frame.set(key.value, k);
+            frame.set(val.value, v);
+
+            this.emitLine('for(var ' + k + ' in ' + arr + ') {');
+            this.emitLine(i + '++;');
+            this.emitLine('var ' + v + ' = ' + arr + '[' + k + '];');
+            this.emitLine('frame.set("' + key.value + '", ' + k + ');');
+            this.emitLine('frame.set("' + val.value + '", ' + v + ');');
+            if ('index' in loopUses) {
+                this.emitLine('frame.set("loop.index", ' + i + ' + 1);');
+            }
+            if ('index0' in loopUses) {
+                this.emitLine('frame.set("loop.index0", ' + i + ');');
+            }
+            if ('first' in loopUses) {
+                this.emitLine('frame.set("loop.first", ' + i + ' === 0);');
+            }
+            this.compile(node.body, frame);
+
+            this.emitLine('}'); // end for
+
+            this.emitLine('}'); // end if
         }
         else {
-            // Generate a typical array iteration
             var v = this.tmpid();
+
             frame.set(node.name.value, v);
 
-            this.emitLine('for(var ' + i + '=0; ' + i + ' < ' + arr + '.length; ' + 
+            this.emitLine('for(var ' + i + '=0; ' + i + ' < ' + arr + '.length; ' +
                           i + '++) {');
             this.emitLine('var ' + v + ' = ' + arr + '[' + i + '];');
-            this.emitLine('frame.set("' + node.name.value + '", ' + v + ');');
+            this.emitLine('frame.set("' + node.name.value +
+                          '", ' + v + ');');
+            if ('index' in loopUses) {
+                this.emitLine('frame.set("loop.index", ' + i + ' + 1);');
+            }
+            if ('index0' in loopUses) {
+                this.emitLine('frame.set("loop.index0", ' + i + ');');
+            }
+            if ('revindex' in loopUses) {
+                this.emitLine('frame.set("loop.revindex", ' + arr + '.length - ' + i + ');');
+            }
+            if ('revindex0' in loopUses) {
+                this.emitLine('frame.set("loop.revindex0", ' + arr + '.length - ' + i + ' - 1);');
+            }
+            if ('first' in loopUses) {
+                this.emitLine('frame.set("loop.first", ' + i + ' === 0);');
+            }
+            if ('last' in loopUses) {
+                this.emitLine('frame.set("loop.last", ' + i + ' === ' + arr + '.length - 1);');
+            }
+            if ('length' in loopUses) {
+                this.emitLine('frame.set("loop.length", ' + arr + '.length);');
+            }
 
-            this.emitLoopBindings(node, loopUses, arr, i);
-
-            this.withScopedSyntax(function() {
-                this.compile(node.body, frame);
-            });
-
+            this.compile(node.body, frame);
             this.emitLine('}');
         }
-        
-        this.emitLine('}');
-        this.emitLine('frame = frame.pop();');
-    },
 
-    compileForAsync: function(node, frame) {
-        // This shares some code with the For tag, but not enough to
-        // worry about. This iterates across an object asynchronously,
-        // but not in parallel.
-
-        var i = this.tmpid();
-        var len = this.tmpid();
-        var arr = this.tmpid();
-        var loopUses = this.scanLoop(node);
-        frame = frame.push();
-
-        this.emitLine('frame = frame.push();');
-
-        this.emit('var ' + arr + ' = ');
-        this._compileExpression(node.arr, frame);
-        this.emitLine(';');
-
-        if(node.name instanceof nodes.Array) {
-            this.emit('runtime.asyncIter(' + arr + ', ' +
-                      node.name.children.length + ', function(');
-
-            lib.each(node.name.children, function(name) {
-                this.emit(name.value + ',');
-            }, this);
-
-            this.emit(i + ',' + len + ',next) {');
-
-            lib.each(node.name.children, function(name) {
-                var id = name.value;
-                frame.set(id, id);
-                this.emitLine('frame.set("' + id + '", ' + id + ');');
-            }, this);
-        }
-        else {
-            var id = node.name.value;
-            this.emitLine('runtime.asyncIter(' + arr + ', 1, function(' + id + ', ' + i + ', ' + len + ',next) {');
-            this.emitLine('frame.set("' + id + '", ' + id + ');');
-            frame.set(id, id);
-        }
-
-        this.emitLoopBindings(node, loopUses, arr, i, len);
-        
-        this.withScopedSyntax(function() {
-            this.compile(node.body, frame);
-            this.emitLine('next();');
-        });
-
-        this.emitLine('}, ' + this.makeCallback());
-        this.addScopeLevel();
-
+        this.emit('}');
         this.emitLine('frame = frame.pop();');
     },
 
@@ -3499,14 +3034,9 @@ var Compiler = Object.extend({
         var id = this.tmpid();
         var target = node.target.value;
 
-        this.emit('env.getTemplate(');
+        this.emit('var ' + id + ' = env.getTemplate(');
         this._compileExpression(node.template, frame);
-        this.emitLine(', ' + this.makeCallback(id));
-        this.addScopeLevel();
-
-        this.emitLine(id + '.getExported(' + this.makeCallback(id));
-        this.addScopeLevel();
-
+        this.emitLine(').getExported();');
         frame.set(target, id);
 
         if(frame.parent) {
@@ -3518,15 +3048,9 @@ var Compiler = Object.extend({
     },
 
     compileFromImport: function(node, frame) {
-        var importedId = this.tmpid();
-
-        this.emit('env.getTemplate(');
-        this._compileExpression(node.template, frame);
-        this.emitLine(', ' + this.makeCallback(importedId));
-        this.addScopeLevel();
-
-        this.emitLine(importedId + '.getExported(' + this.makeCallback(importedId));
-        this.addScopeLevel();
+        this.emit('var imported = env.getTemplate(');
+        this.compile(node.template, frame);
+        this.emitLine(').getExported();');
 
         lib.each(node.names.children, function(nameNode) {
             var name;
@@ -3542,10 +3066,10 @@ var Compiler = Object.extend({
                 alias = name;
             }
 
-            this.emitLine('if(' + importedId + '.hasOwnProperty("' + name + '")) {');
-            this.emitLine('var ' + id + ' = ' + importedId + '.' + name + ';');
+            this.emitLine('if(imported.hasOwnProperty("' + name + '")) {');
+            this.emitLine('var ' + id + ' = imported.' + name + ';');
             this.emitLine('} else {');
-            this.emitLine('cb(new Error("cannot import \'' + name + '\'")); return;');
+            this.emitLine('throw new Error("cannot import \'' + name + '\'")');
             this.emitLine('}');
 
             frame.set(alias, id);
@@ -3561,27 +3085,9 @@ var Compiler = Object.extend({
 
     compileBlock: function(node, frame) {
         if(!this.isChild) {
-            var id = this.tmpid();
-
-            this.emitLine('context.getBlock("' + node.name.value + '")' +
-                          '(env, context, frame, runtime, ' + this.makeCallback(id));
-            this.emitLine(this.buffer + ' += ' + id + ';');
-            this.addScopeLevel();
+            this.emitLine(this.buffer + ' += context.getBlock("' +
+                          node.name.value + '")(env, context, frame, runtime);');
         }
-    },
-
-    compileSuper: function(node, frame) {
-        var name = node.blockName.value;
-        var id = node.symbol.value;
-
-        this.emitLine('context.getSuper(env, ' +
-                      '"' + name + '", ' +
-                      'b_' + name + ', ' +
-                      'frame, runtime, '+
-                      this.makeCallback(id));
-        this.emitLine(id + ' = runtime.markSafe(' + id + ');');
-        this.addScopeLevel();
-        frame.set(id, id);
     },
 
     compileExtends: function(node, frame) {
@@ -3591,34 +3097,27 @@ var Compiler = Object.extend({
                       node.template.colno);
         }
 
-        var k = this.tmpid();
-
-        this.emit('env.getTemplate(');
+        this.emit('var parentTemplate = env.getTemplate(');
         this._compileExpression(node.template, frame);
-        this.emitLine(', true, ' + this.makeCallback('parentTemplate'));
+        this.emitLine(', true);');
+
+        var k = this.tmpid();
 
         this.emitLine('for(var ' + k + ' in parentTemplate.blocks) {');
         this.emitLine('context.addBlock(' + k +
                       ', parentTemplate.blocks[' + k + ']);');
         this.emitLine('}');
 
-        this.addScopeLevel();
         this.isChild = true;
     },
 
     compileInclude: function(node, frame) {
-        var id = this.tmpid();
-        var id2 = this.tmpid();
-
-        this.emit('env.getTemplate(');
+        this.emit('var includeTemplate = env.getTemplate(');
         this._compileExpression(node.template, frame);
-        this.emitLine(', ' + this.makeCallback(id));
-        this.addScopeLevel();
-
-        this.emitLine(id + '.render(' +
-                      'context.getVariables(), frame.push(), ' + this.makeCallback(id2));
-        this.emitLine(this.buffer + ' += ' + id2);
-        this.addScopeLevel();
+        this.emitLine(');');
+        this.emitLine(this.buffer +
+                      ' += includeTemplate.render(' +
+                      'context.getVariables(), frame.push());');
     },
 
     compileTemplateData: function(node, frame) {
@@ -3655,7 +3154,8 @@ var Compiler = Object.extend({
         this.emitFuncBegin('root');
         this._compileChildren(node, frame);
         if(this.isChild) {
-            this.emitLine('parentTemplate.rootRenderFunc(env, context, frame, runtime, cb);');
+            this.emitLine('return ' +
+                          'parentTemplate.rootRenderFunc(env, context, frame, runtime);');
         }
         this.emitFuncEnd(this.isChild);
 
@@ -3668,8 +3168,15 @@ var Compiler = Object.extend({
             var name = block.name.value;
 
             this.emitFuncBegin('b_' + name);
+            this.emitLine('var l_super = runtime.markSafe(' +
+                          'context.getSuper(env, ' +
+                          '"' + name + '", ' +
+                          'b_' + name + ', ' +
+                          'frame, ' +
+                          'runtime));');
 
             var tmpFrame = new Frame();
+            tmpFrame.set('super', 'l_super');
             this.compile(block.body, tmpFrame);
             this.emitFuncEnd();
         }
@@ -3700,23 +3207,33 @@ var Compiler = Object.extend({
     }
 });
 
+// var fs = modules["fs"];
+//var src = '{{ foo({a:1}) }} {% block content %}foo{% endblock %}';
 // var c = new Compiler();
-// var src = '{% block content %}hello{% endblock %} {{ tmpl | getContents }}';
-// var ast = transformer.transform(parser.parse(src), ['getContents']);
-// nodes.printNodes(ast);
-// c.compile(ast);
+// var src = '{{ foo | poop(1, 2, 3) }}';
+//var extensions = [new testExtension()];
+
+// var ns = parser.parse(src);
+// nodes.printNodes(ns);
+// c.compile(ns);
 
 // var tmpl = c.getCode();
 // console.log(tmpl);
 
 modules['compiler'] = {
-    compile: function(src, asyncFilters, extensions, name) {
+    compile: function(src, extensions, name) {
         var c = new Compiler(extensions);
 
-        c.compile(transformer.transform(parser.parse(src, extensions),
-                                        asyncFilters,
-                                        extensions,
-                                        name));
+        // Run the extension preprocessors against the source.
+        if (extensions && extensions.length) {
+            for (var i = 0; i < extensions.length; i++) {
+                if ('preprocess' in extensions[i]) {
+                    src = extensions[i].preprocess(src, name);
+                }
+            }
+        }
+
+        c.compile(parser.parse(src, extensions));
         return c.getCode();
     },
 
@@ -4163,86 +3680,45 @@ var globals = {
 modules['globals'] = globals;
 })();
 (function() {
-var Obj = modules["object"];
-var lib = modules["lib"];
 
-var Loader = Obj.extend({
-    on: function(name, func) {
-        this.listeners = this.listeners || {};
-        this.listeners[name] = this.listeners[name] || [];
-        this.listeners[name].push(func);
-    },
+var Object = modules["object"];
 
-    emit: function(name /*, arg1, arg2, ...*/) {
-        var args = Array.prototype.slice.call(arguments, 1);
-
-        if(this.listeners && this.listeners[name]) {
-            lib.each(this.listeners[name], function(listener) {
-                listener.apply(null, args);
-            });
-        }
-    }
-});
-
-modules['loader'] = Loader;
-})();
-(function() {
-var Loader = modules["loader"];
-
-var WebLoader = Loader.extend({
+var HttpLoader = Object.extend({
     init: function(baseURL, neverUpdate) {
-        // It's easy to use precompiled templates: just include them
-        // before you configure nunjucks and this will automatically
-        // pick it up and use it
-        if(window.nunjucksPrecompiled) {
-            this.precompiled = window.nunjucksPrecompiled;
+        if (typeof(console) !== "undefined" && console.log &&
+            typeof(nunjucks) == "object" && !nunjucks.testing) {
+          console.log("[nunjucks] Warning: only use HttpLoader in " +
+                      "development. Otherwise precompile your templates.");
         }
-
         this.baseURL = baseURL || '';
         this.neverUpdate = neverUpdate;
     },
 
     getSource: function(name) {
-        if(this.precompiled) {
-            return {
-                src: { type: "code",
-                       obj: this.precompiled[name] },
-                path: name
-            };
-        }
-        else {
-            var src = this.fetch(this.baseURL + '/' + name);
-            if(!src) {
-                return null;
-            }
+        var src = this.fetch(this.baseURL + '/' + name);
+        var _this = this;
 
-            return { src: src,
-                     path: name,
-                     noCache: this.neverUpdate };
+        if(!src) {
+            return null;
         }
+        
+        return { src: src,
+                 path: name,
+                 upToDate: function() { return _this.neverUpdate; }};
     },
 
-    fetch: function(url, callback) {
+    fetch: function(url) {
         // Only in the browser please
-        var ajax;
-        var loading = true;
-        var src;
-
-        if(window.XMLHttpRequest) { // Mozilla, Safari, ...
-            ajax = new XMLHttpRequest();
-        }
-        else if(window.ActiveXObject) { // IE 8 and older
-            ajax = new ActiveXObject("Microsoft.XMLHTTP");
-        }
+        var ajax = new XMLHttpRequest();
+        var src = null;
 
         ajax.onreadystatechange = function() {
-            if(ajax.readyState == 4 && ajax.status == 200 && loading) {
-                loading = false;
+            if(ajax.readyState == 4 && ajax.status == 200) {
                 src = ajax.responseText;
             }
         };
 
-        url += (url.indexOf('?') === -1 ? '?' : '&') + 's=' +
+        url += (url.indexOf('?') === -1 ? '?' : '&') + 's=' + 
                (new Date().getTime());
 
         // Synchronous because this API shouldn't be used in
@@ -4255,7 +3731,7 @@ var WebLoader = Loader.extend({
 });
 
 modules['web-loaders'] = {
-    WebLoader: WebLoader
+    HttpLoader: HttpLoader
 };
 })();
 (function() {
@@ -4268,7 +3744,7 @@ else {
 })();
 (function() {
 var lib = modules["lib"];
-var Obj = modules["object"];
+var Object = modules["object"];
 var lexer = modules["lexer"];
 var compiler = modules["compiler"];
 var builtin_filters = modules["filters"];
@@ -4277,7 +3753,7 @@ var runtime = modules["runtime"];
 var globals = modules["globals"];
 var Frame = runtime.Frame;
 
-var Environment = Obj.extend({
+var Environment = Object.extend({
     init: function(loaders, opts) {
         // The dev flag determines the trace that'll be shown on errors.
         // If set to true, returns the full trace from the error point,
@@ -4297,42 +3773,24 @@ var Environment = Obj.extend({
         if(!loaders) {
             // The filesystem loader is only available client-side
             if(builtin_loaders.FileSystemLoader) {
-                this.loaders = [new builtin_loaders.FileSystemLoader('views')];
+                this.loaders = [new builtin_loaders.FileSystemLoader()];
             }
             else {
-                this.loaders = [new builtin_loaders.WebLoader('/views')];
+                this.loaders = [new builtin_loaders.HttpLoader('/views')];
             }
         }
         else {
             this.loaders = lib.isArray(loaders) ? loaders : [loaders];
         }
 
-        this.initCache();
-        this.filters = {};
-        this.asyncFilters = [];
-        this.extensions = {};
-        this.extensionsList = [];
-
         if(opts.tags) {
             lexer.setTags(opts.tags);
         }
 
-        for(var name in builtin_filters) {
-            this.addFilter(name, builtin_filters[name]);
-        }
-    },
-
-    initCache: function() {
-        // Caching and cache busting
-        var cache = {};
-
-        lib.each(this.loaders, function(loader) {
-            loader.on('update', function(template) {
-                cache[template] = null;
-            });
-        });
-
-        this.cache = cache;
+        this.filters = builtin_filters;
+        this.cache = {};
+        this.extensions = {};
+        this.extensionsList = [];
     },
 
     addExtension: function(name, extension) {
@@ -4345,13 +3803,8 @@ var Environment = Obj.extend({
         return this.extensions[name];
     },
 
-    addFilter: function(name, func, async) {
-        var wrapped = func;
-
-        if(async) {
-            this.asyncFilters.push(name);
-        }
-        this.filters[name] = wrapped;
+    addFilter: function(name, func) {
+        this.filters[name] = func;
     },
 
     getFilter: function(name) {
@@ -4361,98 +3814,116 @@ var Environment = Obj.extend({
         return this.filters[name];
     },
 
-    getTemplate: function(name, eagerCompile, cb) {
-        if(name && name.raw) {
+    getTemplate: function(name, eagerCompile) {
+        if (name && name.raw) {
             // this fixes autoescape for templates referenced in symbols
             name = name.raw;
         }
-
-        if(lib.isFunction(eagerCompile)) {
-            cb = eagerCompile;
-            eagerCompile = false;
-        }
+        var info = null;
+        var tmpl = this.cache[name];
+        var upToDate;
 
         if(typeof name !== 'string') {
             throw new Error('template names must be a string: ' + name);
         }
 
-        var tmpl = this.cache[name];
+        if(!tmpl || !tmpl.isUpToDate()) {
+            for(var i=0; i<this.loaders.length; i++) {
+                if((info = this.loaders[i].getSource(name))) {
+                    break;
+                }
+            }
 
-        if(tmpl) {
-            cb(null, tmpl);
-        } else {
-            lib.asyncEach(this.loaders, function(loader, i, next, done) {
-                function handle(src) {
-                    if(src) {
-                        done(src);
-                    }
-                    else {
-                        next();
-                    }
-                }
+            if(!info) {
+                throw new Error('template not found: ' + name);
+            }
 
-                if(loader.async) {
-                    loader.getSource(name, function(err, src) {
-                        if(err) { throw err; }
-                        handle(src);
-                    });
-                }
-                else {
-                    handle(loader.getSource(name));
-                }
-            }, function(info) {
-                if(!info) {
-                    cb(new Error('template not found: ' + name));
-                }
-                else {
-                    var tmpl = new Template(info.src, this,
-                                            info.path, eagerCompile);
+            this.cache[name] = new Template(info.src,
+                                            this,
+                                            info.path,
+                                            info.upToDate,
+                                            eagerCompile);
+        }
 
-                    if(!info.noCache) {
-                        this.cache[name] = tmpl;
-                    }
+        return this.cache[name];
+    },
 
-                    cb(null, tmpl);
-                }
-            }.bind(this));
+    registerPrecompiled: function(templates) {
+        for(var name in templates) {
+            this.cache[name] = new Template({ type: 'code',
+                                              obj: templates[name] },
+                                            this,
+                                            name,
+                                            function() { return true; },
+                                            true);
         }
     },
 
     express: function(app) {
         var env = this;
 
-        function NunjucksView(name, opts) {
-            this.name = name;
-            this.path = name;
+        if(app.render) {
+            // Express >2.5.11
+            app.render = function(name, ctx, k) {
+                var context = {};
+
+                if(lib.isFunction(ctx)) {
+                    k = ctx;
+                    ctx = {};
+                }
+
+                context = lib.extend(context, this.locals);
+
+                if(ctx._locals) {
+                    context = lib.extend(context, ctx._locals);
+                }
+
+                context = lib.extend(context, ctx);
+
+                var res = env.render(name, context);
+                k(null, res);
+            };
         }
+        else {
+            // Express <2.5.11
+            var http = modules["http"];
+            var res = http.ServerResponse.prototype;
 
-        NunjucksView.prototype.render = function(opts, cb) {
-            cb(null, env.render(this.name, opts));
-        };
+            res._render = function(name, ctx, k) {
+                var app = this.app;
+                var context = {};
 
-        app.set('view', NunjucksView);
+                if(this._locals) {
+                    context = lib.extend(context, this._locals);
+                }
+
+                if(ctx) {
+                    context = lib.extend(context, ctx);
+
+                    if(ctx.locals) {
+                        context = lib.extend(context, ctx.locals);
+                    }
+                }
+
+                context = lib.extend(context, app._locals);
+                var str = env.render(name, context);
+
+                if(k) {
+                    k(null, str);
+                }
+                else {
+                    this.send(str);
+                }
+            };
+        }
     },
 
-    render: function(name, ctx, cb) {
-        var syncResult = null;
-
-        this.getTemplate(name, function(err, tmpl) {
-            if(err) {
-                cb(err);
-            }
-            else {
-                tmpl.render(ctx, cb || function(err, res) {
-                    if(err) { throw err; }
-                    syncResult = res;
-                });
-            }
-        });
-
-        return syncResult;
+    render: function(name, ctx) {
+        return this.getTemplate(name).render(ctx);
     }
 });
 
-var Context = Obj.extend({
+var Context = Object.extend({
     init: function(ctx, blocks) {
         this.ctx = ctx;
         this.blocks = {};
@@ -4495,16 +3966,18 @@ var Context = Obj.extend({
         return this.blocks[name][0];
     },
 
-    getSuper: function(env, name, block, frame, runtime, cb) {
+    getSuper: function(env, name, block, frame, runtime) {
         var idx = (this.blocks[name] || []).indexOf(block);
         var blk = this.blocks[name][idx + 1];
         var context = this;
 
-        if(idx == -1 || !blk) {
-            throw new Error('no super block available for "' + name + '"');
-        }
+        return function() {
+            if(idx == -1 || !blk) {
+                throw new Error('no super block available for "' + name + '"');
+            }
 
-        blk(env, context, frame, runtime, cb);
+            return blk(env, context, frame, runtime);
+        };
     },
 
     addExport: function(name) {
@@ -4521,8 +3994,8 @@ var Context = Obj.extend({
     }
 });
 
-var Template = Obj.extend({
-    init: function (src, env, path, eagerCompile) {
+var Template = Object.extend({
+    init: function (src, env, path, upToDate, eagerCompile) {
         this.env = env || new Environment();
 
         if(lib.isObject(src)) {
@@ -4540,49 +4013,43 @@ var Template = Obj.extend({
         }
 
         this.path = path;
+        this.upToDate = upToDate || function() { return false; };
 
         if(eagerCompile) {
+            var _this = this;
             lib.withPrettyErrors(this.path,
                                  this.env.dev,
-                                 this._compile.bind(this));
+                                 function() { _this._compile(); });
         }
         else {
             this.compiled = false;
         }
     },
 
-    render: function(ctx, frame, cb) {
-        if (typeof ctx === 'function') {
-            cb = ctx;
-            ctx = {};
-        }
-        else if (typeof frame === 'function') {
-            cb = frame;
-            frame = null;
-        }
+    render: function(ctx, frame) {
+        var self = this;
 
-        return lib.withPrettyErrors(this.path, this.env.dev, function() {
-            if(!this.compiled) {
-                this._compile();
+        var render = function() {
+            if(!self.compiled) {
+                self._compile();
             }
 
-            var context = new Context(ctx || {}, this.blocks);
-            var syncResult = null;
+            var context = new Context(ctx || {}, self.blocks);
 
-            this.rootRenderFunc(this.env,
-                                context,
-                                frame || new Frame(),
-                                runtime,
-                                cb || function(err, res) {
-                                    if(err) { throw err; }
-                                    syncResult = res;
-                                });
+            return self.rootRenderFunc(self.env,
+                context,
+                frame || new Frame(),
+                runtime);
+        };
 
-            return syncResult;
-        }.bind(this));
+        return lib.withPrettyErrors(this.path, this.env.dev, render);
     },
 
-    getExported: function(cb) {
+    isUpToDate: function() {
+        return this.upToDate();
+    },
+
+    getExported: function() {
         if(!this.compiled) {
             this._compile();
         }
@@ -4592,10 +4059,8 @@ var Template = Obj.extend({
         this.rootRenderFunc(this.env,
                             context,
                             new Frame(),
-                            runtime,
-                            function() {
-                                cb(null, context.getExported());
-                            });
+                            runtime);
+        return context.getExported();
     },
 
     _compile: function() {
@@ -4605,10 +4070,7 @@ var Template = Obj.extend({
             props = this.tmplProps;
         }
         else {
-            var source = compiler.compile(this.tmplStr,
-                                          this.env.asyncFilters,
-                                          this.env.extensionsList,
-                                          this.path);
+            var source = compiler.compile(this.tmplStr, this.env.extensionsList, this.path);
             var func = new Function(source);
             props = func();
         }
@@ -4631,19 +4093,21 @@ var Template = Obj.extend({
     }
 });
 
-// var src = '{% block content %}{% include "async.html" %}{% endblock %}';
-// var env = new Environment(new builtin_loaders.FileSystemLoader('tests/templates'), { dev: true });
+// var fs = modules["fs"];
+// var src = fs.readFileSync('test.html', 'utf-8');
+// var src = '{% macro foo(x) %}{{ x }}{% endmacro %}{{ foo("<>") }}';
+// var env = new Environment(null, { autoescape: true, dev: true });
 
-// var ctx = {};
-// var tmpl = new Template(src, env, null, null, true);
-// console.log("OUTPUT ---");
-
-// tmpl.render(ctx, function(err, res) {
-//     if(err) {
-//         throw err;
-//     }
-//     console.log(res);
+// env.addFilter('bar', function(x) {
+//     return runtime.copySafeness(x, x.substring(3, 1) + x.substring(0, 2));
 // });
+
+// //env.addExtension('testExtension', new testExtension());
+// console.log(compiler.compile(src));
+
+// var tmpl = new Template(src, env);
+// console.log("OUTPUT ---");
+// console.log(tmpl.render({ bar: '<>&' }));
 
 modules['environment'] = {
     Environment: Environment,
@@ -4657,43 +4121,26 @@ var compiler = modules["compiler"];
 var parser = modules["parser"];
 var lexer = modules["lexer"];
 var runtime = modules["runtime"];
-var Loader = modules["loader"];
 var loaders = modules["loaders"];
 
 nunjucks = {};
 nunjucks.Environment = env.Environment;
 nunjucks.Template = env.Template;
 
-nunjucks.Loader = env.Loader;
-nunjucks.FileSystemLoader = loaders.FileSystemLoader;
-nunjucks.WebLoader = loaders.WebLoader;
+// loaders is not available when using precompiled templates
+if(loaders) {
+    if(loaders.FileSystemLoader) {
+        nunjucks.FileSystemLoader = loaders.FileSystemLoader;
+    }
+    else {
+        nunjucks.HttpLoader = loaders.HttpLoader;
+    }
+}
 
 nunjucks.compiler = compiler;
 nunjucks.parser = parser;
 nunjucks.lexer = lexer;
 nunjucks.runtime = runtime;
-
-// A single instance of an environment, since this is so commonly used
-
-var e = new env.Environment();
-nunjucks.configure = function(dirOrURL, opts) {
-    if(typeof dirOrURL != 'string') {
-        throw new Error('must pass templates path or URL to `configure` ' +
-                        'as first argument');
-    }
-
-    e = new env.Environment(new (loaders.FileSystemLoader || loaders.WebLoader)(dirOrURL),
-                            opts);
-
-    if(opts && opts.express) {
-        e.express(opts.express);
-    }
-    return e;
-};
-
-nunjucks.render = function(name, ctx, cb) {
-    e.render(name, ctx, cb);
-};
 
 nunjucks.require = function(name) { return modules[name]; };
 

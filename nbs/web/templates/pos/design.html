@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}POS Elements Design{% endblock %} 
+
+{% block module_style %}
+<link rel="stylesheet" href="/static/fonts/roboto.css" type="text/css">
+<link rel="stylesheet" href="/static/css/nobix.css" type="text/css">
+<link rel="stylesheet" href="/static/css/pygment-pastie.css" type="text/css">
+<style type="text/css" media="screen">
+  .bs-example:after {
+    color: #bbb;
+    content: "Example";
+    font-size: 12px;
+    font-weight: bold;
+    left: 15px;
+    letter-spacing: 1px;
+    position: absolute;
+    text-transform: uppercase;
+    top: 15px;
+  }
+  .bs-example {
+    background-color: #eceae5;
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    box-shadow: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 45px 15px 15px;
+    position: relative;
+  }
+  .bs-example + .highlight {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .highlight {
+    display: block;
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    padding: 9px 14px;
+  }
+  .highlight pre {
+    background-color: transparent;
+    border: 0 none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 0;
+  }
+</style>
+{% endblock %} 
+
+{% block module_js %}
+<script src="/static/js/vendor/jquery-1.10.2.js"></script>
+<script src="/static/js/lib/poselements.js"></script>
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    var data = {
+      '1234': 'One two three four',
+      'abcd': 'A be ce de',
+    };
+    $('.pos-composed-control').composedcontrol({
+      keypress: function(e) {
+        if (e.which == 13) {
+          var value = e.data.$input.val();
+          if (data[value]) {
+            e.data.$span.text(data[value]);
+          } else {
+            // Clear span content
+            e.data.$span.text("");
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-9" role="main">
+      <div class="page-header">
+        <h1 id="overview"><strong>POS</strong> elements design</h1>
+      </div>
+      <p class="lead">Additions to base bootstrat to use with
+        NobixApplicationServer Web UI. With this you are better, faster and
+        stronger web developer.</p>
+      <h3 id="pos-input">Simple input</h3>
+      <p>Nobix makes use of certain HTML elements for some special things, like
+        input element in <em>POS</em> application.</p>
+      <div class="bs-example form-inline" role="form">
+        <div class="form-group">
+          <input class="pos-control col-lg-3" type="text" />
+          <input class="pos-control col-lg-3" type="text" />
+        </div>
+      </div>
+{% highlight 'html' %}
+<form class="form-inline" role="form">
+  <div class="form-group">
+    <input class="pos-control col-lg-3" type="text" />
+    <input class="pos-control col-lg-3" type="text" />
+  </div>
+</form>
+{% endhighlight %}
+      <h3 id="pos-composed-input">Composed input</h3>
+      <p>Composed inputs in <em>POS</em> lets us to show in one field input
+        data and extra data not editable.</p>
+      <div class="bs-example form-inline">
+        <div class="form-group col-lg-12">
+          <div class="pos-composed-control col-lg-8">
+            <input class="col-lg-3" type="text" />
+            <span class="content col-lg-8"></span>
+            <span class="glyphicon glyphicon-search pull-right"></span>
+          </div>
+        </div>
+      </div>
+{% highlight 'html' %}
+<form class="form-inline">
+  <div class="form-group col-lg-12">
+    <div class="pos-composed-control col-lg-8">
+      <input class="col-lg-3" type="text" />
+      <span class="content col-lg-8"></span>
+      <span class="glyphicon glyphicon-search pull-right"></span>
+    </div>
+  </div>
+</form>
+{% endhighlight %}
+      <h2 id="composedcontrol-usage">Usage</h2>
+      <h3>Via data attributes</h3>
+      <p>Activate a composed control without writing JavaScript. Set
+        <code>data-control="composed"</code> on a controller element,
+        like a div.</p>
+{% highlight 'html' %}
+<div class="pos-composed-control" data-control="composed">
+  ...
+</div>
+{% endhighlight %}
+      <h3>Via JavaScript</h3>
+      <p>Call a composed control width id <code>myControl</code> with a single line of JavaScript:</p>
+{% highlight 'javascript' %}
+$('#myControl').composedcontrol(options);
+{% endhighlight %}
+    </div>
+  </div>
+</div>
+{% endblock %}

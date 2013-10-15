@@ -8,6 +8,7 @@ define(function() {
     /* dashboard controller */
     match('', 'dashboard#index', {name: 'index'});
     match('dashboard', 'dashboard#index', {name: 'index'});
+    match('pos', 'pos#index', {name: 'pos_index'});
   };
 
   return routes;

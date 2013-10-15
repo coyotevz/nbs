@@ -1,6 +1,10 @@
 define([
   'chaplin',
   'bootstrap',
+
+  // jQuery plugins
+  'jquery.keycode',
+  'jquery.number',
 ], function(Chaplin) {
   'use strict';
 

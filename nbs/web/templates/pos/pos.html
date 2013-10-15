@@ -5,47 +5,87 @@
 {% block module_style %}
 <link rel="stylesheet" href="/static/fonts/roboto.css" type="text/css">
 <link rel="stylesheet" href="/static/css/nobix.css" type="text/css">
+<style type="text/css" media="screen">
+  input.code { text-transform: uppercase; }
+</style>
 {% endblock %}
 
 {% block module_js %}
-<script src="/static/js/vendor/jquery-1.10.2.js"></script>
+<script src="/static/js/config.js"></script>
+<script src="/static/js/vendor/require.js" data-main="main">
+</script>
+{% endblock %}
+
+
 <script type="text/javascript" charset="utf-8">
   $(function() {
-    var h_height = $('#pos header').outerHeight();
-    var f_height = $('#pos footer').outerHeight();
-    $('#pos #content').css({top: h_height, bottom: f_height});
 
+    // Create item row as a component
+
+    // Set size to composed-field
     var $li = $('.item-list li');
     var li_width = $li.width();
     $('.composed-field').width(li_width - 350 - 25);
-    $('.composed-field input').focusin(function() {
+
+    // Focus event handler for the rest of composed-field elements
+    $('.composed-field').click(function() {
+      $(this).children('input').focus();
+    });
+
+    // Focus event handler for composed-field input
+    $('.composed-field input.code').focusin(function() {
       $(this).parent().toggleClass("focused", true);
     }).focusout(function() {
       $(this).parent().toggleClass("focused", false);
+    }).keypress(function(evt) {
+      var $this = $(this);
+      if (evt.which == 13 && $this.val()) {
+        var val = $this.val().toUpperCase();
+        var data = JSON.stringify({
+          filters: [{
+            name: 'sku',
+            op: 'eq',
+            val: val }]
+        });
+        $.getJSON('http://localhost:5000/api/product', {q: data})
+        .done(function(resp) {
+          if (resp.num_results == 1) {
+            var a = resp.objects[0];
+            var $parent = $this.parents('li');
+            $parent.find('.description').text(a.description);
+            $parent.find('.unit-price').text(a.price);
+            $parent.find('.quantity').focus();
+          } else {
+            console.log("Try again!!");
+          }
+        });
+      }
     });
-    $('#content input:first').focus();
+    $('input.quantity').blur(function() {
+      var $this = $(this);
+      var $parent = $this.parent();
+      $parent.find(".row-price").text(Number($parent.find(".unit-price").text()) * $this.val());
+    });
   });
 </script>
-{% endblock %}
 
 {% block body %}
 <div id="pos">
   <header>header</header>
   <div id="content" class="clearfix">
-    <ul class="item-list">
-      {% for l in range(20) %}
-      <li class="{{ loop.cycle('odd', 'even') }}">
-        <div class="composed-field code-description">
-          <input class="code" type="text" size="14" maxlength="14">
-          <span class="description">Descripción del artículo</span>
-        </div>
-        <input class="quantity" type="text" size="5" maxlength="5">
-        <span class="unit-price">unit-price</span>
-        <span class="row-price">row-price</span>
-      </li>
-      {% endfor %}
-    </ul>
+    <table class="table table-striped item-list">
+      <colgroup>
+        <col class="col-code-description">
+        <col class="col-quantity">
+        <col class="col-unit-price">
+        <col class="col-total-price">
+      </colgroup>
+      <tbody></tbody>
+    </table>
   </div>
-  <footer>footer</footer>
+  <footer>
+    footer
+    <div class="pull-right">$ <span id="total">0,00</span></div>
+  </footer>
 </div>
 {% endblock %}

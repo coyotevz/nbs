@@ -5,8 +5,9 @@ define([
 
   var DashboardController = Chaplin.Controller.extend({
 
+    title: 'Dashboard',
+
     index: function(params) {
-      console.log("dashboard#index", params);
     }
 
   });
