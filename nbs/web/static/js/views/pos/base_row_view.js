@@ -65,8 +65,13 @@ define([
 
       if ($.keycode_is(evt, 'return tab')) {
         // search and get one article based on user provided sku
-        var val = $(evt.target).val().toUpperCase(),
-            product = this.search.one({sku: val});
+        var product, val = $(evt.target).val();
+
+        if (/^\d/.test(val)) {
+          product = this.search.one({sku: val.toUpperCase()});
+        } else {
+          return false;
+        }
 
         if (product !== undefined) {
           this.model.set('product', product);
