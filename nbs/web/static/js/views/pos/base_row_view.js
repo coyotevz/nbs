@@ -57,8 +57,28 @@ define([
 
     onInputFocusChange: function(evt) {
       var $target = $(evt.target);
-      if (evt.type == "focusin") $target.select();
+      if (evt.type == "focusin") {
+        $target.select();
+        if ($target.is("input.code")) {
+          this.checkScrollFor($target);
+        }
+      }
       $target.parent().toggleClass("focused", evt.type == "focusin");
+    },
+
+    checkScrollFor: function(cell) {
+      var content = cell.parents('#content'),
+          table = cell.parents('table'),
+          cellTop = cell.offset().top - table.offset().top,
+          cellBottom = cellTop + cell.outerHeight(),
+          scrollTop = content.scrollTop(),
+          newScroll;
+
+      if (cellTop < scrollTop) {
+        content.scrollTop(cellTop - 2);
+      } else if (cellBottom > scrollTop + content.height()) {
+        content.scrollTop(cellBottom - content.height() + 2)
+      }
     },
 
     onCodeKeydown: function(evt) {
