@@ -1,7 +1,13 @@
 <td class="composed-field code-description">
-  <input class="code" type="text" size="14" maxlength="14" spellcheck="false" value="{{ sku }}">
-  <span class="description">{{ description }}</span>
+  <div class="border">
+    <input class="code" type="text" size="14" maxlength="14" spellcheck="false" value="{{ sku }}">
+    <span class="description">{{ description }}</span>
+  </div>
 </td>
-<td><input class="quantity" type="text" size="5" maxlength="5" value="{{ quantity }}"></td>
-<td class="unit-price">{{ price }}</td>
-<td class="total-price">{{ total }}</td>
+<td>
+  <div class="border">
+    <input class="quantity" type="text" size="5" maxlength="5" value="{{ quantity }}">
+  </div>
+</td>
+<td class="unit-price"><span>{{ price }}</span></td>
+<td class="total-price"><span>{{ total }}</span></td>

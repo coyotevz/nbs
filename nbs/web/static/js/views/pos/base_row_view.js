@@ -15,8 +15,16 @@ define([
     loadingSelector: '.loading',
 
     bindings: {
-      '.total-price': { observe: 'total', onGet: $.numeric },
-      '.unit-price': { observe: 'price', onGet: $.numeric },
+      '.total-price span': {
+        observe: 'total',
+        onGet: $.numeric,
+        afterUpdate: '_show',
+      },
+      '.unit-price span': {
+        observe: 'price',
+        onGet: $.numeric,
+        afterUpdate: '_show',
+      },
       '.description': 'description',
       '.quantity': 'quantity',
     },
@@ -34,13 +42,17 @@ define([
       this.search = new Search(Product);
     },
 
+    _show: function($el, val, options) {
+      if (this.model.get('price')) {
+        $el.css('visibility', 'visible');
+      } else {
+        $el.css('visibility', 'hidden');
+      }
+    },
+
     onProductChange: function(model, product, options) {
-      var q = this.$('.unit-price, .total-price');
       if (product !== null) {
         this.model.set(product.pick("sku", "description", "price"));
-        q.css('visibility', 'visible');
-      } else {
-        q.css('visibility', 'hidden');
       }
     },
 
@@ -75,9 +87,9 @@ define([
           newScroll;
 
       if (cellTop < scrollTop) {
-        content.scrollTop(cellTop - 2);
+        content.scrollTop(cellTop - 3);
       } else if (cellBottom > scrollTop + content.height()) {
-        content.scrollTop(cellBottom - content.height() + 2)
+        content.scrollTop(cellBottom - content.height() + 3)
       }
     },
 

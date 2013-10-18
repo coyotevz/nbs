@@ -42,15 +42,13 @@ $footer-height: 60px;
   }
 
   header {
-    background-color: $test-color-1;
-    border: 1px solid $test-border-1;
+    border-bottom: 1px solid #a5a5a5;
     height: $header-height;
     top: 0;
   }
 
   footer {
-    background-color: $test-color-9;
-    border: 1px solid $test-border-9;
+    border-top: 1px solid #a5a5a5;
     height: $footer-height;
     bottom: 0;
 
@@ -84,16 +82,17 @@ $footer-height: 60px;
 
       tr {
         font-size: 28px;
-        border: 1px solid #ddd;
 
         td {
           height: 40px;
           padding: 0;
           vertical-align: middle;
-          border: 2px solid transparent;
+          border-top: 1px solid #e5e5e5;
 
-          &.focused {
-            border: 2px solid orange;
+          div.border {
+            margin-top: -1px;
+            border: 2px solid transparent;
+            &.focused { border-color: orange; }
           }
 
           input {
@@ -118,8 +117,11 @@ $footer-height: 60px;
         }
 
         &#appender {
+          td {
+            border-bottom: 1px solid #e5e5e5;
+          }
           .unit-price, .total-price {
-            visibility: hidden;
+            span { visibility: hidden; }
           }
         }
       }
