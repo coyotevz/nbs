@@ -64,6 +64,12 @@ define([
 
       // Set focus on last item-row
       $('.item-list tr#appender input:first').focus();
+
+      // Only for test
+      $('#modal').modal({
+        show: false,
+        backdrop: "static",
+      });
     },
 
     onAppend: function(model) {

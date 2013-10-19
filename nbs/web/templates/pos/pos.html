@@ -16,59 +16,6 @@
 </script>
 {% endblock %}
 
-
-<script type="text/javascript" charset="utf-8">
-  $(function() {
-
-    // Create item row as a component
-
-    // Set size to composed-field
-    var $li = $('.item-list li');
-    var li_width = $li.width();
-    $('.composed-field').width(li_width - 350 - 25);
-
-    // Focus event handler for the rest of composed-field elements
-    $('.composed-field').click(function() {
-      $(this).children('input').focus();
-    });
-
-    // Focus event handler for composed-field input
-    $('.composed-field input.code').focusin(function() {
-      $(this).parent().toggleClass("focused", true);
-    }).focusout(function() {
-      $(this).parent().toggleClass("focused", false);
-    }).keypress(function(evt) {
-      var $this = $(this);
-      if (evt.which == 13 && $this.val()) {
-        var val = $this.val().toUpperCase();
-        var data = JSON.stringify({
-          filters: [{
-            name: 'sku',
-            op: 'eq',
-            val: val }]
-        });
-        $.getJSON('http://localhost:5000/api/product', {q: data})
-        .done(function(resp) {
-          if (resp.num_results == 1) {
-            var a = resp.objects[0];
-            var $parent = $this.parents('li');
-            $parent.find('.description').text(a.description);
-            $parent.find('.unit-price').text(a.price);
-            $parent.find('.quantity').focus();
-          } else {
-            console.log("Try again!!");
-          }
-        });
-      }
-    });
-    $('input.quantity').blur(function() {
-      var $this = $(this);
-      var $parent = $this.parent();
-      $parent.find(".row-price").text(Number($parent.find(".unit-price").text()) * $this.val());
-    });
-  });
-</script>
-
 {% block body %}
 <div id="pos">
   <header>header</header>
@@ -89,5 +36,22 @@
       <span id="total">0,00</span>
     </div>
   </footer>
+
+  <!-- modal dialog -->
+  <div id="modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Title</h4>
+        </div>
+        <div class="model-body">
+          ...
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End model dialog -->
 </div>
 {% endblock %}
