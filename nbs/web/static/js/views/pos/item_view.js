@@ -9,6 +9,7 @@ define([
     onQuantityKeydown: function(evt) {
       if ($.keycode_is(evt, 'return tab') && this.model.isValid('quantity')) {
         this.$el.next().find('input:first').focus();
+        return false;
       }
     },
   });
