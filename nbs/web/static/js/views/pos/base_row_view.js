@@ -96,32 +96,47 @@ define([
       }
     },
 
+
+    _handle_return_tab: function(evt) {
+      // search and get one article based on user provided sku
+      var product, val = $(evt.target).val();
+      if (/^\d/.test(val)) {
+        product = this.search.one({sku: val.toUpperCase()});
+      } else {
+        return false;
+      }
+
+      if (product !== undefined) {
+        this.model.set('product', product);
+        var q = this.$('.quantity');
+        var val = q.val() || 1;
+        q.val(val).focus().select();
+      }
+      return false;
+    },
+
     onCodeKeydown: function(evt) {
 
-      if ($.keycode_is(evt, 'return tab')) {
-        // search and get one article based on user provided sku
-        var product, val = $(evt.target).val();
+      switch($.keycode(evt)) {
+        case 'return':
+        case 'tab':
+          return this._handle_return_tab(evt);
 
-        if (/^\d/.test(val)) {
-          product = this.search.one({sku: val.toUpperCase()});
-        } else {
+        case 'up':
+          this.$el.prev().find('input:first').focus();
           return false;
-        }
 
-        if (product !== undefined) {
-          this.model.set('product', product);
-          var q = this.$('.quantity');
-          var val = q.val() || 1;
-          q.val(val).focus().select();
-        }
+        case 'down':
+          this.$el.next().find('input:first').focus();
+          return false;
 
-        return false;
-      } else if ($.keycode_is(evt, 'up')) {
-        this.$el.prev().find('input:first').focus();
-        return false;
-      } else if ($.keycode_is(evt, 'down')) {
-        this.$el.next().find('input:first').focus();
-        return false;
+        case 'esc':
+          // TODO: Forzar la actualización del campo código
+          console.log("// TODO");
+          return false;
+
+        default:
+          console.debug("$.keycode:", $.keycode(evt));
       }
     },
 
