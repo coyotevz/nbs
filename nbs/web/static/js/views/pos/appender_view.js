@@ -8,14 +8,16 @@ define([
     id: 'appender',
     autoRender: true,
 
-    onQuantityKeydown: function(evt) {
-      if ($.keycode_is(evt, 'return tab') && this.model.isValid('quantity')) {
-        this.trigger('append', this.model.clone());
-        this.model.clear();
-        this.$('.composed-field input').focus().val("");
-        return false;
-      }
+    listen: {
+      'row-done': 'onRowDone',
     },
+
+    onRowDone: function($target) {
+      this.trigger('append', this.model.clone());
+      this.model.clear();
+      this.$('.composed-field input').focus().val("");
+    },
+
   });
 
   return AppenderView;

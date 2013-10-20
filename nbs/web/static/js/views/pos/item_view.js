@@ -6,11 +6,12 @@ define([
   var ItemView = BaseRowView.extend({
     className: 'item-row',
 
-    onQuantityKeydown: function(evt) {
-      if ($.keycode_is(evt, 'return tab') && this.model.isValid('quantity')) {
-        this.$el.next().find('input:first').focus();
-        return false;
-      }
+    listen: {
+      'row-done': 'onRowDone',
+    },
+
+    onRowDone: function($target) {
+      this.$el.next().find('input:first').focus();
     },
   });
 

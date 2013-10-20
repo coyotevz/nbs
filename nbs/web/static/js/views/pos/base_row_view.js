@@ -26,7 +26,10 @@ define([
         afterUpdate: '_show',
       },
       '.description': 'description',
-      '.quantity': 'quantity',
+      '.quantity': {
+        observe: 'quantity',
+        updateModel: false,
+      }
     },
 
     listen: {
@@ -80,11 +83,11 @@ define([
 
     checkScrollFor: function(cell) {
       var content = cell.parents('#content'),
-          table = cell.parents('table'),
-          cellTop = cell.offset().top - table.offset().top,
-          cellBottom = cellTop + cell.outerHeight(),
-          scrollTop = content.scrollTop(),
-          newScroll;
+      table = cell.parents('table'),
+      cellTop = cell.offset().top - table.offset().top,
+      cellBottom = cellTop + cell.outerHeight(),
+      scrollTop = content.scrollTop(),
+      newScroll;
 
       if (cellTop < scrollTop) {
         content.scrollTop(cellTop - 3);
@@ -123,7 +126,11 @@ define([
     },
 
     onQuantityKeydown: function(evt) {
-      throw new Error("BaseRowView#onQuantityKeydown must be overrided!");
+      if ($.keycode_is(evt, 'return tab')) {
+        this.model.set('quantity', $(evt.target).val());
+        this.trigger('row-done', $(evt.target));
+        return false;
+      };
     },
 
   });
