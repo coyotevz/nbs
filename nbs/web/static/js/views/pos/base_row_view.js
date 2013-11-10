@@ -4,8 +4,11 @@ define([
   'models/product',
   'models/search',
   'models/document_item',
-], function(m, View, Product, Search, DocumentItem) {
+], function(_, View, Product, Search, DocumentItem) {
   "use strict";
+
+  var letter = /^[a-z]$/,
+      number = /^\d$/;
 
   var BaseRowView = View.extend({
     template: 'pos/document_item_row.html',
@@ -117,7 +120,9 @@ define([
 
     onCodeKeydown: function(evt) {
 
-      switch($.keycode(evt)) {
+      var k = $.keycode(evt);
+
+      switch(k) {
         case 'return':
         case 'tab':
           return this._handle_return_tab(evt);
@@ -132,12 +137,31 @@ define([
 
         case 'esc':
           // TODO: Forzar la actualización del campo código
-          console.log("// TODO");
+          console.log("// TODO: actualizar a codigo anterior");
           return false;
 
-        default:
-          console.debug("$.keycode:", $.keycode(evt));
+        case 'ctrl+d':
+          // TODO: Forzar la eliminación de la fila.
+          console.log("// TODO: eliminar fila");
+          return false;
+
+        case '*':
+        case '.':
+        case '#':
+        case '@':
+          // TODO: Lanzar busqueda basado en los caracteres
+          console.log("// TODO: lanzar busqueda");
+          return false;
       }
+
+      var ks = k.split('shift+')[0] || k;
+      if (letter.test(ks) && evt.target.selectionStart == 0) {
+        console.log("// TODO: lanzar busqueda que comience con", ks);
+        return false;
+      }
+
+      console.log("Unhandled input:", k);
+
     },
 
     onQuantityKeydown: function(evt) {
