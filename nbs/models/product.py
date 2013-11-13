@@ -5,6 +5,7 @@ from sqlalchemy import event
 from sqlalchemy.ext.hybrid import hybrid_property
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
+from nbs.models.stock import ProductStock, StockTransaction
 from nbs.utils import dq
 
 
@@ -204,6 +205,91 @@ class Product(db.Model, TimestampMixin):
 
     def __repr__(self):
         return "<Product({0})>".format(self.sku.encode('utf-8'))
+
+    def increase_stock(self, quantity, warehouse, type, unit_cost=None):
+        """
+        When receiving a product, update the stock reference for this product
+        on a specific warehouse.
+
+        :param quantity: amount to increase
+        :param warehouse: warehouse that stores this product stock
+        :param type: the type of the stock increase. One of
+            StockTransaction.types
+        :param unit_cost: unit cost of the new stock or `None`
+        """
+        assert (type in StockTransaction.types)
+
+        if quantity <= 0:
+            raise ValueError(u'quantity must be a positive integer')
+        if warehouse is None:
+            raise ValueError(u'warehouse cannot be None')
+
+        stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
+        if stock is None:
+            stock = ProductStock(product=self, warehouse=warehouse, quantity=0)
+            db.session.add(stock)
+
+        stock.increase_stock(quantity, warehouse, type, unit_cost)
+
+    def decrease_stock(self, quantity, warehouse, type):
+        """
+        When deliver a product, update the stock reference for the sold item on
+        specific warehouse. Returns the stock item that was decreased.
+
+        :params quantity: amount to decrease
+        :param warehouse: warehouse that stores this stock
+        :param type: the type of the stock decrease. One of
+            StockTransaction.types
+        """
+        assert (type in StockTransaction.types)
+
+        if quantity <= 0:
+            raise ValueError(u'quantity must be positive integer')
+        if warehouse is None:
+            raise ValueError(u'warehouse cannot be None')
+
+        stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
+
+        if stock is None or quantity > stock.quantity:
+            raise ValueError(u'quantity to decrease is greater than the available stock.')
+
+        stock.decrease_stock(quantity, warehouse, type)
+        return stock
+
+    def register_initial_stock(self, quantity, warehouse, unit_cost):
+        """
+        Register initial stock, by increasing the amount of this product sotck
+        for the given warehouse.
+
+        :param quantity: The initial stock quantity for this product
+        :param warehouse: warehouse that stores this stock
+        :param unit_cost: The unary cost for the initial stock
+        """
+        self.increase_stock(quantity, warehouse, StockTransaction.TYPE_INITIAL,
+                            unit_cost)
+
+    def get_consolidated_stock(self):
+        """
+        Returns the stock balance for the product in all warehouses
+
+        :returns: the amount of stock available in al warehouses
+        """
+        return sum([s.quantity for s in self.stock.all()])
+
+    def get_stock_for_warehouse(self, warehouse):
+        """
+        Return the stock balance for the product in a certain warehouse
+
+        :params warehouse: warehouse that stores this product
+        """
+        return self.stock.filter(ProductStock.warehouse==warehouse).one()
+
+    def get_stock_items(self):
+        """
+        Fetches the product stock items available for all warehouses.
+        :returns: a sequence of product stock items
+        """
+        return self.stock.all()
 
 
 def product_instances(iter_):

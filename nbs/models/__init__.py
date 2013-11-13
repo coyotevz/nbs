@@ -8,8 +8,9 @@ db.Numeric = Numeric
 
 __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
     'ProductSupplierInfo', 'PriceComponent', 'ProductUnit', 'ProductImage',
-    'CurrentStock', 'Branch', 'Contact', 'Address', 'Email', 'Phone',
-    'ExtraField', 'Supplier', 'SupplierContact', 'TaxConstant']
+    'ProductStock', 'Branch', 'Warehouse', 'Office', 'Contact', 'Address',
+    'Email', 'Phone', 'ExtraField', 'Supplier', 'SupplierContact',
+    'TaxConstant']
 
 def configure_db(app):
     db.init_app(app)
@@ -19,8 +20,8 @@ from nbs.models.product import (
     ProductCategory, Product, ProductSupplierInfo, PriceComponent,
     ProductUnit, ProductImage
 )
-from nbs.models.stock import CurrentStock
-from nbs.models.branch import Branch
+from nbs.models.stock import ProductStock, StockTransaction
+from nbs.models.places import Branch, Warehouse, Office
 from nbs.models.contact import Contact
 from nbs.models.misc import Address, Email, Phone, ExtraField
 from nbs.models.supplier import Supplier, SupplierContact
