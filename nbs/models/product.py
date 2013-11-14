@@ -167,7 +167,7 @@ class Product(db.Model, TimestampMixin):
 
     #: suppliers_info field is added by ProductSupplierInfo class
     #: images field is added by ProductImage class
-    #: current_stock field is added by CurrentStockItem class
+    #: stock field is added by ProductStock class
 
     def _recalc_price(self, force=False):
         if self.cost and (self.automatic_price or force) and\
