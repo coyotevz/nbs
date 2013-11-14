@@ -21,7 +21,8 @@ class Place(Entity):
     }
 
     def __repr__(self):
-        return "<Place({0})>".format(self.name.encode('utf-8'))
+        return "<{0}({1})>".format(self.__class__.__name__,
+                                   self.name.encode('utf-8'))
 
 
 class Warehouse(Place):
