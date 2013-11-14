@@ -1,10 +1,64 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from sqlalchemy import event
 
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
 from nbs.utils import dq
+
+
+class StockCost(db.Model, TimestampMixin):
+    """
+    Used to track the cost for stock moviments and valuations. This differs
+    from Product.cost that is used to calculate final sale price.
+    """
+    __tablename__ = 'stock_cost'
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'),
+                           primary_key=True)
+    product = db.relationship('Product',
+                              backref=db.backref('stock_cost', uselist=False))
+    cost = db.Column(db.Numeric(10, 2), default=0)
+
+    def get_history(self):
+        return db.session.query(StockCostHistory)\
+                         .filter(StockCostHistory.stock_cost==self)\
+                         .order_by(StockCostHistory.created.desc())\
+                         .all()
+
+    def __repr__(self):
+        return "<StockCost({0}, {1})>".format(self.product, self.cost)
+
+
+class StockCostHistory(db.Model):
+    """
+    Used to track changes on StockCost model.
+    """
+    __tablename__ = 'stock_cost_history'
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.now)
+    cost = db.Column(db.Numeric(10, 2), nullable=False)
+
+    stock_cost_id = db.Column(db.Integer,
+                              db.ForeignKey('stock_cost.product_id'))
+    stock_cost = db.relationship(StockCost)
+
+    def __repr__(self):
+        return "<StockCostHistory({0}, {1}, {2})>".format(
+                    self.stock_cost.product,
+                    self.cost,
+                    self.created
+        )
+
+
+def _stock_cost_set(target, value, oldvalue, initiator):
+    """Creates an entry in stock cost history table."""
+    if oldvalue == value:
+        return
+    hist = StockCostHistory(stock_cost=target, cost=value)
+    db.session.add(hist)
+
+event.listen(StockCost.cost, 'set', _stock_cost_set)
 
 
 class ProductStock(db.Model, TimestampMixin):
@@ -28,8 +82,10 @@ class ProductStock(db.Model, TimestampMixin):
     #: logic quantity for this stock item
     logic_quantity = db.Column(db.Numeric(10, 2))
 
-    #: the stock price, will be updated folowing cost policy
-    cost = db.Column(db.Numeric(10, 2))
+    def __init__(self, *args, **kwargs):
+        super(ProductStock, self).__init__(*args, **kwargs)
+        if self.product.stock_cost is None:
+            StockCost(product=self.product)
 
     def __repr__(self):
         return "<ProductStock({0}, {1}, quantity={2})>".format(
@@ -42,11 +98,13 @@ class ProductStock(db.Model, TimestampMixin):
         if unit_cost is not None:
             self.update_cost(quantity, unit_cost)
 
+        cost = self.product.stock_cost.cost
+
         old_quantity = self.quantity
         self.quantity += quantity
 
         st = StockTransaction(product_stock=self, quantity=quantity,
-                              type=type, stock_cost=unit_cost or self.cost)
+                              type=type, stock_cost=cost)
         db.session.add(st)
 
     def decrease_stock(self, quantity, warehouse, type):
@@ -55,8 +113,10 @@ class ProductStock(db.Model, TimestampMixin):
         old_quantity = self.quantity
         self.quantity -= quantity
 
+        cost = self.product.stock_cost.cost
+
         st = StockTransaction(product_stock=self, quantity=quantity,
-                              type=type, stock_cost=self.cost)
+                              type=type, stock_cost=cost)
         db.session.add(st)
 
     def update_cost(self, quantity, unit_cost):
@@ -65,13 +125,14 @@ class ProductStock(db.Model, TimestampMixin):
 
         Note: By the moment we only implement 'averange cost' valuation policy.
         """
+        cost = self.product.stock_cost.cost
         if not self.quantity or not self.cost:
             total_cost = 0
         else:
             total_cost = self.quantity * self.cost
         total_cost += quantity * unit_cost
         total_items = self.quantity + quantity
-        self.cost = total_cost / total_items
+        self.product.stock_cost.cost = total_cost / total_items
 
 
     def get_transactions(self):
