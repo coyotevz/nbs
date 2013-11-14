@@ -10,16 +10,16 @@ from nbs.utils import dq
 class ProductStock(db.Model, TimestampMixin):
     __tablename__ = 'product_stock'
 
-    id = db.Column(db.Integer, primary_key=True)
-
     #: Product that this stock belong
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'),
+                           primary_key=True)
     product = db.relationship('Product', backref=db.backref('stock',
                                                             lazy='dynamic'))
 
     #: warehouse which the stock is stored
     warehouse_id = db.Column(db.Integer,
-                             db.ForeignKey('warehouse.warehouse_id'))
+                             db.ForeignKey('warehouse.warehouse_id'),
+                             primary_key=True)
     warehouse = db.relationship('Warehouse', backref='stocks')
 
     #: current quantity for this stock item
@@ -153,9 +153,16 @@ class StockTransaction(db.Model):
     date = db.Column(db.DateTime, default=datetime.now)
 
     #: the product stock used in this transaction
-    product_stock_id = db.Column(db.Integer, db.ForeignKey('product_stock.id'))
-    product_stock = db.relationship(ProductStock,
-            backref=db.backref('transactions', lazy='dynamic'))
+    product_id = db.Column(db.Integer,
+                           db.ForeignKey('product_stock.product_id'))
+    warehouse_id = db.Column(db.Integer,
+                             db.ForeignKey('product_stock.warehouse_id'))
+    product_stock = db.relationship(
+            ProductStock, backref=db.backref('transactions', lazy='dynamic'),
+            primaryjoin="and_("
+                "StockTransaction.product_id==ProductStock.product_id,"
+                "StockTransaction.warehouse_id==ProductStock.warehouse_id)"
+    )
 
     #: the stock cost of the transaction on the time it was made
     stock_cost = db.Column(db.Numeric(10, 2), nullable=False)
