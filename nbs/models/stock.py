@@ -13,15 +13,13 @@ class ProductStock(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
 
     #: Product that this stock belong
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'),
-                           primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     product = db.relationship('Product', backref=db.backref('stock',
                                                             lazy='dynamic'))
 
     #: warehouse which the stock is stored
     warehouse_id = db.Column(db.Integer,
-                             db.ForeignKey('warehouse.warehouse_id'),
-                             primary_key=True)
+                             db.ForeignKey('warehouse.warehouse_id'))
     warehouse = db.relationship('Warehouse', backref='stocks')
 
     #: current quantity for this stock item
@@ -48,7 +46,7 @@ class ProductStock(db.Model, TimestampMixin):
         self.quantity += quantity
 
         st = StockTransaction(product_stock=self, quantity=quantity,
-                              type=type)
+                              type=type, stock_cost=unit_cost or self.cost)
         db.session.add(st)
 
     def decrease_stock(self, quantity, warehouse, type):
@@ -58,8 +56,23 @@ class ProductStock(db.Model, TimestampMixin):
         self.quantity -= quantity
 
         st = StockTransaction(product_stock=self, quantity=quantity,
-                              type=type)
+                              type=type, stock_cost=self.cost)
         db.session.add(st)
+
+    def update_cost(self, quantity, unit_cost):
+        """
+        Update the cost for this stock according selected policy.
+
+        Note: By the moment we only implement 'averange cost' valuation policy.
+        """
+        if not self.quantity or not self.cost:
+            total_cost = 0
+        else:
+            total_cost = self.quantity * self.cost
+        total_cost += quantity * unit_cost
+        total_items = self.quantity + quantity
+        self.cost = total_cost / total_items
+
 
     def get_transactions(self):
         """
@@ -70,7 +83,7 @@ class ProductStock(db.Model, TimestampMixin):
 
 
 class StockTransaction(db.Model):
-    """This class stores information aboutl all transactions made in the stock
+    """This class stores information about all transactions made in the stock
 
     Everytime a product has stock increased or decresed, an object of this
     class will be created, registering the quantity, cost, responsible and
@@ -95,7 +108,7 @@ class StockTransaction(db.Model):
     TYPE_RECEIVED_PURCHASE = u'TYPE_RECEIVED_PURCHASE'
 
     #: the transaction is a return of a purchase
-    TYPE_RETURNED_PURCHASE = u'type_returned_purchase'
+    TYPE_RETURNED_PURCHASE = u'TYPE_RETURNED_PURCHASE'
 
     #: the transaction is the receival of a purchase
     TYPE_RETURNED_LOAN = u'TYPE_RETURNED_LOAN'
@@ -166,3 +179,6 @@ class StockTransaction(db.Model):
         description.
         """
         return self.types[self.type]
+
+    def __repr__(self):
+        return "<StockTransaction({0}, {1})>".format(self.type, self.quantity)
