@@ -3,6 +3,7 @@
 from datetime import datetime
 from sqlalchemy import event
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm.exc import NoResultFound
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
 from nbs.models.stock import ProductStock, StockTransaction
@@ -220,8 +221,9 @@ class Product(db.Model, TimestampMixin):
         if warehouse is None:
             raise ValueError(u'warehouse cannot be None')
 
-        stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
-        if stock is None:
+        try:
+            stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
+        except NoResultFound:
             stock = ProductStock(product=self, warehouse=warehouse, quantity=0)
             db.session.add(stock)
 
