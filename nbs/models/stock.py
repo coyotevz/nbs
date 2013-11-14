@@ -61,6 +61,13 @@ class ProductStock(db.Model, TimestampMixin):
                               type=type)
         db.session.add(st)
 
+    def get_transactions(self):
+        """
+        Shortcut that returns a list of StockTransactions for this product
+        stock.
+        """
+        return self.transactions.all()
+
 
 class StockTransaction(db.Model):
     """This class stores information aboutl all transactions made in the stock
