@@ -191,12 +191,6 @@ class Product(db.Model, TimestampMixin):
         self._cost = value
         self._recalc_price()
 
-    def increase_stock(self, branch, qty, cost):
-        pass
-
-    def decrease_stock(self, branch, qty):
-        pass
-
     @property
     def status_str(self):
         return self._statuses[self.status]
