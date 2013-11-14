@@ -19,7 +19,8 @@ class ProductStock(db.Model, TimestampMixin):
                                                             lazy='dynamic'))
 
     #: warehouse which the stock is stored
-    warehouse_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+    warehouse_id = db.Column(db.Integer,
+                             db.ForeignKey('warehouse.warehouse_id'),
                              primary_key=True)
     warehouse = db.relationship('Warehouse', backref='stocks')
 
