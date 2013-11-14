@@ -65,7 +65,9 @@ class ProductCategory(db.Model):
         return children
 
     def __repr__(self):
-        return "<ProductCategory({0})>".format(self.description.encode('utf-8'))
+        return "<ProductCategory({0})>".format(
+                self.description.encode('utf-8')
+        )
 
 
 class Product(db.Model, TimestampMixin):
@@ -251,7 +253,8 @@ class Product(db.Model, TimestampMixin):
         stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
 
         if stock is None or quantity > stock.quantity:
-            raise ValueError(u'quantity to decrease is greater than the available stock.')
+            raise ValueError(u'quantity to decrease is greater than the '
+                             u'available stock.')
 
         stock.decrease_stock(quantity, warehouse, type)
         return stock
