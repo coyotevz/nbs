@@ -126,10 +126,10 @@ class ProductStock(db.Model, TimestampMixin):
         Note: By the moment we only implement 'averange cost' valuation policy.
         """
         cost = self.product.stock_cost.cost
-        if not self.quantity or not self.cost:
+        if not self.quantity:
             total_cost = 0
         else:
-            total_cost = self.quantity * self.cost
+            total_cost = self.quantity * cost
         total_cost += quantity * unit_cost
         total_items = self.quantity + quantity
         self.product.stock_cost.cost = total_cost / total_items
