@@ -43,8 +43,6 @@ def shell_make_context():
     )
 
 manager.add_command("shell", Shell(make_context=shell_make_context))
-manager.add_option('-c', '--config', dest='config', required=False,
-                   help='config file')
 
 class GunicornServer(Command):
 
