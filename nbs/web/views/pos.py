@@ -8,7 +8,3 @@ pos = Blueprint('web.pos', __name__, url_prefix='/pos')
 @pos.route('')
 def index():
     return render_template('pos/pos.html')
-
-@pos.route('/d')
-def design():
-    return render_template('pos/design.html')

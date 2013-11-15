@@ -42,9 +42,6 @@ def configure_jinja(app):
         'jinja2.ext.do',
         'jinja2.ext.with_',
         'jinja2.ext.loopcontrols',
-
-        # For documentation examples
-        'jinja2_highlight.HighlightExtension',
     ])
 
     # filters
