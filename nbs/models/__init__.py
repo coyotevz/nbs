@@ -10,7 +10,14 @@ __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
     'ProductSupplierInfo', 'PriceComponent', 'ProductUnit', 'ProductImage',
     'ProductStock', 'Branch', 'Warehouse', 'Office', 'Contact', 'Address',
     'Email', 'Phone', 'ExtraField', 'Supplier', 'SupplierContact',
-    'TaxConstant']
+    'TaxConstant',
+
+    # Documents
+    'SaleInvoice', 'PurchaseInvoice', 'SaleOrder', 'PurchaseOrder',
+    'SaleQuotation', 'PurchaseQuotation', 'SaleRefer', 'PurchaseRefer',
+    'SaleCreditNote', 'PurchaseCreditNote', 'SaleDebitNote',
+    'PurchaseDebitNote', 'PaymentOrder', 'InternalTransfer',
+]
 
 def configure_db(app):
     db.init_app(app)
@@ -26,3 +33,9 @@ from nbs.models.contact import Contact
 from nbs.models.misc import Address, Email, Phone, ExtraField
 from nbs.models.supplier import Supplier, SupplierContact
 from nbs.models.tax import TaxConstant
+
+from nbs.models.document import (
+        SaleInvoice, PurchaseInvoice, SaleOrder, PurchaseOrder, SaleQuotation,
+        PurchaseQuotation, SaleRefer, PurchaseRefer, SaleCreditNote,
+        PurchaseCreditNote, SaleDebitNote, PurchaseDebitNote, PaymentOrder,
+)
