@@ -2,10 +2,11 @@
 
 from nbs.lib.forms import Form, ModelForm
 
-from flask.ext.wtf import (
+from wtforms import (
     HiddenField, BooleanField, TextField, PasswordField, SubmitField,
-    DecimalField, Required, NumberRange
+    DecimalField
 )
+from wtforms.validators import Required, NumberRange
 
 from .models import db, User, Product, ProductSupplierInfo
 
