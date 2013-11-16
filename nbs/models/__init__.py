@@ -16,7 +16,8 @@ __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
     'SaleInvoice', 'PurchaseInvoice', 'SaleOrder', 'PurchaseOrder',
     'SaleQuotation', 'PurchaseQuotation', 'SaleRefer', 'PurchaseRefer',
     'SaleCreditNote', 'PurchaseCreditNote', 'SaleDebitNote',
-    'PurchaseDebitNote', 'PaymentOrder', 'InternalTransfer',
+    'PurchaseDebitNote','SaleReceipt', 'PurchaseReceipt', 'SaleReturn',
+    'PurchaseReturn', 'PaymentOrder', 'CreditCupon', 'StockTransfer',
 ]
 
 def configure_db(app):
@@ -37,5 +38,7 @@ from nbs.models.tax import TaxConstant
 from nbs.models.document import (
         SaleInvoice, PurchaseInvoice, SaleOrder, PurchaseOrder, SaleQuotation,
         PurchaseQuotation, SaleRefer, PurchaseRefer, SaleCreditNote,
-        PurchaseCreditNote, SaleDebitNote, PurchaseDebitNote, PaymentOrder,
+        PurchaseCreditNote, SaleDebitNote, PurchaseDebitNote, SaleReceipt,
+        PurchaseReceipt, SaleReturn, PurchaseReturn, PaymentOrder, CreditCupon,
+        StockTransfer
 )

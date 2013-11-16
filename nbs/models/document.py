@@ -141,6 +141,38 @@ class PurchaseDebitNote(Document):
                         primary_key=True)
 
 
+# Recibo de Pago de Venta
+class SaleReceipt(Document):
+    __tablename__ = 'sale_receipt'
+    __mapper_args__ = {'polymorphic_identity': u'sale_receipt'}
+    receipt_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                           primary_key=True)
+
+
+# Recibo de Pago de Compra
+class PurchaseReceipt(Document):
+    __tablename__ = 'purchase_receipt'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_receipt'}
+    receipt_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                           primary_key=True)
+
+
+# Devolución de Venta
+class SaleReturn(Document):
+    __tablename__ = 'sale_return'
+    __mapper_args__ = {'polymorphic_identity': u'sale_return'}
+    return_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                          primary_key=True)
+
+
+# Devolución de Compra
+class PurchaseReturn(Document):
+    __tablename__ = 'purchase_return'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_return'}
+    return_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                          primary_key=True)
+
+
 # Orden de Pago
 class PaymentOrder(Document):
     __tablename__ = 'payment_order'
@@ -149,9 +181,17 @@ class PaymentOrder(Document):
                          primary_key=True)
 
 
+# Cupón de Credito (venta)
+class CreditCupon(Document):
+    __tablename__ = 'credit_cupon'
+    __mapper_args__ = {'polymorphic_identity': u'credit_cupon'}
+    cupon_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                         primary_key=True)
+
+
 # Transferencia Interna
-class InternalTransfer(Document):
-    __tablename__ = 'internal_transfer'
-    __mapper_args__ = {'polymorphic_identity': u'internal_transfer'}
+class StockTransfer(Document):
+    __tablename__ = 'stock_transfer'
+    __mapper_args__ = {'polymorphic_identity': u'stock_transfer'}
     transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             primary_key=True)
