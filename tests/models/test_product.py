@@ -5,7 +5,9 @@ from decimal import Decimal
 from sqlalchemy.exc import IntegrityError
 
 from tests import TestCase
-from nbs.models import ProductCategory, Product, PriceComponent
+from nbs.models.product import ProductCategory, Product, PriceComponent
+from nbs.models.stock import StockTransaction
+from nbs.models.places import Warehouse
 
 
 class TestProductCategory(TestCase):
@@ -157,6 +159,14 @@ class TestProduct(TestCase):
         self.db.session.commit()
         assert p.product_type == Product.TYPE_PERMANENT
 
+    def test_raise_duplicated_sku(self):
+        p1 = Product(sku=u'123', description=u'p1', price=Decimal('1'))
+        p2 = Product(sku=u'123', description=u'p2', price=Decimal('1'))
+
+        self.db.session.add_all([p1, p2])
+        with raises(IntegrityError):
+            self.db.session.commit()
+
     def test_raises_for_commit_without_price(self):
         p = Product(sku=u'1', description=u'p1')
         self.db.session.add(p)
@@ -197,6 +207,106 @@ class TestProduct(TestCase):
         p.cost = Decimal('2.00')
         self.db.session.commit()
         assert p.price == Decimal('2.86')
+
+    def test_raise_on_invalid_stock_type(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w = Warehouse(name=u'w')
+        self.db.session.add_all([p, w])
+        self.db.session.commit()
+
+        with raises(AssertionError):
+            p.increase_stock(Decimal('10'), w, 'INVALID_TYPE', Decimal('1'))
+
+        with raises(AssertionError):
+            p.decrease_stock(Decimal('10'), w, 'INVALID_TYPE')
+
+    def test_raise_negative_stock(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w = Warehouse(name=u'w')
+        self.db.session.add_all([p, w])
+        self.db.session.commit()
+
+        with raises(ValueError):
+            p.increase_stock(Decimal('-1'), w,
+                             StockTransaction.TYPE_RETURNED_SALE)
+
+        with raises(ValueError):
+            p.decrease_stock(Decimal('-1'), w, StockTransaction.TYPE_SALE)
+
+        with raises(ValueError):
+            p.register_initial_stock(Decimal('-4'), w, None)
+
+    def test_raise_on_null_warehouse(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        self.db.session.add(p)
+        self.db.session.commit()
+
+        with raises(ValueError):
+            p.increase_stock(Decimal('1'), None,
+                             StockTransaction.TYPE_RETURNED_SALE)
+
+        with raises(ValueError):
+            p.decrease_stock(Decimal('1'), None, StockTransaction.TYPE_SALE)
+
+        with raises(ValueError):
+            p.register_initial_stock(Decimal('0'), None, None)
+
+    def test_stock_creation(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w = Warehouse(name=u'w')
+        self.db.session.add_all([p, w])
+        self.db.session.commit()
+
+        assert p.get_stock_items() == []
+
+        p.register_initial_stock(Decimal('1'), w, Decimal('1'))
+        self.db.session.commit()
+
+        assert p.get_stock_items() != []
+
+    def test_raise_on_decrease_with_not_existant_stock(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w = Warehouse(name=u'w')
+        self.db.session.add_all([p, w])
+        self.db.session.commit()
+
+        with raises(ValueError):
+            p.decrease_stock(Decimal('1'), w, StockTransaction.TYPE_SALE)
+
+    def test_raise_on_decrease_more_than_available_stock(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w = Warehouse(name=u'w')
+        self.db.session.add_all([p, w])
+        self.db.session.commit()
+
+        p.register_initial_stock(Decimal('4'), w, Decimal('1'))
+        self.db.session.commit()
+
+        with raises(ValueError):
+            p.decrease_stock(Decimal('5'), w, StockTransaction.TYPE_SALE)
+
+        p.decrease_stock(Decimal('4'), w, StockTransaction.TYPE_SALE)
+        self.db.session.commit()
+        assert p.get_stock_items()[0].quantity == Decimal('0')
+
+    def test_get_consolidated_stock(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w1 = Warehouse(name=u'w1')
+        w2 = Warehouse(name=u'w2')
+        self.db.session.add_all([p, w1, w2])
+        self.db.session.commit()
+
+        p.register_initial_stock(Decimal('10'), w1, Decimal('1'))
+        p.register_initial_stock(Decimal('5'), w2, Decimal('1'))
+        self.db.session.commit()
+
+        assert p.get_consolidated_stock() == Decimal('15')
+
+        p.decrease_stock(Decimal('2'), w1, StockTransaction.TYPE_SALE)
+        p.decrease_stock(Decimal('2'), w2, StockTransaction.TYPE_SALE)
+        self.db.session.commit()
+
+        assert p.get_consolidated_stock() == Decimal('11')
 
 
 class TestProductSupplierInfo(TestCase):
