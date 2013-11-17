@@ -5,8 +5,11 @@ from decimal import Decimal
 from sqlalchemy.exc import IntegrityError
 
 from tests import TestCase
-from nbs.models.product import ProductCategory, Product, PriceComponent
+from nbs.models.product import (
+    ProductCategory, Product, ProductSupplierInfo, PriceComponent
+)
 from nbs.models.stock import StockTransaction
+from nbs.models.supplier import Supplier
 from nbs.models.places import Warehouse
 
 
@@ -342,7 +345,28 @@ class TestProduct(TestCase):
 
 
 class TestProductSupplierInfo(TestCase):
-    pass
+
+    def test_defaults(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
+        s = Supplier(name=u's1')
+
+        psi = ProductSupplierInfo(supplier=s, product=p)
+
+        self.db.session.add(psi)
+        self.db.session.commit()
+
+        assert psi.supplier_id == s.supplier_id
+        assert psi.product_id == p.id
+
+    def test_inherit_description_from_product(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
+        s = Supplier(name=u's1')
+        psi = ProductSupplierInfo(supplier=s, product=p)
+
+        self.db.session.add(psi)
+        self.db.session.commit()
+
+        assert psi.description == p.description
 
 
 class TestPriceComponent(TestCase):
