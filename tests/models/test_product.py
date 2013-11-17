@@ -308,6 +308,24 @@ class TestProduct(TestCase):
 
         assert p.get_consolidated_stock() == Decimal('11')
 
+        p.decrease_stock(Decimal('1'), w1, StockTransaction.TYPE_SALE)
+        self.db.session.commit()
+
+        assert p.get_consolidated_stock() == Decimal('10')
+
+    def test_get_stock_for_warehouse(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w1 = Warehouse(name=u'w1')
+        w2 = Warehouse(name=u'w2')
+        self.db.session.add_all([p, w1, w2])
+        self.db.session.commit()
+
+        p.register_initial_stock(Decimal('10'), w1, Decimal('1'))
+        self.db.session.commit()
+
+        assert p.get_stock_for_warehouse(w1).quantity == Decimal('10')
+        assert p.get_stock_for_warehouse(w2).quantity == Decimal('0')
+
 
 class TestProductSupplierInfo(TestCase):
     pass

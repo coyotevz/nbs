@@ -221,12 +221,7 @@ class Product(db.Model, TimestampMixin):
         if warehouse is None:
             raise ValueError(u'warehouse cannot be None')
 
-        try:
-            stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
-        except NoResultFound:
-            stock = ProductStock(product=self, warehouse=warehouse, quantity=0)
-            db.session.add(stock)
-
+        stock = self.get_stock_for_warehouse(warehouse)
         stock.increase_stock(quantity, warehouse, type, unit_cost)
 
     def decrease_stock(self, quantity, warehouse, type):
@@ -246,12 +241,9 @@ class Product(db.Model, TimestampMixin):
         if warehouse is None:
             raise ValueError(u'warehouse cannot be None')
 
-        try:
-            stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
-        except NoResultFound:
-            stock = None
+        stock = self.get_stock_for_warehouse(warehouse)
 
-        if stock is None or quantity > stock.quantity:
+        if quantity > stock.quantity:
             raise ValueError(u'quantity to decrease is greater than the '
                              u'available stock.')
 
@@ -276,15 +268,19 @@ class Product(db.Model, TimestampMixin):
 
         :returns: the amount of stock available in al warehouses
         """
-        return sum([s.quantity for s in self.stock.all()])
+        return sum([s.quantity for s in self.get_stock_items()])
 
     def get_stock_for_warehouse(self, warehouse):
         """
-        Return the stock balance for the product in a certain warehouse
+        Return the stock balance for the product in a certain warehouse.
+        If the stock item wasn't exist create one with stock quantity 0.
 
         :params warehouse: warehouse that stores this product
         """
-        return self.stock.filter(ProductStock.warehouse==warehouse).one()
+        try:
+            return self.stock.filter(ProductStock.warehouse==warehouse).one()
+        except NoResultFound:
+            return ProductStock(product=self, warehouse=warehouse, quantity=0)
 
     def get_stock_items(self):
         """
