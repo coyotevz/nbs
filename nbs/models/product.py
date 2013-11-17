@@ -246,7 +246,10 @@ class Product(db.Model, TimestampMixin):
         if warehouse is None:
             raise ValueError(u'warehouse cannot be None')
 
-        stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
+        try:
+            stock = self.stock.filter(ProductStock.warehouse==warehouse).one()
+        except NoResultFound:
+            stock = None
 
         if stock is None or quantity > stock.quantity:
             raise ValueError(u'quantity to decrease is greater than the '
