@@ -264,6 +264,20 @@ class TestProduct(TestCase):
 
         assert p.get_stock_items() != []
 
+    def test_raises_register_initial_stock_with_transactions(self):
+        p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
+        w1 = Warehouse(name=u'w1')
+        self.db.session.add_all([p, w1])
+        self.db.session.commit()
+
+        p.register_initial_stock(Decimal('10'), w1, Decimal('1'))
+        self.db.session.commit()
+
+        p.decrease_stock(Decimal('2'), w1, StockTransaction.TYPE_SALE)
+
+        with raises(ValueError):
+            p.register_initial_stock(Decimal('1'), w1, Decimal('1'))
+
     def test_raise_on_decrease_with_not_existant_stock(self):
         p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
         w = Warehouse(name=u'w')

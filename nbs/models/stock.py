@@ -82,6 +82,8 @@ class ProductStock(db.Model, TimestampMixin):
     #: logic quantity for this stock item
     logic_quantity = db.Column(db.Numeric(10, 2))
 
+    #: 'transactions' field added by StockTransaction class
+
     def __init__(self, *args, **kwargs):
         super(ProductStock, self).__init__(*args, **kwargs)
         if self.product.stock_cost is None:

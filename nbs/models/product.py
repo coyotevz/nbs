@@ -259,6 +259,11 @@ class Product(db.Model, TimestampMixin):
         :param warehouse: warehouse that stores this stock
         :param unit_cost: The unary cost for the initial stock
         """
+        stock = self.get_stock_for_warehouse(warehouse, create=False)
+        if stock is not None and stock.transactions.count() > 0:
+            raise ValueError(u"initial stock can't be registered on stock "
+                             u"with previous transactions")
+
         self.increase_stock(quantity, warehouse, StockTransaction.TYPE_INITIAL,
                             unit_cost)
 
@@ -270,17 +275,23 @@ class Product(db.Model, TimestampMixin):
         """
         return sum([s.quantity for s in self.get_stock_items()])
 
-    def get_stock_for_warehouse(self, warehouse):
+    def get_stock_for_warehouse(self, warehouse, create=True):
         """
         Return the stock balance for the product in a certain warehouse.
-        If the stock item wasn't exist create one with stock quantity 0.
+        With create=True if the stock item wasn't exist create one with stock
+        quantity 0.
 
         :params warehouse: warehouse that stores this product
+        :params create: default True, must create item if wasn't exist yet.
         """
         try:
             return self.stock.filter(ProductStock.warehouse==warehouse).one()
         except NoResultFound:
-            return ProductStock(product=self, warehouse=warehouse, quantity=0)
+            if create:
+                return ProductStock(product=self, warehouse=warehouse,
+                                    quantity=0)
+            else:
+                return None
 
     def get_stock_items(self):
         """
@@ -335,7 +346,7 @@ class ProductSupplierInfo(db.Model):
     _base_cost = db.Column('base_cost', db.Numeric(10, 2))
     #: supplier final price for this product (bonus formula applied)
     _cost = db.Column('cost', db.Numeric(10, 2))
-    #: use bonus formula to calculate final cost???
+    #: use bonus formula to calculate final cost ?
     automatic_cost = db.Column(db.Boolean, default=False)
 
     #: components for automatic final cost calculation
