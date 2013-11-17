@@ -17,7 +17,8 @@ __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
     'SaleQuotation', 'PurchaseQuotation', 'SaleRefer', 'PurchaseRefer',
     'SaleCreditNote', 'PurchaseCreditNote', 'SaleDebitNote',
     'PurchaseDebitNote','SaleReceipt', 'PurchaseReceipt', 'SaleReturn',
-    'PurchaseReturn', 'PaymentOrder', 'CreditCupon', 'StockTransfer',
+    'PurchaseReturn', 'PaymentOrder', 'CreditCupon', 'SupplyRequest',
+    'StockRequest', 'SupplyTransfer', 'StockTransfer',
 ]
 
 def configure_db(app):
@@ -40,5 +41,5 @@ from nbs.models.document import (
         PurchaseQuotation, SaleRefer, PurchaseRefer, SaleCreditNote,
         PurchaseCreditNote, SaleDebitNote, PurchaseDebitNote, SaleReceipt,
         PurchaseReceipt, SaleReturn, PurchaseReturn, PaymentOrder, CreditCupon,
-        StockTransfer
+        SupplyRequest, StockRequest, SupplyTransfer, StockTransfer
 )

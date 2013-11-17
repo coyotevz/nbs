@@ -189,9 +189,42 @@ class CreditCupon(Document):
                          primary_key=True)
 
 
-# Transferencia Interna
+# Solicitud de Suministro (interno)
+class SupplyRequest(Document):
+    __tablename__ = 'supply_request'
+    __mapper_args__ = {'polymorphic_identity': u'supply_request'}
+    request_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                           primary_key=True)
+
+
+# Solicitud de Mercadería (interno)
+class StockRequest(Document):
+    __tablename__ = 'stock_request'
+    __mapper_args__ = {'polymorphic_identity': u'stock_request'}
+    request_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                           primary_key=True)
+
+
+class SupplyTransfer(Document):
+    __tablename__ = 'supply_transfer'
+    __mapper_args__ = {'polymorphic_identity': u'supply_transfer'}
+    transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                            primary_key=True)
+
+
+# Transferencia Interna de Mercadería
 class StockTransfer(Document):
     __tablename__ = 'stock_transfer'
     __mapper_args__ = {'polymorphic_identity': u'stock_transfer'}
     transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             primary_key=True)
+
+    source_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+                          nullable=False)
+    source = db.relationship('Warehouse', backref='transfers_from',
+                             foreign_keys=[source_id])
+
+    target_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+                          nullable=False)
+    target = db.relationship('Warehouse', backref='transfer_to',
+                             foreign_keys=[target_id])
