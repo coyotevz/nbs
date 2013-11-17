@@ -157,13 +157,13 @@ class StockTransaction(db.Model):
     TYPE_INITIAL = u'TYPE_INITIAL'
 
     #: the transaction is a sale
-    TYPE_SELL = u'TYPE_SELL'
+    TYPE_SALE = u'TYPE_SALE'
 
     #: the transaction is a return of a sale
-    TYPE_RETURNED_SALE = u'TYPE_RETURNED_SELL'
+    TYPE_RETURNED_SALE = u'TYPE_RETURNED_SALE'
 
     #: the transaction is the cancellation of a sale
-    TYPE_CANCELED_SALE = u'TYPE_CANCELED_SELL'
+    TYPE_CANCELED_SALE = u'TYPE_CANCELED_SALE'
 
     #: the transaction is the receival of a purchase
     TYPE_RECEIVED_PURCHASE = u'TYPE_RECEIVED_PURCHASE'
@@ -194,7 +194,7 @@ class StockTransaction(db.Model):
 
     types = {
         TYPE_INITIAL: u'Stock inicial',
-        TYPE_SELL: u'Vendido %s',
+        TYPE_SALE: u'Venta %s',
         TYPE_RETURNED_SALE: u'Devolución de venta %s',
         TYPE_CANCELED_SALE: u'Devolución por cancelación de venta %s',
         TYPE_RECEIVED_PURCHASE: u'Recepción de compra %s',
