@@ -19,13 +19,12 @@ class TestProductCategory(TestCase):
         pc = ProductCategory(description=u'pc')
         self.db.session.add(pc)
         self.db.session.commit()
-        assert pc.suggested_markup == None
+        assert pc.suggested_markup_components == []
         assert pc.suggested_commission == None
 
 
     def test_raises_with_null_description(self):
-        pc = ProductCategory(suggested_markup=Decimal('30'),
-                             suggested_commission=Decimal('1'))
+        pc = ProductCategory(suggested_commission=Decimal('1'))
         self.db.session.add(pc)
         with raises(IntegrityError):
             self.db.session.commit()
@@ -59,11 +58,16 @@ class TestProductCategory(TestCase):
         assert pc_child_21.get_commission() == Decimal('2')
 
     def test_parent_markup(self):
-        pc_parent = ProductCategory(description=u'pc_parent',
-                                    suggested_markup=Decimal('30'))
-        pc_child_1 = ProductCategory(description=u'pc_child_1',
-                                     suggested_markup=Decimal('65'))
+        pc_parent = ProductCategory(description=u'pc_parent')
+        pc_child_1 = ProductCategory(description=u'pc_child_1')
         pc_child_2 = ProductCategory(description=u'pc_child_2')
+
+        pc_p1 = PriceComponent(name=u'pc_p1', value=Decimal('30'))
+        pc_p2 = PriceComponent(name=u'pc_p2', value=Decimal('5'))
+        pc_c1 = PriceComponent(name=u'pc_c1', value=Decimal('65'))
+
+        pc_parent.suggested_markup_components.extend([pc_p1, pc_p2])
+        pc_child_1.suggested_markup_components.append(pc_c1)
 
         pc_child_1.parent = pc_parent
         pc_child_2.parent = pc_parent
@@ -71,9 +75,9 @@ class TestProductCategory(TestCase):
         self.db.session.add(pc_parent)
         self.db.session.commit()
 
-        assert pc_parent.get_markup() == Decimal('30')
-        assert pc_child_1.get_markup() == Decimal('65')
-        assert pc_child_2.get_markup() == Decimal('30')
+        assert list(pc_parent.get_markup()) == [Decimal('30'), Decimal('5')]
+        assert list(pc_child_1.get_markup()) == [Decimal('65')]
+        assert list(pc_child_2.get_markup()) == [Decimal('30'), Decimal('5')]
 
         pc_child_11 = ProductCategory(description=u'pc_child_11')
         pc_child_21 = ProductCategory(description=u'pc_child_21')
@@ -83,8 +87,8 @@ class TestProductCategory(TestCase):
 
         self.db.session.commit()
 
-        assert pc_child_11.get_markup() == Decimal('65')
-        assert pc_child_21.get_markup() == Decimal('30')
+        assert list(pc_child_11.get_markup()) == [Decimal('65')]
+        assert list(pc_child_21.get_markup()) == [Decimal('30'), Decimal('5')]
 
     def test_get_path(self):
         pc_parent = ProductCategory(description=u'pc_parent')

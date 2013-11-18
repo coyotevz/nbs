@@ -18,8 +18,10 @@ class ProductCategory(db.Model):
     #: category description
     description = db.Column(db.Unicode, nullable=False)
 
-    #: suggested markup when calculating the product's price
-    suggested_markup = db.Column(db.Numeric(10, 5))
+    #: suggested markup components for calculating the product's price
+    suggested_markup_components = db.relationship('PriceComponent',
+            backref=db.backref('category_markup', lazy='dynamic'),
+            secondary=lambda: productcategory_pricecomponent)
 
     #: A saleman suggested commission for products of this category.
     suggested_commission = db.Column(db.Numeric(10, 5))
@@ -41,10 +43,13 @@ class ProductCategory(db.Model):
         """Returns the markup for this category.
         If it's unset, return the value of the base category, if any.
         """
-        if self.parent:
-            return (self.suggested_markup or
-                    self.parent.get_markup())
-        return self.suggested_markup
+        if len(self.suggested_markup_components):
+            for mc in self.suggested_markup_components:
+                yield mc.value
+        elif self.parent:
+            for mc in self.parent.get_markup():
+                yield mc
+        return
 
     def get_path(self):
         parent = self
@@ -498,6 +503,17 @@ class PriceComponent(db.Model):
             other = other[:3] + ['...']
         return "<PriceComponent of {0}, {1}, {2} %>".format(
                 repr(other), self.name, self.value)
+
+
+# ProductCategory suggested markup component <--> PriceComponent relation
+productcategory_pricecomponent = db.Table(
+    'productcategory_pricecomponent',
+    db.Model.metadata,
+    db.Column('product_category_id', db.Integer,
+              db.ForeignKey('product_category.id'), primary_key=True),
+    db.Column('price_component_id', db.Integer,
+              db.ForeignKey('price_component.id'), primary_key=True),
+)
 
 
 # Product markup component <--> Price component relation
