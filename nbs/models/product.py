@@ -340,12 +340,6 @@ def _product_auto_price_set(target, value, oldvalue, initiator):
 
 event.listen(Product.automatic_price, 'set', _product_auto_price_set)
 
-#: listener for Product.suppliers_info
-def _product_suppliers_info_append(*args):
-    print "append %r" % args
-
-#event.listen(Product.suppliers_info, 'append', _product_suppliers_info_append)
-
 
 class ProductSupplierInfo(db.Model):
     __tablename__ = 'product_supplier_info'
