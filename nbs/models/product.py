@@ -165,9 +165,26 @@ class Product(db.Model, TimestampMixin):
             backref=db.backref("product_markup", lazy='dynamic'),
             secondary=lambda: product_pricecomponent)
 
-    #: suppliers_info field is added by ProductSupplierInfo class
-    #: images field is added by ProductImage class
-    #: stock field is added by ProductStock class
+    #: 'suppliers_info' field is added by ProductSupplierInfo class
+    #: 'images' field is added by ProductImage class
+    #: 'stock' field is added by ProductStock class
+
+    #: When calculate the product cost and we have multiple suppliers for the
+    #: same product, this field indicate that we need to use this info for
+    #: calculus. A product can have only one main_supplier_info.
+    main_supplier_info_id = db.Column(
+            db.Integer, db.ForeignKey('product_supplier_info.supplier_id',
+                                      use_alter=True,
+                                      name='fk_main_supplier_info')
+    )
+    main_supplier_info = db.relationship(
+        'ProductSupplierInfo',
+        primaryjoin="and_("
+            "Product.main_supplier_info_id==ProductSupplierInfo.supplier_id,"
+            "Product.id==ProductSupplierInfo.product_id)",
+        foreign_keys=[main_supplier_info_id, id],
+        post_update=True
+    )
 
     def _recalc_price(self, force=False):
         if self.cost and (self.automatic_price or force) and\
@@ -323,18 +340,28 @@ def _product_auto_price_set(target, value, oldvalue, initiator):
 
 event.listen(Product.automatic_price, 'set', _product_auto_price_set)
 
+#: listener for Product.suppliers_info
+def _product_suppliers_info_append(*args):
+    print "append %r" % args
+
+#event.listen(Product.suppliers_info, 'append', _product_suppliers_info_append)
+
 
 class ProductSupplierInfo(db.Model):
     __tablename__ = 'product_supplier_info'
 
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.supplier_id'),
                             primary_key=True)
-    supplier = db.relationship('Supplier', backref=db.backref('products_info',
-                                                        lazy='dynamic'))
+    supplier = db.relationship(
+            'Supplier', backref=db.backref('products_info', lazy='dynamic')
+    )
+
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'),
                            primary_key=True)
-    product = db.relationship('Product', backref=db.backref('suppliers_info',
-                                                        lazy='dynamic'))
+    product = db.relationship(
+            Product, backref=db.backref('suppliers_info', lazy='dynamic'),
+            foreign_keys=[product_id]
+    )
 
     #: supplier code for this product
     sku = db.Column(db.Unicode(80))
@@ -345,7 +372,7 @@ class ProductSupplierInfo(db.Model):
     #: supplier base price for this product (list price)
     _base_cost = db.Column('base_cost', db.Numeric(10, 2))
     #: supplier final price for this product (bonus formula applied)
-    _cost = db.Column('cost', db.Numeric(10, 2))
+    cost = db.Column(db.Numeric(10, 2))
     #: use bonus formula to calculate final cost ?
     automatic_cost = db.Column(db.Boolean, default=False)
 
@@ -361,11 +388,6 @@ class ProductSupplierInfo(db.Model):
     package_size = db.Column(db.Integer, default=1)
     #: number of days needed to deliver the product to purchaser.
     lead_time = db.Column(db.Integer)
-    #: When calculate the product cost and we have multiple suppliers for the
-    #: same product, this field indicate that we need to use this info for
-    #: calculus. A product can have only one main_supplier.
-    main_supplier = db.Column(db.Boolean, default=False)
-
     #: last local update of this information
     last_update = db.Column(db.DateTime, default=datetime.now,
                             onupdate=datetime.now)
@@ -389,23 +411,11 @@ class ProductSupplierInfo(db.Model):
 
     @base_cost.setter
     def base_cost(self, value):
-        """Update ProductSupplierInfo.cost based on new base_cost"""
+        """Update ProductSupplierInfo.cost base on new base_cost"""
         if self._base_cost == value:
             return
+        self._base_cost = value
         self._recalc_cost()
-
-    @hybrid_property
-    def cost(self):
-        return self._cost
-
-    @cost.setter
-    def cost(self, value):
-        """Update product cost"""
-        if self._cost == value:
-            return
-        self._cost = value
-        if self.product and self.product.automatic_cost:
-            self.product.cost = value
 
     def _calc_cost(self):
         cost = self.base_cost
@@ -418,6 +428,39 @@ class ProductSupplierInfo(db.Model):
                 len(self.bonus_components):
             self.cost = self._calc_cost()
 
+    def is_main(self):
+        return self.product.main_supplier_info == self
+
+def psi_instances(iter_):
+    for obj in iter_:
+        if isinstance(obj, ProductSupplierInfo):
+            yield obj
+
+#: listener for automatic_cost value
+def _psi_check_for_auto_cost(session, flush_context=None, instance=None):
+    changed = list(session.new) + list(session.dirty)
+    for psi in psi_instances(changed):
+        if psi.automatic_cost is True:
+            psi._recalc_cost()
+
+event.listen(db.session.__class__, 'before_commit', _psi_check_for_auto_cost)
+
+#: listener that checks product.main_supplier_info to fulfill
+def _psi_check_product_set(target, value, oldvalue, initiator):
+    if value != oldvalue:
+        if value.main_supplier_info is None:
+            value.main_supplier_info = target
+
+event.listen(ProductSupplierInfo.product, 'set', _psi_check_product_set)
+
+#: listener for ProductSupplierInfo.cost change
+def _psi_cost_set(target, value, oldvalue, initiator):
+    "Update Product.cost in ProductSupplierInfo.cost change"
+    if value and value != oldvalue:
+        if target.is_main() and target.product.automatic_cost:
+            target.product.cost = value
+
+event.listen(ProductSupplierInfo.cost, 'set', _psi_cost_set)
 
 #: listener for ProductSupplierInfo.automatic_cost change
 def _psi_auto_cost_set(target, value, oldvalue, initiator):
@@ -580,3 +623,6 @@ product_image = db.Table('product_image', db.Model.metadata,
     db.Column('image_id', db.Integer, db.ForeignKey('image.id'),
               primary_key=True)
 )
+
+# circular dependencies
+from nbs.models.supplier import Supplier

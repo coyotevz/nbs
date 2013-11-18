@@ -357,16 +357,120 @@ class TestProductSupplierInfo(TestCase):
 
         assert psi.supplier_id == s.supplier_id
         assert psi.product_id == p.id
+        assert psi.sku is None
+        assert psi.automatic_cost == False
+        assert psi.minimum_purchase == 1
+        assert psi.package_size == 1
+        assert psi.lead_time is None
 
     def test_inherit_description_from_product(self):
         p = Product(sku=u'1', description=u'p', price=Decimal('1'))
-        s = Supplier(name=u's1')
+        s = Supplier(name=u's')
         psi = ProductSupplierInfo(supplier=s, product=p)
 
         self.db.session.add(psi)
         self.db.session.commit()
 
         assert psi.description == p.description
+
+    def test_automatic_cost(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
+        s = Supplier(name=u's')
+        psi = ProductSupplierInfo(supplier=s, product=p, automatic_cost=True,
+                                  base_cost=Decimal('10'))
+        bc1 = PriceComponent(name=u'bc1', value=Decimal('30'))
+        bc2 = PriceComponent(name=u'bc2', value=Decimal('10'))
+        psi.bonus_components.extend([bc1, bc2])
+
+        self.db.session.add(psi)
+        self.db.session.commit()
+
+        assert psi.cost == Decimal('6.30')
+
+    def test_base_cost_change(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
+        s = Supplier(name=u's')
+        psi = ProductSupplierInfo(supplier=s, product=p, automatic_cost=True,
+                                  base_cost=Decimal('10'))
+        bc1 = PriceComponent(name=u'bc1', value=Decimal('30'))
+        bc2 = PriceComponent(name=u'bc2', value=Decimal('10'))
+        psi.bonus_components.extend([bc1, bc2])
+
+        self.db.session.add(psi)
+        self.db.session.commit()
+
+        assert psi.cost == Decimal('6.30')
+
+        psi.base_cost = Decimal('20')
+        assert psi.cost == Decimal('12.6')
+
+
+    def test_automatic_cost_listener(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'),
+                    automatic_cost=True)
+        s = Supplier(name=u's')
+        psi = ProductSupplierInfo(supplier=s, product=p, cost=Decimal('5'))
+        self.db.session.add(psi)
+        self.db.session.commit()
+
+        assert p.cost == Decimal('5')
+
+        psi.cost = Decimal('8')
+        assert p.cost == Decimal('8')
+
+    def test_automatic_assign_main_supplier(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'),
+                    automatic_cost=True)
+        s1 = Supplier(name=u's1')
+        s2 = Supplier(name=u's2')
+
+        assert p.main_supplier_info == None
+        psi1 = ProductSupplierInfo(supplier=s1, product=p, cost=Decimal('5'))
+        assert p.main_supplier_info.supplier == s1
+        psi2 = ProductSupplierInfo(supplier=s2, product=p, cost=Decimal('10'))
+        assert p.main_supplier_info.supplier == s1
+        self.db.session.add(p)
+        self.db.session.commit()
+        assert p.main_supplier_info.supplier == s1
+
+        assert p.main_supplier_info == psi1
+
+    def test_automatic_cost_listener_for_main_supplier(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'),
+                    automatic_cost=True)
+        s1 = Supplier(name=u's1')
+        s2 = Supplier(name=u's2')
+
+        psi1 = ProductSupplierInfo(supplier=s1, product=p, cost=Decimal('5'))
+        psi2 = ProductSupplierInfo(supplier=s2, product=p, cost=Decimal('10'))
+        self.db.session.add(p)
+        self.db.session.commit()
+
+        assert p.cost == Decimal('5')
+        psi2.cost = Decimal('8')
+        assert p.cost == Decimal('5')
+        psi1.cost = Decimal('6')
+        assert p.cost == Decimal('6')
+
+
+    def test_automatic_cost_flag_trigger(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
+        s = Supplier(name=u's')
+
+        psi = ProductSupplierInfo(supplier=s, product=p, cost=Decimal('5'),
+                                  base_cost=Decimal('10'),
+                                  automatic_cost=False)
+        bc1 = PriceComponent(name=u'bc1', value=Decimal('30'))
+        bc2 = PriceComponent(name=u'bc2', value=Decimal('10'))
+        psi.bonus_components.extend([bc1, bc2])
+
+        self.db.session.add(psi)
+        self.db.session.commit()
+
+        assert psi.cost == Decimal('5')
+
+        psi.automatic_cost = True
+        assert psi.cost == Decimal('6.3')
 
 
 class TestPriceComponent(TestCase):
