@@ -617,6 +617,3 @@ product_image = db.Table('product_image', db.Model.metadata,
     db.Column('image_id', db.Integer, db.ForeignKey('image.id'),
               primary_key=True)
 )
-
-# circular dependencies
-from nbs.models.supplier import Supplier
