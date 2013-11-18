@@ -478,4 +478,65 @@ class TestProductSupplierInfo(TestCase):
 
 
 class TestPriceComponent(TestCase):
-    pass
+
+    def test_defaults(self):
+        pc = PriceComponent(value=Decimal('1'))
+        self.db.session.add(pc)
+        self.db.session.commit()
+
+        assert pc.name == None
+        assert pc.value == Decimal('1')
+
+    def test_raises_with_none_value(self):
+        pc = PriceComponent(name=u'pc')
+        self.db.session.add(pc)
+        with raises(IntegrityError):
+            self.db.session.commit()
+
+    def test_trigger_product_price_change(self):
+        p = Product(sku=u'1', description=u'p', cost=Decimal('10'),
+                    automatic_price=True)
+        pc1 = PriceComponent(name=u'pc1', value=Decimal('30'))
+        pc2 = PriceComponent(name=u'pc2', value=Decimal('10'))
+
+        p.markup_components.extend([pc1, pc2])
+
+        self.db.session.add(p)
+        self.db.session.commit()
+
+        assert p.price == Decimal('14.3')
+
+        pc1.value = Decimal('40')
+        assert p.price == Decimal('15.4')
+
+        pc2.value = Decimal('20')
+        assert p.price == Decimal('16.8')
+
+    def test_trigger_psi_cost_change(self):
+        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
+        s1 = Supplier(name=u's1')
+        s2 = Supplier(name=u's2')
+
+        ps1 = ProductSupplierInfo(product=p, supplier=s1,
+                                  base_cost=Decimal('20'),
+                                  automatic_cost=True)
+        ps2 = ProductSupplierInfo(product=p, supplier=s2,
+                                  base_cost=Decimal('30'),
+                                  automatic_cost=True)
+
+        pc1 = PriceComponent(name=u'pc1', value=Decimal('10'))
+        pc2 = PriceComponent(name=u'pc2', value=Decimal('20'))
+
+        ps1.bonus_components.append(pc1)
+        ps2.bonus_components.extend([pc1, pc2])
+
+        self.db.session.add(p)
+        self.db.session.commit()
+
+        assert ps1.cost == Decimal('18')
+        assert ps2.cost == Decimal('21.6')
+
+        pc1.value = Decimal('5')
+
+        assert ps1.cost == Decimal('19')
+        assert ps2.cost == Decimal('22.8')

@@ -475,8 +475,10 @@ class PriceComponent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
     _value = db.Column('value', db.Numeric(10, 2), nullable=False)
-    #: supplier_bonus field is added by ProductSupplierInfo.bonus_components
-    #: product_markup field is added by Product.markup_components
+    #: 'supplier_bonus' field is added by ProductSupplierInfo.bonus_components
+    #: 'product_markup' field is added by Product.markup_components
+    #: 'suggested_markup' field is added by
+    #:    ProductCategory.suggested_markup_components
 
     @hybrid_property
     def value(self):
