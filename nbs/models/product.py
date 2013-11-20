@@ -15,8 +15,11 @@ class ProductCategory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
+    #: categroy name
+    name = db.Column(db.Unicode, nullable=False)
+
     #: category description
-    description = db.Column(db.Unicode, nullable=False)
+    description = db.Column(db.Unicode)
 
     #: suggested markup components for calculating the product's price
     suggested_markup_components = db.relationship('PriceComponent',

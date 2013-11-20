@@ -16,25 +16,25 @@ from nbs.models.places import Warehouse
 class TestProductCategory(TestCase):
 
     def test_default_values(self):
-        pc = ProductCategory(description=u'pc')
+        pc = ProductCategory(name=u'pc')
         self.db.session.add(pc)
         self.db.session.commit()
         assert pc.suggested_markup_components == []
         assert pc.suggested_commission == None
 
 
-    def test_raises_with_null_description(self):
+    def test_raises_with_null_name(self):
         pc = ProductCategory(suggested_commission=Decimal('1'))
         self.db.session.add(pc)
         with raises(IntegrityError):
             self.db.session.commit()
 
     def test_parent_commission(self):
-        pc_parent = ProductCategory(description=u'pc_parent',
+        pc_parent = ProductCategory(name=u'pc_parent',
                                     suggested_commission=Decimal('2'))
-        pc_child_1 = ProductCategory(description=u'pc_child_1',
+        pc_child_1 = ProductCategory(name=u'pc_child_1',
                                      suggested_commission=Decimal('5'))
-        pc_child_2 = ProductCategory(description=u'pc_child_2')
+        pc_child_2 = ProductCategory(name=u'pc_child_2')
 
         pc_child_1.parent = pc_parent
         pc_child_2.parent = pc_parent
@@ -46,8 +46,8 @@ class TestProductCategory(TestCase):
         assert pc_child_1.get_commission() == Decimal('5')
         assert pc_child_2.get_commission() == Decimal('2')
 
-        pc_child_11 = ProductCategory(description=u'pc_child_11')
-        pc_child_21 = ProductCategory(description=u'pc_child_21')
+        pc_child_11 = ProductCategory(name=u'pc_child_11')
+        pc_child_21 = ProductCategory(name=u'pc_child_21')
 
         pc_child_11.parent = pc_child_1
         pc_child_21.parent = pc_child_2
@@ -58,9 +58,9 @@ class TestProductCategory(TestCase):
         assert pc_child_21.get_commission() == Decimal('2')
 
     def test_parent_markup(self):
-        pc_parent = ProductCategory(description=u'pc_parent')
-        pc_child_1 = ProductCategory(description=u'pc_child_1')
-        pc_child_2 = ProductCategory(description=u'pc_child_2')
+        pc_parent = ProductCategory(name=u'pc_parent')
+        pc_child_1 = ProductCategory(name=u'pc_child_1')
+        pc_child_2 = ProductCategory(name=u'pc_child_2')
 
         pc_p1 = PriceComponent(name=u'pc_p1', value=Decimal('30'))
         pc_p2 = PriceComponent(name=u'pc_p2', value=Decimal('5'))
@@ -79,8 +79,8 @@ class TestProductCategory(TestCase):
         assert list(pc_child_1.get_markup()) == [Decimal('65')]
         assert list(pc_child_2.get_markup()) == [Decimal('30'), Decimal('5')]
 
-        pc_child_11 = ProductCategory(description=u'pc_child_11')
-        pc_child_21 = ProductCategory(description=u'pc_child_21')
+        pc_child_11 = ProductCategory(name=u'pc_child_11')
+        pc_child_21 = ProductCategory(name=u'pc_child_21')
 
         pc_child_11.parent = pc_child_1
         pc_child_21.parent = pc_child_2
@@ -91,23 +91,17 @@ class TestProductCategory(TestCase):
         assert list(pc_child_21.get_markup()) == [Decimal('30'), Decimal('5')]
 
     def test_get_path(self):
-        pc_parent = ProductCategory(description=u'pc_parent')
-        pc_child_1 = ProductCategory(description=u'pc_child_1',
-                                     parent=pc_parent)
-        pc_child_2 = ProductCategory(description=u'pc_child_2',
-                                     parent=pc_parent)
+        pc_parent = ProductCategory(name=u'pc_parent')
+        pc_child_1 = ProductCategory(name=u'pc_child_1', parent=pc_parent)
+        pc_child_2 = ProductCategory(name=u'pc_child_2', parent=pc_parent)
 
-        pc_child_11 = ProductCategory(description=u'pc_child_11',
-                                       parent=pc_child_1)
-        pc_child_12 = ProductCategory(description=u'pc_child_12',
-                                       parent=pc_child_1)
-        pc_child_21 = ProductCategory(description=u'pc_child_21',
-                                       parent=pc_child_2)
-        pc_child_22 = ProductCategory(description=u'pc_child_22',
-                                       parent=pc_child_2)
+        pc_child_11 = ProductCategory(name=u'pc_child_11', parent=pc_child_1)
+        pc_child_12 = ProductCategory(name=u'pc_child_12', parent=pc_child_1)
+        pc_child_21 = ProductCategory(name=u'pc_child_21', parent=pc_child_2)
+        pc_child_22 = ProductCategory(name=u'pc_child_22', parent=pc_child_2)
 
-        pc_child_211 = ProductCategory(description=u'pc_child_211',
-                                          parent=pc_child_21)
+        pc_child_211 = ProductCategory(name=u'pc_child_211',
+                                       parent=pc_child_21)
 
         self.db.session.add(pc_parent)
         self.db.session.commit()
@@ -120,23 +114,17 @@ class TestProductCategory(TestCase):
                                                  pc_child_21, pc_child_211]
 
     def test_get_children_recursively(self):
-        pc_parent = ProductCategory(description=u'pc_parent')
-        pc_child_1 = ProductCategory(description=u'pc_child_1',
-                                     parent=pc_parent)
-        pc_child_2 = ProductCategory(description=u'pc_child_2',
-                                     parent=pc_parent)
+        pc_parent = ProductCategory(name=u'pc_parent')
+        pc_child_1 = ProductCategory(name=u'pc_child_1', parent=pc_parent)
+        pc_child_2 = ProductCategory(name=u'pc_child_2', parent=pc_parent)
 
-        pc_child_11 = ProductCategory(description=u'pc_child_11',
-                                       parent=pc_child_1)
-        pc_child_12 = ProductCategory(description=u'pc_child_12',
-                                       parent=pc_child_1)
-        pc_child_21 = ProductCategory(description=u'pc_child_21',
-                                       parent=pc_child_2)
-        pc_child_22 = ProductCategory(description=u'pc_child_22',
-                                       parent=pc_child_2)
+        pc_child_11 = ProductCategory(name=u'pc_child_11', parent=pc_child_1)
+        pc_child_12 = ProductCategory(name=u'pc_child_12', parent=pc_child_1)
+        pc_child_21 = ProductCategory(name=u'pc_child_21', parent=pc_child_2)
+        pc_child_22 = ProductCategory(name=u'pc_child_22', parent=pc_child_2)
 
-        pc_child_211 = ProductCategory(description=u'pc_child_211',
-                                          parent=pc_child_21)
+        pc_child_211 = ProductCategory(name=u'pc_child_211',
+                                       parent=pc_child_21)
 
         self.db.session.add(pc_parent)
         self.db.session.commit()
