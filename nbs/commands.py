@@ -17,7 +17,7 @@ from nbs.models import db
 manager = Manager(create_app)
 
 @manager.command
-def initdb(create_admin_user=True):
+def initdb(create_admin_user=True, with_fixtures=False):
     """Creates database tables"""
     db.create_all()
     from nbs.models.product import create_primitive_units
@@ -25,6 +25,9 @@ def initdb(create_admin_user=True):
     if create_admin_user:
         from nbs.models.user import create_admin_user
         create_admin_user()
+    if with_fixtures:
+        from nbs.sample_data import install_fixtures
+        install_fixtures()
 
 @manager.command
 def dropdb():
