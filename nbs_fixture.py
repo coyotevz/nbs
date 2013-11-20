@@ -58,12 +58,6 @@ products = [
     {'sku': u'20590' ,'description': u'CUPLA HH Ø90 GEN FUSION'    ,'price': '102.19'},
 ]
 
-branches = [
-    {'name': u'Casa Central'},
-    {'name': u'Sucursal Godoy Cruz'},
-    {'name': u'Depósito Guaymallén'},
-]
-
 connection = NobixConnection('http://localhost:5000')
 
 for product in products:

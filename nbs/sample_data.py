@@ -7,6 +7,7 @@ from nbs.models import db
 from nbs.models.contact import Contact
 from nbs.models.product import ProductCategory, Product, create_primitive_units
 from nbs.models.supplier import Supplier, SupplierContact
+from nbs.models.places import Warehouse, Branch, Office
 
 def install_fixtures():
     root = ProductCategory(name=u'Instalaciones Domiciliarias', children=[
@@ -41,4 +42,13 @@ def install_fixtures():
     ], fiscal_type=Supplier.FISCAL_RESPONSABLE_INSCRIPTO)
     
     db.session.add_all([gen, der])
+    db.session.commit()
+
+    w1 = Warehouse(name=u'Depósito Central')
+    w2 = Warehouse(name=u'Depósito Godoy Cruz')
+    b1 = Branch(name=u'Casa Central', warehouse=w1)
+    b2 = Branch(name=u'Sucursal Godoy Cruz', warehouse=w2)
+    o1 = Office(name=u'Oficina Administrativa')
+
+    db.session.add_all([b1, b2, o1])
     db.session.commit()
