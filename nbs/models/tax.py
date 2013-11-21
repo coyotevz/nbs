@@ -2,8 +2,8 @@
 
 from nbs.models import db
 
-class Tax(db.Model):
-    __tablename__ = 'tax'
+class TaxConstant(db.Model):
+    __tablename__ = 'tax_constant'
 
     #: used for sale operations
     OPERATION_SALE = u'OPERATION_SALE'
