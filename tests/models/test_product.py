@@ -4,7 +4,7 @@ from pytest import raises
 from decimal import Decimal
 from sqlalchemy.exc import IntegrityError
 
-from tests import TestCase
+from tests import DBTestCase
 from nbs.models.product import (
     ProductCategory, Product, ProductSupplierInfo, PriceComponent
 )
@@ -13,7 +13,7 @@ from nbs.models.supplier import Supplier
 from nbs.models.places import Warehouse
 
 
-class TestProductCategory(TestCase):
+class TestProductCategory(DBTestCase):
 
     def test_default_values(self):
         pc = ProductCategory(name=u'pc')
@@ -140,7 +140,7 @@ class TestProductCategory(TestCase):
                         pc_child_21, pc_child_22, pc_child_211])
 
 
-class TestProduct(TestCase):
+class TestProduct(DBTestCase):
 
     def test_default_status(self):
         p = Product(sku=u'1', description=u'p1', price=Decimal('1'))
@@ -336,7 +336,7 @@ class TestProduct(TestCase):
         assert p.get_stock_for_warehouse(w2).quantity == Decimal('0')
 
 
-class TestProductSupplierInfo(TestCase):
+class TestProductSupplierInfo(DBTestCase):
 
     def test_defaults(self):
         p = Product(sku=u'1', description=u'p', price=Decimal('1'))
@@ -465,7 +465,7 @@ class TestProductSupplierInfo(TestCase):
         assert psi.cost == Decimal('6.3')
 
 
-class TestPriceComponent(TestCase):
+class TestPriceComponent(DBTestCase):
 
     def test_defaults(self):
         pc = PriceComponent(value=Decimal('1'))
