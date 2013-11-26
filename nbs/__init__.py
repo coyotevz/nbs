@@ -4,6 +4,9 @@ import locale
 locale.setlocale(locale.LC_ALL, '')
 
 from flask import Flask, request
+from flask import Request as _Request
+from werkzeug.datastructures import ImmutableOrderedMultiDict
+
 from nbs.models import configure_db
 from nbs.auth import configure_auth
 from nbs.api import configure_api
@@ -28,8 +31,15 @@ def create_app(config=None, app_name=None):
     return app
 
 
+class Request(_Request):
+    """Redefine Request that uses ImmutableOrderedMultiDict for .args"""
+    parameter_storage_class = ImmutableOrderedMultiDict
+
+
 def configure_app(app, config=None):
 
+    # Set custom Request class
+    app.request_class = Request
 
     if config is not None:
         app.config.from_object(config)
