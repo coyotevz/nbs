@@ -33,34 +33,68 @@ OPERATORS = {
     # List operators
     'in': lambda f, a: f.in_(a),
     'nin': lambda f, a: ~f.in_(a),
+
 }
 
 SORT_ORDER = {
+    # Sort order
     'asc': lambda f: f.asc,
     'desc': lambda f: f.desc,
 }
 
 
-class BaseQueryParameters(object):
+class QueryParameters(object):
 
-    def from_request(self, request):
-        args = request.args.copy()
-        fields = request.args.get('fields', [])
-        sort = request.args.get('sort', [])
-        page = request.args.pop('page', 1)
-        page_size = request.args.pop('page_size', 100)
-        include = request.args.pop('include', [])
+    def __init__(self, fields=None, filters=None, page=None, per_page=None,
+                 sort=None, single=False):
+        self.fields = fields or []
+        self.filters = filters or []
+        self.page = page or 1
+        self.per_page = per_page or 25
+        self.sort = sort or []
+        self.single = bool(single)
 
+    def __repr__(self):
+        template = ('<QueryParameters fields={}, filters={}, sort={}, '
+                    'page={}, per_page={}, single={}>')
+        return template.format(self.fields, self.filters, self.sort,
+                               self.page, self.per_page, self.single)
+
+    @staticmethod
+    def from_dict(data):
+        """
+        Returns a new :class:`QueryParameters` object with arguments parsed
+        from `data`.
+        """
+        fields = data.pop('fields', [])
+        sort = [SortBy(**o) for o in data.pop('sort', [])]
+        page = data.pop('page', None)
+        per_page = data.pop('per_page', None)
+        single = data.pop('single', False)
+        filters = []
+        print 'remain data:', data
+        return QueryParameters(fields=fields, filters=filters, page=page,
+                               per_page=per_page, sort=sort, single=single)
 
 def parse_param(key, value):
     key, op = (key.rsplit(':', 1) + ['eq'])[:2]
     if key not in _keywords:
         value = [(op, v) for v in value]
-    if key == 'sort':
+    elif key == 'sort':
         if op not in SORT_ORDER.keys():
             op = 'asc'
         value = [(op, v) for v in value]
+    elif key == 'single':
+        value = [bool(int(v)) for v in value]
+    elif key in ('page', 'per_page'):
+        value = [int(v) for v in value]
     return key, value
+
+
+def unroll_params(params):
+    for k in ('page', 'per_page', 'single'):
+        if params.has_key(k):
+            params[k] = params[k][0]
 
 
 def get_params():
@@ -68,4 +102,5 @@ def get_params():
     for key, value in request.args.iterlists():
         k, v = parse_param(key, value)
         params.setdefault(k, []).extend(v)
-    return params
+    unroll_params(params)
+    return QueryParameters.from_dict(params)
