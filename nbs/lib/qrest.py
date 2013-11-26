@@ -43,6 +43,18 @@ SORT_ORDER = {
 }
 
 
+class OrderBy(object):
+    """Represents an "order by" in SQL query expression."""
+
+    def __init__(self, field, direction='asc'):
+        assert direction in SORT_ORDER.keys()
+        self.field = field
+        self.direction = direction
+
+    def __repr__(self):
+        return '<OrderBy {}, {}>'.format(self.field, self.direction)
+
+
 class QueryParameters(object):
 
     def __init__(self, fields=None, filters=None, page=None, per_page=None,
@@ -67,11 +79,10 @@ class QueryParameters(object):
         from `data`.
         """
         fields = data.pop('fields', [])
-        sort = [SortBy(**o) for o in data.pop('sort', [])]
+        sort = [OrderBy(o[1], o[0]) for o in data.pop('sort', [])]
         page = data.pop('page', None)
         per_page = data.pop('per_page', None)
         single = data.pop('single', False)
-        filters = []
         print 'remain data:', data
         return QueryParameters(fields=fields, filters=filters, page=page,
                                per_page=per_page, sort=sort, single=single)

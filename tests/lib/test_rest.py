@@ -2,7 +2,7 @@
 
 from pytest import raises
 from tests import TestCase
-from nbs.lib.qrest import get_params, QueryParameters
+from nbs.lib.qrest import get_params, QueryParameters, OrderBy
 from flask import request
 
 
@@ -32,7 +32,7 @@ class TestGetParams(TestCase):
 
     def test_sort_order(self):
         params = self.get_params_for('/?sort=description')
-        assert params.sort == [Sort('description', 'asc')]
+        assert params.sort == [OrderBy('description', 'asc')]
 
         assert params == dict(sort=[('asc', 'description')])
         params = self.get_params_for('/?sort=sku&sort:desc=price')
