@@ -8,6 +8,7 @@
 """
 
 from collections import namedtuple
+from sqlalchemy import and_
 from flask import request
 
 _keywords = [
@@ -43,11 +44,18 @@ SORT_ORDER = {
     'desc': lambda f: f.desc,
 }
 
+#: Represents and "order by" in SQL query expression
 OrderBy = namedtuple('OrderBy', 'field direction')
+
+#: Represents a filter to apply to a SQL query
 Filter = namedtuple('Filter', 'field operator argument')
 
 
 class QueryParameters(object):
+    """
+    Aggregates the parameter for a search, including filters, search type,
+    page, per_page and sort directive and fields to retrieve from.
+    """
 
     def __init__(self, fields=None, filters=None, page=None, per_page=None,
                  sort=None, single=False):
@@ -80,6 +88,63 @@ class QueryParameters(object):
             filters.extend([Filter(key, f[0], f[1]) for f in value])
         return QueryParameters(fields=fields, filters=filters, page=page,
                                per_page=per_page, sort=sort, single=single)
+
+
+class SQLQueryBuilder(object):
+    """
+    Provides static functions for building SQLAlchemy query object based on a
+    :class:`QueryParameters` instance.
+    """
+
+    @staticmethod
+    def create_operation(model, fieldname, operator, argument, relation=None):
+        """
+        Translates an operation described as string to a valid SQLAlchemy query
+        parameter using a field or relation of the model.
+        """
+        opfunc = OPERATORS[operator]
+        field = getattr(model, relation or fieldname)
+        return opfunc(field, argument)
+
+    @staticmethod
+    def create_filters(model, filters):
+        """
+        Returns a list of operations on `model` specified in the
+        `filters` list.
+        """
+        nfilters = []
+        for f in filters:
+            fname = f.fieldname
+            relation = None
+            if '.' in fname:
+                relation, fname = fname.split('.')
+            param = SQLQueryBuilder.create_operation(model, fname, f.operator,
+                                                     f.argument, relation)
+            nfilters.append(param)
+        return nfilters
+
+    @staticmethod
+    def create_query(model, query_params):
+
+        if not isinstance(query_params, QueryParameters):
+            raise ValueError("query_params must be an instance of "
+                             "QueryParameters")
+
+        # TODO: Optimize query base on relations required
+        query = model.query
+
+        # Adding field filters
+        filters = SQLQueryBuilder.create_filters(model, query_params.filters)
+        query = query.filter(and_(*filters))
+
+        # Sort query
+        for s in query_params.sort:
+            field = getattr(model, s.field)
+            direction = SORT_ORDER[s.direction](field)
+            query = query.order_by(direction())
+
+        return query
+
 
 def parse_param(key, value):
     key, op = (key.rsplit(':', 1) + ['eq'])[:2]
