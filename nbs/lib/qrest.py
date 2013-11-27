@@ -7,6 +7,7 @@
     Provides tools for building REST interfaces.
 """
 
+from collections import namedtuple
 from flask import request
 
 _keywords = [
@@ -42,17 +43,8 @@ SORT_ORDER = {
     'desc': lambda f: f.desc,
 }
 
-
-class OrderBy(object):
-    """Represents an "order by" in SQL query expression."""
-
-    def __init__(self, field, direction='asc'):
-        assert direction in SORT_ORDER.keys()
-        self.field = field
-        self.direction = direction
-
-    def __repr__(self):
-        return '<OrderBy {}, {}>'.format(self.field, self.direction)
+OrderBy = namedtuple('OrderBy', 'field direction')
+Filter = namedtuple('Filter', 'field operator argument')
 
 
 class QueryParameters(object):
@@ -83,7 +75,9 @@ class QueryParameters(object):
         page = data.pop('page', None)
         per_page = data.pop('per_page', None)
         single = data.pop('single', False)
-        print 'remain data:', data
+        filters = []
+        for key, value in data.iteritems():
+            filters.extend([Filter(key, f[0], f[1]) for f in value])
         return QueryParameters(fields=fields, filters=filters, page=page,
                                per_page=per_page, sort=sort, single=single)
 
