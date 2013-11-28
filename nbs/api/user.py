@@ -2,7 +2,7 @@
 
 from flask import Blueprint, jsonify, url_for, current_app
 from nbs.models import db, User
-from nbs.lib import rest
+from nbs.lib import qrest as rest
 from nbs.utils import jsonify_status_code
 
 from sqlalchemy.exc import IntegrityError

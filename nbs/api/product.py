@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, json, current_app
 from werkzeug.datastructures import MultiDict
 from nbs.models import db, Product, ProductSupplierInfo
 from nbs.auth import Need, Permission, permission_required
-from nbs.lib import rest
+from nbs.lib import qrest as rest
 from nbs.utils import is_json, jsonify_status_code, jsonify_form
 from nbs.forms import ProductForm, ProductSupplierInfoForm
 
