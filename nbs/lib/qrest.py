@@ -168,6 +168,9 @@ def unroll_params(params):
 
 
 def get_params():
+    """
+    Returns a QueryParameters instance for query string received.
+    """
     params = {}
     for key, value in request.args.iterlists():
         k, v = parse_param(key, value)
