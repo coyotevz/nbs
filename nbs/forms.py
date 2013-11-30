@@ -27,8 +27,8 @@ class LoginForm(Form):
         self.user = None
 
     def validate(self):
-        rv = super(LoginForm, self).validate()
-        if not rv:
+        retval = super(LoginForm, self).validate()
+        if not retval:
             return False
 
         user, check = User.query.authenticate(self.username.data,
