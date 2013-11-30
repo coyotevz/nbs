@@ -5,7 +5,7 @@ from nbs.models import Supplier, Contact
 from nbs.auth import Need, Permission, permission_required
 from nbs.lib import qrest as rest
 
-supplier_api = Blueprint('api.supplier', __name__, url_prefix='/api/supplier')
+supplier_api = Blueprint('api.supplier', __name__, url_prefix='/api/suppliers')
 
 list_suppliers_permission   = Permission(Need('list',   'supplier'))
 get_suppliers_permission    = Permission(Need('get',    'supplier'))

@@ -5,7 +5,7 @@ define([
 
   var Product = Model.extend({
 
-    urlRoot: '/api/product',
+    urlRoot: '/api/products',
 
     defaults: {
     },
