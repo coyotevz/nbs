@@ -2,12 +2,12 @@
 
 from flask import Blueprint, jsonify, url_for, current_app
 from nbs.models import db, User
-from nbs.lib import rest
+from nbs.lib import qrest as rest
 from nbs.utils import jsonify_status_code
 
 from sqlalchemy.exc import IntegrityError
 
-user_api = Blueprint('api.user', __name__, url_prefix='/api/user')
+user_api = Blueprint('api.user', __name__, url_prefix='/api/users')
 
 _pf = ['resource', 'action']
 def _user_permissions(user, fields=None):

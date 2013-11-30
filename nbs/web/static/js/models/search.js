@@ -61,54 +61,42 @@ define([
     fetch: function(options) {
       var attrs = [];
       options = options ? _.clone(options) : {};
-      attrs = options.condition ? options.condition : {};
-      options.data = options.data ? options.data : {};
-      options.data["q"] = JSON.stringify({"filters": this._makeFilters(attrs)});
+      attrs = options.condition || {};
+      options.data = _.extend(options.data || {}, this._makeFilters(attrs));
       return Search.__super__.fetch.call(this, options);
     },
 
     /**
-     * Build filters to restless interface based on condition
+     * Build filters to rest interface based on condition
      */
     _makeFilters: function(condition) {
 
       var attrs = _.extend({}, this.condition, condition),
-          filters = [];
+          filters = {};
 
       for (var i=0, keys=_.keys(attrs), tot=keys.length; i < tot; i++) {
         var key = keys[i],
-            filter = {'name': key},
-            attr = attrs[key];
+            name = key,
+            attr = attrs[key],
+            op = '', val, f;
         if (_.isObject(attr)) {
           var a = _.pairs(attr)[0];
-          filter['op'] = a[0];
-          filter['val'] = a[1];
+          //op = a[0];
+          if (Search.operator.contains(a[0])) op = ':'+a[0];
+          val = a[1];
         } else {
-          filter['op'] = 'eq';
-          filter['val'] = attr;
+          val = attr;
         }
-        filters.push(filter);
+        filters[name+op] = val;
       }
 
       return filters;
     },
 
   }, {
-    operator: {
-      equals: ["==", "eq", "equals", "equals_to"],
-      unequals: ["!=", "ne", "neq", "does_not_equal", "not_equal_to"],
-      gt: [">", "gt"],
-      lt: ["<", "lt"],
-      gte: [">=", "ge", "gte", "geq"],
-      lte: ["<=", "le", "lte", "leq"],
-      element_of: ["in", "element_of"],
-      not_element_of: ["not_in", "not_element_of"],
-      is_null: ["is_null"],
-      is_not_null: ["is_not_null"],
-      like: ["like"],
-      has: ["has"],
-      any: ["any"],
-    },
+    operator: _(['eq', 'neq', 'gt', 'gte', 'lt', 'lte',
+                 'contains', 'endswith', 'startswith', 'like', 'ilike',
+                 'in', 'nin'])
   });
 
   window.Search = Search;
