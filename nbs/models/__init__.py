@@ -13,7 +13,7 @@ __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
     'TaxConstant',
 
     # Documents
-    'SaleInvoice', 'PurchaseInvoice', 'SaleOrder', 'PurchaseOrder',
+    'Document', 'SaleInvoice', 'PurchaseInvoice', 'SaleOrder', 'PurchaseOrder',
     'SaleQuotation', 'PurchaseQuotation', 'SaleRefer', 'PurchaseRefer',
     'SaleCreditNote', 'PurchaseCreditNote', 'SaleDebitNote',
     'PurchaseDebitNote','SaleReceipt', 'PurchaseReceipt', 'SaleReturn',
@@ -37,9 +37,9 @@ from nbs.models.supplier import Supplier, SupplierContact
 from nbs.models.tax import TaxConstant
 
 from nbs.models.document import (
-        SaleInvoice, PurchaseInvoice, SaleOrder, PurchaseOrder, SaleQuotation,
-        PurchaseQuotation, SaleRefer, PurchaseRefer, SaleCreditNote,
-        PurchaseCreditNote, SaleDebitNote, PurchaseDebitNote, SaleReceipt,
-        PurchaseReceipt, SaleReturn, PurchaseReturn, PaymentOrder, CreditCupon,
-        SupplyRequest, StockRequest, SupplyTransfer, StockTransfer
+    Document, SaleInvoice, PurchaseInvoice, SaleOrder, PurchaseOrder,
+    SaleQuotation, PurchaseQuotation, SaleRefer, PurchaseRefer, SaleCreditNote,
+    PurchaseCreditNote, SaleDebitNote, PurchaseDebitNote, SaleReceipt,
+    PurchaseReceipt, SaleReturn, PurchaseReturn, PaymentOrder, CreditCupon,
+    SupplyRequest, StockRequest, SupplyTransfer, StockTransfer
 )
