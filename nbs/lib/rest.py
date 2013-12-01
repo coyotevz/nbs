@@ -7,28 +7,192 @@
     Provides tools for building REST interfaces.
 """
 
-import inspect
 import datetime
 import uuid
 import decimal
+from collections import namedtuple
 
-from flask import Blueprint, request, current_app, json, make_response, abort
-from flask.ext.sqlalchemy import Pagination
-
-from werkzeug.exceptions import default_exceptions, HTTPException
-
-from sqlalchemy import and_ as AND, or_ as OR
+from sqlalchemy import and_
 from sqlalchemy.orm import ColumnProperty, RelationshipProperty, object_mapper
-from sqlalchemy.orm.query import Query
 from sqlalchemy.orm.util import class_mapper
-from sqlalchemy.orm.attributes import InstrumentedAttribute
-from sqlalchemy.orm.exc import UnmappedInstanceError
-from sqlalchemy.ext.associationproxy import AssociationProxy
 from sqlalchemy.ext.hybrid import hybrid_property
+from werkzeug.exceptions import default_exceptions, HTTPException
+from flask import request, make_response, abort, json, current_app
+from flask.ext.sqlalchemy import Pagination
 
 from nbs.utils import is_json
 
+_keywords = [
+    'page', 'per_page', 'single', 'sort', 'fields', 'include'
+]
 
+OPERATORS = {
+
+    # General comparators
+    'eq': lambda f, a: f == a,
+    'neq': lambda f, a: f != a,
+    'gt': lambda f, a: f > a,
+    'gte': lambda f, a: f >= a,
+    'lt': lambda f, a: f < a,
+    'lte': lambda f, a: f <= a,
+
+    # String operators
+    'contains': lambda f, a: f.contains(a),
+    'endswith': lambda f, a: f.endswith(a),
+    'startswith': lambda f, a: f.startswith(a),
+    'like': lambda f, a: f.like(a),
+    'ilike': lambda f, a: f.ilike(a),
+
+    # List operators
+    'in': lambda f, a: f.in_(a),
+    'nin': lambda f, a: ~f.in_(a),
+
+}
+
+SORT_ORDER = {
+    # Sort order
+    'asc': lambda f: f.asc,
+    'desc': lambda f: f.desc,
+}
+
+#: Represents and "order by" in SQL query expression
+OrderBy = namedtuple('OrderBy', 'field direction')
+
+#: Represents a filter to apply to a SQL query
+Filter = namedtuple('Filter', 'field operator argument')
+
+
+class QueryParameters(object):
+    """
+    Aggregates the parameter for a search, including filters, search type,
+    page, per_page and sort directive and fields to retrieve from.
+    """
+
+    def __init__(self, fields=None, filters=None, page=None, per_page=None,
+                 sort=None, single=False, spec=None):
+        self.fields = fields or []
+        self.filters = filters or []
+        self.page = page or 1
+        self.per_page = per_page or 25
+        self.sort = sort or []
+        self.single = bool(single)
+        self.spec = spec
+
+    def __repr__(self):
+        template = ('<QueryParameters fields={}, filters={}, sort={}, '
+                    'page={}, per_page={}, single={}>')
+        return template.format(self.fields, self.filters, self.sort,
+                               self.page, self.per_page, self.single)
+
+    @staticmethod
+    def from_dict(data, spec=None):
+        """
+        Returns a new :class:`QueryParameters` object with arguments parsed
+        from `data`.
+        """
+        fields = data.pop('fields', [])
+        sort = [OrderBy(o[1], o[0]) for o in data.pop('sort', [])]
+        page = data.pop('page', None)
+        per_page = data.pop('per_page', None)
+        single = data.pop('single', False)
+        filters = []
+        for key, value in data.iteritems():
+            filters.extend([Filter(key, f[0], f[1]) for f in value])
+        return QueryParameters(fields=fields, filters=filters, page=page,
+                               per_page=per_page, sort=sort, single=single,
+                               spec=spec)
+
+
+class SQLQueryBuilder(object):
+    """
+    Provides static functions for building SQLAlchemy query object based on a
+    :class:`QueryParameters` instance.
+    """
+
+    @staticmethod
+    def create_operation(model, fieldname, operator, argument, relation=None):
+        """
+        Translates an operation described as string to a valid SQLAlchemy query
+        parameter using a field or relation of the model.
+        """
+        opfunc = OPERATORS[operator]
+        field = getattr(model, relation or fieldname)
+        return opfunc(field, argument)
+
+    @staticmethod
+    def create_filters(model, filters):
+        """
+        Returns a list of operations on `model` specified in the
+        `filters` list.
+        """
+        nfilters = []
+        for f in filters:
+            fname = f.field
+            relation = None
+            if '.' in fname:
+                relation, fname = fname.split('.')
+            param = SQLQueryBuilder.create_operation(model, fname, f.operator,
+                                                     f.argument, relation)
+            nfilters.append(param)
+        return nfilters
+
+    @staticmethod
+    def create_query(model, query_params):
+
+        if not isinstance(query_params, QueryParameters):
+            raise ValueError("query_params must be an instance of "
+                             "QueryParameters")
+
+        # TODO: Optimize query base on relations required
+        query = model.query
+
+        # Adding field filters
+        filters = SQLQueryBuilder.create_filters(model, query_params.filters)
+        query = query.filter(and_(*filters))
+
+        # Sort query
+        for s in query_params.sort:
+            field = getattr(model, s.field)
+            direction = SORT_ORDER[s.direction](field)
+            query = query.order_by(direction())
+
+        return query
+
+
+def parse_param(key, value):
+    key, op = (key.rsplit(':', 1) + ['eq'])[:2]
+    if key not in _keywords:
+        value = [(op, v) for v in value]
+    elif key == 'sort':
+        if op not in SORT_ORDER.keys():
+            op = 'asc'
+        value = [(op, v) for v in value]
+    elif key == 'single':
+        value = [bool(int(v)) for v in value]
+    elif key in ('page', 'per_page'):
+        value = [int(v) for v in value]
+    return key, value
+
+
+def unroll_params(params):
+    for k in ('page', 'per_page', 'single'):
+        if params.has_key(k):
+            params[k] = params[k][0]
+
+
+def get_params(spec=None):
+    """
+    Returns a QueryParameters instance for query string received.
+    """
+    params = {}
+    for key, value in request.args.iterlists():
+        k, v = parse_param(key, value)
+        params.setdefault(k, []).extend(v)
+    unroll_params(params)
+    return QueryParameters.from_dict(params, spec)
+
+
+# From old module
 class RestException(HTTPException):
 
     def __init__(self, message, code=None):
@@ -52,234 +216,6 @@ def rest_abort(code=400, message=None):
     error = type('RestException', tuple(bases), dict(code=code))(message)
     abort(make_response(error, code, {}))
 
-def _sub_operator(model, argument, fieldname):
-    if isinstance(model, InstrumentedAttribute):
-        submodel = model.property.mapper.class_
-    elif isinstance(model, AssociationProxy):
-        submodel = get_related_association_proxy_model(model)
-    else:
-        pass
-    if isinstance(argument, dict):
-        fieldname = argument['name']
-        operator = argument['op']
-        argument = argument['val']
-        relation = None
-        if '.' in fieldname:
-            fielname, relation = fieldname.split('.')
-        return create_operation(submodel, fieldname, operator,
-                                argument, relation)
-
-    return getattr(submodel, fieldname) == argument
-
-OPERATORS = {
-    # Operators which accept a single argument.
-    'is_null': lambda f: f == None,
-    'is_not_null': lambda f: f != None,
-    'desc': lambda f: f.desc,
-    'asc': lambda f: f.asc,
-    # Operators which accepts two arguments.
-    '==': lambda f, a: f == a,
-    'eq': lambda f, a: f == a,
-    'equals': lambda f, a: f == a,
-    'equal_to': lambda f, a: f == a,
-    '!=': lambda f, a: f != a,
-    'ne': lambda f, a: f != a,
-    'neq': lambda f, a: f != a,
-    'not_equal_to': lambda f, a: f != a,
-    'does_not_equal': lambda f, a: f != a,
-    '>': lambda f, a: f > a,
-    'gt': lambda f, a: f > a,
-    '<': lambda f, a, : f < a,
-    'lt': lambda f, a: f < a,
-    '>=': lambda f, a: f >= a,
-    'ge': lambda f, a: f >= a,
-    'gte': lambda f, a: f >= a,
-    '<=': lambda f, a: f <= a,
-    'le': lambda f, a: f <= a,
-    'lte': lambda f, a: f <= a,
-    'ilike': lambda f, a: f.ilike(a),
-    'like': lambda f, a: f.like(a),
-    'in': lambda f, a: f.in_(a),
-    'not_in': lambda f, a: ~f.in_(a),
-    # Operators which accpets three arguments.
-    'has': lambda f, a, fn: f.has(_sub_operator(f, a, fn)),
-    'any': lambda f, a, fn: f.any(_sub_operator(f, a, fn)),
-}
-
-
-class OrderBy(object):
-    """Represents an "order by" in SQL query expression."""
-
-    def __init__(self, field, direction='asc'):
-        self.field = field
-        self.direction = direction
-
-    def __repr__(self):
-        return '<OrderBy {}, {}>'.format(self.field, self.direction)
-
-
-class Filter(object):
-    """Represents a filter to apply to a SQL query."""
-
-    def __init__(self, fieldname, operator, argument=None, otherfield=None):
-        self.fieldname = fieldname
-        self.operator = operator
-        self.argument = argument
-        self.otherfield = otherfield
-
-    def __repr__(self):
-        return '<Filter {} {} {}>'.format(self.fieldname, self.operator,
-                                          self.argument or self.otherfield)
-
-    @staticmethod
-    def from_dict(data):
-        """Returns a new :class:`Filter` object with arguments parsed from
-        `data`.
-
-        `data` is a data of the form::
-            
-            {'name': 'age', 'op': 'lt', 'val': 20}
-
-        or::
-
-            {'name': 'age', 'op': 'lt', 'field': 'height'}
-        
-        """
-        fieldname = data.get('name')
-        operator = data.get('op')
-        argument = data.get('val')
-        otherfield = data.get('field')
-        return Filter(fieldname, operator, argument, otherfield)
-
-
-class QueryParameters(object):
-    """Aggregates the parameter for a search, including filters, search type,
-    page, per_page, order by directive and fields to retrieve from.
-    """
-
-    def __init__(self, fields=None, filters=None, page=None, per_page=None,
-                 order_by=None, junction=None, single=False, spec=None):
-        self.fields = fields or []
-        self.filters = filters or []
-        self.page = page or 1
-        self.per_page = per_page or 25
-        self.order_by = order_by or []
-        self.junction = junction or AND
-        self.single = bool(single)
-        self.spec = spec
-
-    def __repr__(self):
-        template = ('<QueryParameters fields={}, filters={}, order_by={}, '
-                    'page={}, per_page={}, junction={}, single={}>')
-        return template.format(self.fields, self.filters, self.order_by,
-                               self.page, self.per_page,
-                               self.junction.__name__, self.single)
-
-    @staticmethod
-    def from_dict(data, spec=None):
-        """Returns a new :class:`Parameters` object with arguments parsed from
-        `data`.
-
-        `data` is of the form::
-
-            {
-                'filters': [{'name': 'age', 'op': 'lt', 'val': 20}, ...],
-                'order_by': [{'field': 'age', 'direction': 'desc'}, ...],
-                'page': 2,
-                'per_page': 20,
-                'disjuction': True,
-                'single': True,
-                'fields': ['name', 'age', 'height'],
-            }
-        """
-        fields = data.get('fields', [])
-        filters = [Filter.from_dict(f) for f in data.get('filters',  [])]
-        order_by = [OrderBy(**o) for o in data.get('order_by', [])]
-        page = data.get('page')
-        per_page = data.get('per_page')
-        junction = OR if data.get('disjuction') else AND
-        single = data.get('single', False)
-        return QueryParameters(fields=fields, filters=filters, page=page,
-                               per_page=per_page, order_by=order_by,
-                               junction=junction, single=single, spec=spec)
-
-
-class SQLQueryBuilder(object):
-    """Provides static functions for building a SQLAlchemy query object based
-    on a :class:`QueryParameters` instance.
-    """
-
-    @staticmethod
-    def create_operation(model, fieldname, operator, argument, relation=None):
-        """Translates an operation described as string to a valid SQLAlchemy
-        query parameter using a field or relation of the model.
-        """
-
-        opfunc = OPERATORS[operator]
-        argspec = inspect.getargspec(opfunc)
-        numargs = len(argspec.args)
-        field = getattr(model, relation or fieldname)
-        if numargs == 1:
-            return opfunc(field)
-        if argument is None:
-            raise TypeError
-        if numargs == 2:
-            return opfunc(field, argument)
-        return opfunc(field, argument, fieldname)
-
-
-    @staticmethod
-    def create_filters(model, query_params):
-        """Returns a list of operations on `model` specified in the
-        :attr:`filters` attribute on the `query_params` object.
-        """
-        filters = []
-        for f in query_params.filters:
-            fname = f.fieldname
-            val = f.argument
-            relation = None
-            if '.' in fname:
-                relation, fname = fname.split('.')
-            if f.otherfield:
-                val = getattr(model, f.otherfield)
-            param = SQLQueryBuilder.create_operation(model, fname, f.operator,
-                                                     val, relation)
-            filters.append(param)
-
-        return filters
-
-    @staticmethod
-    def create_query(model, query_params):
-
-        if not isinstance(query_params, QueryParameters):
-            raise ValueError("query_params must be an instance of "
-                             "QueryParameters")
-
-        # TODO: Optimize query based on relations required
-        query = model.query
-
-        # Adding field filters
-        filters = SQLQueryBuilder.create_filters(model, query_params)
-        query = query.filter(query_params.junction(*filters))
-
-        # Order the search
-        for val in query_params.order_by:
-            field = getattr(model, val.field)
-            direction = getattr(field, val.direction)
-            query = query.order_by(direction())
-
-        return query
-
-def get_params(spec=None):
-    try:
-        params = json.loads(request.args.get('q', '{}'))
-        params.setdefault('page', request.page)
-        params.setdefault('per_page', request.per_page)
-        return QueryParameters.from_dict(params, spec)
-    except (TypeError, ValueError, OverflowError), exc:
-        current_app.logger.exception(exc.message)
-        rest_abort(400, message=u'Unable to decode data')
-
 def get_data():
     if not is_json(request):
         msg = u'Request must have "Content-Type: application/json" header'
@@ -287,7 +223,7 @@ def get_data():
 
     try:
         params = json.loads(request.data)
-    except (TypeError, ValueError, OverflowError), exception:
+    except (TypeError, ValueError, OverflowError) as exception:
         current_app.logger.exception(exception.message)
         rest_abort(400, message=u'Unable to decode data')
 

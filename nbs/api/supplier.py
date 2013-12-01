@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify
 from nbs.models import Supplier, Contact
 from nbs.auth import Need, Permission, permission_required
-from nbs.lib import qrest as rest
+from nbs.lib import rest
 
 supplier_api = Blueprint('api.supplier', __name__, url_prefix='/api/suppliers')
 

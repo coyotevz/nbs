@@ -52,4 +52,4 @@ def is_json(req):
     return req.mimetype == 'application/json'
 
 # circular dependencies
-from nbs.lib.qrest import is_mapped_class, to_dict
+from nbs.lib.rest import is_mapped_class, to_dict

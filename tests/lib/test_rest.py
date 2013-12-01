@@ -2,7 +2,7 @@
 
 from pytest import raises
 from tests import TestCase
-from nbs.lib.qrest import get_params, QueryParameters, OrderBy, Filter
+from nbs.lib.rest import get_params, QueryParameters, OrderBy, Filter
 from flask import request
 
 

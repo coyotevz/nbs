@@ -155,7 +155,7 @@ def logout_view():
 
 @login_required
 def test_view():
-    from nbs.lib import qrest as rest
+    from nbs.lib import rest
 
     identity=g.identity
     return jsonify(
