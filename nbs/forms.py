@@ -8,7 +8,7 @@ from wtforms import (
 )
 from wtforms.validators import Required, NumberRange
 
-from .models import db, User, Product, ProductSupplierInfo
+from .models import db, User, Product, ProductSupplierInfo, Document
 
 
 class LoginForm(Form):
@@ -52,3 +52,10 @@ class ProductSupplierInfoForm(ModelForm):
     class Meta:
         model = ProductSupplierInfo
         include = ['product_id', 'supplier_id']
+
+
+class DocumentForm(ModelForm):
+
+    class Meta:
+        model = Document
+        include = ['issue_place_id']

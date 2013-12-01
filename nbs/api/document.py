@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, current_app
 from nbs.models import db, Document, SaleInvoice
+from nbs.models.document import SUBTYPE_DOCUMENTS
 from nbs.lib import rest
+from nbs.utils import jsonify_form, jsonify_status_code
+from nbs.forms import DocumentForm
 
 document_api = Blueprint('api.document', __name__, url_prefix='/api/documents')
 
@@ -13,6 +16,13 @@ _spec = {
     'authorized': [],
 }
 
+@document_api.route('/types', methods=['GET'])
+def list_doctypes():
+    """Returns a list of available document types."""
+    params = rest.get_params()
+    result = rest.build_result_page(params, SUBTYPE_DOCUMENTS)
+    return jsonify(result)
+
 @document_api.route('', methods=['GET'])
 def list():
     """Returns a paginated list of documents."""
@@ -20,3 +30,18 @@ def list():
     query = rest.get_query(Document, params)
     result = rest.get_result(query, params)
     return jsonify(result)
+
+@document_api.route('', methods=['POST'])
+def add():
+    # read parameters from body request
+    form = DocumentForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        obj = rest.get_instance(Document, form.patch_data)
+        try:
+            db.session.add(obj)
+            db.session.commit()
+            return jsonify_status_code(201, **rest.to_dict(obj))
+        except Exception as e:
+            current_app.logger.exception(e.message)
+            return rest.rest_abort(409, message='Confilict')
+    return jsonify_form(form)

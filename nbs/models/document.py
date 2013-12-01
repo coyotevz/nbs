@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from collections import namedtuple
 
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
@@ -21,6 +22,22 @@ Generalmente los documentos tienen una fecha de emision y lugar de emision,
 tambien puden contener una fecha de vencimiento.
 """
 
+SubDoc = namedtuple('SubDoc', 'long short')
+
+SUBTYPE_DOCUMENTS = {
+    'NFA': SubDoc(u'Nuestra Factura A', u'Factura A'),
+    'NFB': SubDoc(u'Nuestra Factura B', u'Factura B'),
+    'VFA': SubDoc(u'Vuestra Factura A', u'Factura A'),
+    'VFB': SubDoc(u'Vuestra Factura B', u'Factura B'),
+    'VFM': SubDoc(u'Vuestra Factura M', u'Factura M'), # Monotributista
+    'NOV': SubDoc(u'Nuestra Orden de Venta', u'Orden de Venta'),
+    'NOC': SubDoc(u'Nuestra Orden de Compra', u'Orden de Compra'),
+    'PRE': SubDoc(u'Presupuesto de Venta', u'Presupuesto'),
+    'PRC': SubDoc(u'Presupuesto de Compra', u'Presupuesto'),
+    'REV': SubDoc(u'Remito de Venta', u'Remito'),
+    'REC': SubDoc(u'Remito de Compra', u'Remito'),
+}
+
 
 class Document(db.Model, TimestampMixin):
     """Base document"""
@@ -28,7 +45,12 @@ class Document(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     document_type = db.Column(db.Unicode)
 
-    issue_place_id = db.Column(db.Integer, db.ForeignKey('place.place_id'))
+    subtype_document = db.Column(db.Enum(*SUBTYPE_DOCUMENTS.keys(),
+                                         name='subtype_document_enum'),
+                                 nullable=False)
+
+    issue_place_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
+                               nullable=False)
     issue_place = db.relationship(Place, backref="documents")
 
     issue_date = db.Column(db.DateTime, default=datetime.now)
