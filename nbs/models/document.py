@@ -3,6 +3,8 @@
 from datetime import datetime
 from collections import namedtuple
 
+from sqlalchemy.ext.hybrid import hybrid_property
+
 from nbs.models import db
 from nbs.models.misc import TimestampMixin
 from nbs.models.places import Place
@@ -24,7 +26,7 @@ tambien puden contener una fecha de vencimiento.
 
 SubDoc = namedtuple('SubDoc', 'long short')
 
-SUBTYPE_DOCUMENTS = {
+TYPE_DOCUMENTS = {
     'NFA': SubDoc(u'Nuestra Factura A', u'Factura A'),
     'NFB': SubDoc(u'Nuestra Factura B', u'Factura B'),
     'VFA': SubDoc(u'Vuestra Factura A', u'Factura A'),
@@ -38,16 +40,18 @@ SUBTYPE_DOCUMENTS = {
     'REC': SubDoc(u'Remito de Compra', u'Remito'),
 }
 
+_ss = SubDoc(u'Unknown Document', u'Unknown')
+
 
 class Document(db.Model, TimestampMixin):
     """Base document"""
     __tablename__ = 'document'
     id = db.Column(db.Integer, primary_key=True)
-    document_type = db.Column(db.Unicode)
+    _type = db.Column(db.Unicode)
 
-    subtype_document = db.Column(db.Enum(*SUBTYPE_DOCUMENTS.keys(),
-                                         name='subtype_document_enum'),
-                                 nullable=False)
+    document_type = db.Column(db.Enum(*TYPE_DOCUMENTS.keys(),
+                                      name='type_document_enum'),
+                              nullable=False)
 
     issue_place_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
                                nullable=False)
@@ -55,7 +59,15 @@ class Document(db.Model, TimestampMixin):
 
     issue_date = db.Column(db.DateTime, default=datetime.now)
     expiration_date = db.Column(db.DateTime, default=datetime.now)
-    __mapper_args__ = {'polymorphic_on': document_type}
+    __mapper_args__ = {'polymorphic_on': _type}
+
+    @hybrid_property
+    def document_type_str(self):
+        return TYPE_DOCUMENTS.get(self.document_type, _ss).long
+
+    @hybrid_property
+    def document_type_str_short(self):
+        return TYPE_DOCUMENTS.get(self.document_type, _ss).short
 
 
 class DocumentItem(db.Model):

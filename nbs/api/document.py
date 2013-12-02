@@ -2,7 +2,7 @@
 
 from flask import Blueprint, jsonify, current_app
 from nbs.models import db, Document, SaleInvoice
-from nbs.models.document import SUBTYPE_DOCUMENTS
+from nbs.models.document import TYPE_DOCUMENTS
 from nbs.lib import rest
 from nbs.utils import jsonify_form, jsonify_status_code
 from nbs.forms import DocumentForm
@@ -20,7 +20,7 @@ _spec = {
 def list_doctypes():
     """Returns a list of available document types."""
     params = rest.get_params()
-    result = rest.build_result_page(params, SUBTYPE_DOCUMENTS)
+    result = rest.build_result_page(params, TYPE_DOCUMENTS)
     return jsonify(result)
 
 @document_api.route('', methods=['GET'])
