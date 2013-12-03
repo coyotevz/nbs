@@ -9,6 +9,7 @@ define(function() {
     match('', 'dashboard#index', {name: 'index'});
     match('dashboard', 'dashboard#index', {name: 'index'});
     match('pos', 'pos#index', {name: 'pos_index'});
+    match('admin', 'admin#index', {name: 'admin_index'});
   };
 
   return routes;
