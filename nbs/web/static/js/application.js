@@ -1,11 +1,12 @@
 define([
   'chaplin',
+  'views/layout',
   'bootstrap',
 
   // jQuery plugins
   'jquery.keycode',
   'jquery.number',
-], function(Chaplin) {
+], function(Chaplin, Layout) {
   'use strict';
 
   // The application object
@@ -15,8 +16,11 @@ define([
     // "Controller title - Site title" (see Layout#adjustTitle)
     title: 'Nobix',
 
+    initLayout: function(options) {
+      return this.layout = new Layout(options);
+    },
+
   });
 
   return Application;
-
 });
