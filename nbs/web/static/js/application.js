@@ -17,7 +17,13 @@ define([
     title: 'Nobix',
 
     initLayout: function(options) {
-      return this.layout = new Layout(options);
+      if (options == null) {
+        options = {};
+      }
+      if (options.title == null) {
+        options.title = this.title;
+      }
+      this.layout = new Layout(options);
     },
 
   });

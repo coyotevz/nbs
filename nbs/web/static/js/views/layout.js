@@ -15,11 +15,9 @@ define([
       main: '',
     },
 
-    initialize: function(options) {
-      options = _.extend(options, {
-        titleTemplate: nunjucks.Template("{{ subtitle }} – {{ title }}"),
-      });
-      this.subscribeEvent('startupController', this.removeFallback);
+    initialize: function() {
+      Layout.__super__.initialize.apply(this, arguments);
+      this.subscribeEvent("startupController", this.removeFallback);
     },
 
     navigate: function(controller, params, route) {
