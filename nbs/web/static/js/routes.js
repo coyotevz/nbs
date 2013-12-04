@@ -10,6 +10,7 @@ define(function() {
     match('dashboard', 'dashboard#index', {name: 'index'});
     match('pos', 'pos#index', {name: 'pos_index'});
     match('admin', 'admin#index', {name: 'admin_index'});
+    match('admin/products', 'products#index', {name: 'products_index'});
   };
 
   return routes;
