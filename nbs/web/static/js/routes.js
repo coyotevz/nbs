@@ -6,11 +6,11 @@ define(function() {
   var routes = function(match) {
 
     /* dashboard controller */
-    match('', 'dashboard#index', {name: 'index'});
-    match('dashboard', 'dashboard#index', {name: 'index'});
-    match('pos', 'pos#index', {name: 'pos_index'});
-    match('admin', 'admin#index', {name: 'admin_index'});
-    match('admin/products', 'products#index', {name: 'products_index'});
+    //match('', 'dashboard#index', {name: 'index'});
+    //match('dashboard', 'dashboard#index', {name: 'index'});
+    //match('pos', 'pos#index', {name: 'pos_index'});
+    match('', 'admin#index', {name: 'admin_index'});
+    match('products', 'product#index', {name: 'product_index'});
   };
 
   return routes;

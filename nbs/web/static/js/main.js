@@ -3,5 +3,8 @@ require([
   'application',
   'routes',
 ], function(Application, routes) {
-  var app = new Application({routes: routes});
+  var app = new Application({
+    routes: routes,
+    pushState: false,
+  });
 });
