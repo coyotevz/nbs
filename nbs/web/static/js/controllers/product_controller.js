@@ -1,9 +1,9 @@
 define([
-  'controllers/base_admin_controller',
-], function(BaseAdminController) {
+  'controllers/admin_controller',
+], function(AdminController) {
   "use strict";
 
-  var ProductController = BaseAdminController.extend({
+  var ProductController = AdminController.extend({
     title: 'Products',
 
     index: function(params) {

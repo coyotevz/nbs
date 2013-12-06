@@ -4,8 +4,8 @@ define([
   "use strict";
 
   var TestBodyView = View.extend({
-    template: 'test_body_page.html',
-    //noWrap: true,
+    template: 'admin/supplier/test_body_page.html',
+    noWrap: true,
 
     initialize: function() {
       TestBodyView.__super__.initialize.apply(this, arguments);

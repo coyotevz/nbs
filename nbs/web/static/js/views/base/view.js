@@ -46,6 +46,7 @@ define([
       templateFunc = this.getTemplateFunction();
       if (typeof templateFunc === 'function') {
         html = templateFunc(this.getTemplateData());
+        // Respect noWrap option
         if (!this.noWrap) {
           this.$el.html(html);
         } else {
@@ -54,8 +55,6 @@ define([
             throw new Error('There must be a single top-level element when ' +
                             'using `noWrap`');
           }
-          console.log('html:', html);
-          console.log('$html:'. $html);
           this.setElement($html, true);
         }
       }
