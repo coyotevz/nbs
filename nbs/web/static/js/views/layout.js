@@ -1,7 +1,6 @@
 define([
   'chaplin',
-  'nunjucks',
-], function(Chaplin, nunjucks) {
+], function(Chaplin) {
   "use strict";
 
   var Layout = Chaplin.Layout.extend({
@@ -15,8 +14,8 @@ define([
       main: '',
     },
 
-    initialize: function() {
-      Layout.__super__.initialize.apply(this, arguments);
+    initialize: function(options) {
+      Layout.__super__.initialize.apply(this, options);
       this.subscribeEvent("startupController", this.removeFallback);
     },
 

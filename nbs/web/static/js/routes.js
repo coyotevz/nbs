@@ -11,6 +11,8 @@ define(function() {
     //match('pos', 'pos#index', {name: 'pos_index'});
     match('', 'admin#index', {name: 'admin_index'});
     match('products', 'product#index', {name: 'product_index'});
+    match('suppliers', 'supplier#index', {name: 'supplier_index'});
+    match('suppliers/show', 'supplier#show', {name: 'supplier_show'});
   };
 
   return routes;
