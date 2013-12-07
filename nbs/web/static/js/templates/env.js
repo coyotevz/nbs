@@ -7,7 +7,7 @@ define([
 
   /* Check if have precompiled templates else use HttpLoader */
   if (!nunjucks.env) {
-    var CustomLoader = nunjucks.HttpLoader.extend({
+    var CustomLoader = nunjucks.WebLoader.extend({
 
       getSource: function(name) {
         var url = require.toUrl(this.baseURL + '/' + name);

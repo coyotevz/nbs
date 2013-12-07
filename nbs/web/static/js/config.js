@@ -10,18 +10,18 @@ var require = {
 
   paths: {
     // Specify the paths for vendor libraries
-    'json':                 'vendor/json2',
+    'json':                 'vendor/json2-2013-05-25',
     'jquery':               'vendor/jquery-1.10.2',
     'jquery.keycode':       'vendor/jquery.keycode',
     'jquery.number':        'vendor/jquery.number-2.1.3',
-    'underscore':           'vendor/lodash-1.3.1',
-    'backbone':             'vendor/backbone-1.0.0',
-    'backbone.stickit':     'vendor/backbone.stickit-0.6.3',
-    'backbone.relational':  'vendor/backbone-relational',
-    'backbone.validation':  'vendor/backbone-validation-0.8.1-amd',
-    'chaplin':              'vendor/chaplin-0.10.0',
-    'nunjucks':             'vendor/nunjucks-dev-0.1.10',
-    'bootstrap':            'vendor/bootstrap',
+    'underscore':           'vendor/lodash-2.4.1',
+    'backbone':             'vendor/backbone-1.1.0',
+    'backbone.stickit':     'vendor/backbone-stickit-0.6.3',
+    'backbone.relational':  'vendor/backbone-relational-0.8.6',
+    'backbone.validation':  'vendor/backbone-validation-amd-0.9.0',
+    'chaplin':              'vendor/chaplin-0.11.3',
+    'nunjucks':             'vendor/nunjucks-1.0.0',
+    'bootstrap':            'vendor/bootstrap-3.0.3',
 
     // List internal paths
     // 'ClientModel': 'models/client',
