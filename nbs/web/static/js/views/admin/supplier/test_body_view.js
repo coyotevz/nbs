@@ -11,6 +11,14 @@ define([
       TestBodyView.__super__.initialize.apply(this, arguments);
       console.log('TestBodyView#initialize(%s)', this.cid);
     },
+
+    getTemplateData: function() {
+      // to test view instances creation
+      return _.extend(
+        TestBodyView.__super__.getTemplateData.apply(this, arguments),
+        {cid: this.cid}
+      );
+    },
   });
 
   return TestBodyView;

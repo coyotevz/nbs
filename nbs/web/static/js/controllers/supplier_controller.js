@@ -9,7 +9,7 @@ define([
 
     beforeAction: function(params, route) {
       SupplierController.__super__.beforeAction.apply(this, arguments);
-      this.compose('body', TestBodyView, {'region': 'body'})
+      this.compose('content', TestBodyView, {region: 'content'})
     },
 
     index: function(params) {
