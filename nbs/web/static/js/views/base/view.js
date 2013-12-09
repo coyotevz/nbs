@@ -39,25 +39,7 @@ define([
     },
 
     render: function() {
-      var html, $html, templateFunc;
-      if (this.disposed) {
-        return false;
-      }
-      templateFunc = this.getTemplateFunction();
-      if (typeof templateFunc === 'function') {
-        html = templateFunc(this.getTemplateData());
-        // Respect noWrap option
-        if (!this.noWrap) {
-          this.$el.html(html);
-        } else {
-          $html = $(html);
-          if ($html.length > 1) {
-            throw new Error('There must be a single top-level element when ' +
-                            'using `noWrap`');
-          }
-          this.setElement($html, true);
-        }
-      }
+      View.__super__.render.apply(this, arguments);
       if (this.bindings && this.model) {
         this.stickit();
       }
