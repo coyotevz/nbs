@@ -8,7 +8,7 @@ define([
   "use strict";
 
   var View = Chaplin.View.extend({
-
+    autoRender: true,
     getTemplateFunction: function() {
       /* Template compilation
        * ~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +43,14 @@ define([
       if (this.bindings && this.model) {
         this.stickit();
       }
+    },
+
+    /* extra method, borrowed from controller */
+    compose: function(name) {
+      var method;
+      method = arguments.length === 1 ? 'retrieve': 'compose';
+      return Chaplin.mediator.execute.apply(Chaplin.mediator, ['composer:' + method].concat(([].slice.call(arguments))));
+      //return Chaplin.mediator.execute(['composer:' + method].concat(([].slice.call(arguments))));
     },
 
   });
