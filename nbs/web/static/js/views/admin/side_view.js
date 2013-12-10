@@ -15,7 +15,5 @@ define([
     },
   });
 
-  window.Chaplin = Chaplin;
-
   return SideView;
 });

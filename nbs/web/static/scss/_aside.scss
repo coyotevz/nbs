@@ -6,7 +6,7 @@ aside {
   float: left;
   width: $sidebar-width;
 
-  header {
+  #sidebar_header {
     margin-left: 9px;
     padding: 4px 16px 15px 1px;
     min-height: 27px;
@@ -15,8 +15,8 @@ aside {
       color: $sidebar-title-color;
       font-size: $sidebar-title-font-size;
       padding: 0 7px;
-      .icon-caret-down {
-        font-size: 14px;
+      .caret {
+        border-color: $sidebar-title-color transparent;
       }
     }
   }

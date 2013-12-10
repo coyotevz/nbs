@@ -3,7 +3,12 @@ define([
   'views/standard_view',
   'views/admin/header_view',
   'views/admin/body_view',
-], function(Chaplin, StandardView, HeaderView, BodyView) {
+  'views/admin/side_header_view',
+], function(Chaplin,
+            StandardView,
+            HeaderView,
+            BodyView,
+            SideHeaderView) {
   "use strict";
 
   var AdminController = Chaplin.Controller.extend({
@@ -13,6 +18,7 @@ define([
       this.compose('main', StandardView);
       this.compose('header', HeaderView, {region: 'header'});
       this.compose('body', BodyView, {region: 'body'});
+      this.compose('side_header', SideHeaderView, {region: 'sidebar_header'});
     },
 
     index: function(params) {
