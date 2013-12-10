@@ -50,7 +50,6 @@ define([
       var method;
       method = arguments.length === 1 ? 'retrieve': 'compose';
       return Chaplin.mediator.execute.apply(Chaplin.mediator, ['composer:' + method].concat(([].slice.call(arguments))));
-      //return Chaplin.mediator.execute(['composer:' + method].concat(([].slice.call(arguments))));
     },
 
   });
