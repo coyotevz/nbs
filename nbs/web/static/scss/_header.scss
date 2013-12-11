@@ -1,0 +1,56 @@
+/*
+ * Admin header style
+ */
+
+header {
+  nav {
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: block;
+
+      & > li {
+        display: inline-block;
+      }
+    }
+
+    &.appbar {
+      background-color: $appbar-background-color;
+      height: $appbar-height;
+      line-height: $appbar-height;
+      border-bottom: 1px solid $appbar-border-color;
+
+      ul {
+        margin: 0 6px;
+
+        a {
+          color: $appbar-font-color;
+          font-weight: bold;
+          cursor: pointer;
+          display: block;
+          text-decoration: none;
+        }
+
+        span {
+          padding: 0 9px;
+          display: inline;
+          border-left: 1px solid transparent;
+          border-right: 1px solid transparent;
+        }
+
+        li.selected a,
+        li a:hover {
+          span { color: #fff !important; }
+        }
+
+      }
+    }
+  } /* nav */
+
+  .banner {
+    background-color: $banner-background-color;
+    border-bottom: 1px solid $banner-border-color;
+    height: $banner-height;
+  }
+}
