@@ -9,9 +9,19 @@ define([
 
     getTemplateData: function() {
       return _.extend(
-        View.__super__.getTemplateData.apply(this, arguments),
+        SideView.__super__.getTemplateData.apply(this, arguments),
         {cid: this.cid}
       );
+    },
+
+    render: function() {
+      console.log('rendering SideView');
+      return SideView.__super__.render.apply(this, arguments);
+    },
+
+    attach: function() {
+      console.log('attaching SideView');
+      return SideView.__super__.attach.apply(this, arguments);
     },
   });
 
