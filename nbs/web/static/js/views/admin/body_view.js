@@ -22,8 +22,8 @@ define([
       console.log('BodyView#initialize(%s)', this.cid);
     },
 
-    render: function() {
-      BodyView.__super__.render.apply(this, arguments);
+    attach: function() {
+      BodyView.__super__.attach.apply(this, arguments);
       $(window).resize(this.resize).focus(this.resize);
       this.resize();
     },
@@ -37,12 +37,6 @@ define([
           scrollWrapper = this.$('#scroll_wrapper'),
           contentAvlWidth = $(window).width() - this.$('aside').width(),
           contentAvlHeight = $(window).height() - contentWrapper.position().top;
-
-      console.log('this.$("aside").length:', this.$('aside').length);
-      console.log('this.$("aside").width():', this.$('aside').width());
-      console.log('this.$("aside"):', this.$('aside'));
-      console.log('$(window).width():', $(window).width());
-      console.log("$('body').css('overflow'):", $('body').css('overflow'));
 
       contentWrapper.width(contentAvlWidth);
       contentWrapper.height(contentAvlHeight);
