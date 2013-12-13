@@ -12,7 +12,7 @@
       margin-left: -400px;
       margin-top: 2px;
       padding: 0 16px 7px 400px;
-      height: 30px;
+      height: 38px;
       @include clearfix();
       &.fixed {
         @include box-shadow(0 2px 2px -1px rgba(0,0,0,0.1));
