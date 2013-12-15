@@ -1,0 +1,39 @@
+// Extra dropdown styles
+
+.dropdown-menu {
+  padding: 6px 0;
+  margin: 0;
+  @include border-radius(2px);
+  @include box-shadow(0 2px 4px $dropdown-border);
+  @include transition(all .218s ease 0s);
+  line-height: 15px;
+
+  .divider {
+    border-top: 1px solid #ebebeb;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  > [disabled] > a {
+    &, &:hover, &:focus {
+      color: rgb(204,204,204);
+      background-color: #fff;
+      cursor: normal;
+    }
+  }
+
+  > li > a {
+    padding: 2px 30px;
+  }
+
+  > li > span {
+    padding: 2px 8px;
+    color: $dropdown-link-color;
+  }
+
+  > li.current > a {
+    color: $sidebar-title-color;
+    font-weight: bold;
+    &:hover { color: $dropdown-link-color; }
+  }
+}
