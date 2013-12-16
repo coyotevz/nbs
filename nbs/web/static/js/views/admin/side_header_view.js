@@ -7,15 +7,30 @@ define([
     template: 'admin/side_header.html',
     noWrap: true,
 
-    render: function() {
-      console.log('rendering SideHeaderView');
-      return SideHeaderView.__super__.render.apply(this, arguments);
+    items: {
+      'products': {
+        title: 'Productos',
+        url: 'products',
+      },
+      'suppliers': {
+        title: 'Proveedores',
+        url: 'suppliers',
+      }
     },
 
-    attach: function() {
-      console.log('attaching SideHeaderView');
-      return SideHeaderView.__super__.attach.apply(this, arguments);
+    initialize: function() {
+      this.subscribeEvent('router:match', this._update);
+      return SideHeaderView.__super__.initialize.apply(this, arguments);
     },
+
+    _update: function(route, params, options) {
+      console.info('match:', route, params, options);
+    },
+
+    getTemplateData: function() {
+      return {items: this.items};
+    },
+
   });
 
   return SideHeaderView;
