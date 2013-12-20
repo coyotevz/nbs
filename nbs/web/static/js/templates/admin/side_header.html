@@ -3,9 +3,8 @@
     NaN <i class="caret"></i>
   </span>
   <ul class="dropdown-menu" role="menu">
-    {{ items }}
-    {% for i in items %}
-    <li id="{{ i }}"><a tabindex="-1" href="/{{ items[i].url }}">{{ items[i].title }}</a></li>
+    {% for item in items %}
+    <li><a tabindex="-1" href="/{{ item.url }}">{{ item.title }}</a></li>
     {% endfor %}
     {#
     <li><a tabindex="-1" href="http://google.com">Action</a></li>

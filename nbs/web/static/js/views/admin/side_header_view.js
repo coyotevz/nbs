@@ -7,16 +7,16 @@ define([
     template: 'admin/side_header.html',
     noWrap: true,
 
-    items: {
-      'products': {
+    items: [
+      {
         title: 'Productos',
         url: 'products',
       },
-      'suppliers': {
+      {
         title: 'Proveedores',
         url: 'suppliers',
       }
-    },
+    ],
 
     initialize: function() {
       this.subscribeEvent('router:match', this._update);
