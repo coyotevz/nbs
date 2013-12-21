@@ -7,28 +7,58 @@ define([
     template: 'admin/side_header.html',
     noWrap: true,
 
-    items: [
+    menuItems: [
       {
+        name: 'product',
         title: 'Productos',
         url: 'products',
       },
       {
+        name: 'supplier',
         title: 'Proveedores',
         url: 'suppliers',
-      }
+      },/*
+      { name: '-divider-' },
+      {
+        name: 'invoice',
+        title: 'Facturas',
+        url: null,
+        disabled: true,
+      },
+      {
+        name: 'contacts',
+        title: 'Contactos',
+        url: null,
+        disabled: true,
+      },*/
     ],
 
     initialize: function() {
-      this.subscribeEvent('router:match', this._update);
+      this._current = null;
+      this.subscribeEvent('menu:setCurrent', this.setCurrentMenu);
       return SideHeaderView.__super__.initialize.apply(this, arguments);
     },
 
-    _update: function(route, params, options) {
-      console.info('match:', route, params, options);
+    getTemplateData: function() {
+      return {items: this.menuItems};
     },
 
-    getTemplateData: function() {
-      return {items: this.items};
+    setCurrentMenu: function(menu) {
+      if (this._current == menu) return;
+      var item = this._getMenuItem(menu);
+      if (item != null) {
+        this._current = menu;
+        this.$('.dropdown-toggle span').text(item.title);
+        this.$('.dropdown-menu li.current').removeClass('current');
+        this.$('.dropdown-menu li.'+menu).addClass('current');
+      }
+    },
+
+    _getMenuItem: function(name) {
+      for (var i in this.menuItems) {
+        if (this.menuItems[i].name == name) return this.menuItems[i];
+      }
+      return null;
     },
 
   });

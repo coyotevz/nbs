@@ -1,18 +1,16 @@
 <div class="title dropdown">
   <span class="dropdown-toggle" data-toggle="dropdown">
-    NaN <i class="caret"></i>
+    <span>...</span> <i class="caret"></i>
   </span>
   <ul class="dropdown-menu" role="menu">
     {% for item in items %}
-    <li><a tabindex="-1" href="/{{ item.url }}">{{ item.title }}</a></li>
-    {% endfor %}
-    {#
-    <li><a tabindex="-1" href="http://google.com">Action</a></li>
-    <li class="current"><a tabindex="-1" href="suppliers">Proveedores</a></li>
-    <li><a tabindex="-1" href="products">Productos</a></li>
-    <li disabled="disabled"><a tabindex="-1" href="#">Facturas</a></li>
+    {% if item.name == "-divider-" %}
     <li class="divider"></li>
-    <li disabled="disabled"><a tabindex="-1" href="#">Pedidos</a></li>
-    #}
+    {% elif item.disabled %}
+    <li disabled="disabled"><a tabindex="-1" href="">{{ item.title }}</a></li>
+    {% else %}
+    <li class="{{ item.name }}"><a tabindex="-1" href="/{{ item.url }}">{{ item.title }}</a></li>
+    {% endif %}
+    {% endfor %}
   </ul>
 </div>

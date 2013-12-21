@@ -14,6 +14,11 @@ define([
   var SupplierController = AdminController.extend({
     title: 'Suppliers',
 
+    beforeAction: function() {
+      SupplierController.__super__.beforeAction.apply(this, arguments);
+      this.publishEvent('menu:setCurrent', 'supplier');
+    },
+
     index: function(params) {
       _.extend(params, {region: 'content'});
       console.log('Supplier#index(%s)', JSON.stringify(params));
