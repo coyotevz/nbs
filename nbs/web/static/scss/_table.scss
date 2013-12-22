@@ -1,0 +1,73 @@
+/*
+ * Nobix Tables
+ */
+
+table.list {
+  width: 100%;
+  cursor: pointer;
+
+  tr {
+    height: 21px;
+    line-height: 15px;
+    color: $gray-darker;
+
+    &.selected {
+      background-color: #ffc;
+    }
+
+    label.inline-control {
+      line-height: 15px;
+      min-height: 15px;
+      margin-left: 7px;
+      margin-bottom: 0;
+      padding: 0;
+      position: relative;
+
+      input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        margin: 0;
+
+        & + span::before {
+          content: "";
+          display: inline-block;
+          width: 15px;
+          height: 15px;
+          margin: 0 0 1px;
+          @include border-radius($input-border-radius);
+          vertical-align: middle;
+          border: 1px solid $input-border;
+          @include box-shadow(0 0 1px 0 $input-border inset);
+          background: url("/static/img/sprite.png") no-repeat scroll -2px -2px $input-bg;
+        }
+
+        &:checked + span::before {
+          background-position: -4px -23px;
+        }
+
+        &:hover + span::before {
+          border-color: $input-border-hover;
+        }
+
+        &:focus + span::before {
+          border-color: $input-border-focus;
+        }
+      }
+    }
+  }
+
+  td {
+    border-bottom: 1px solid #e5e5e5;
+    empty-cells: show;
+    padding: 2px 0;
+    white-space: nowrap;
+  }
+}
+
+table.product-list {
+
+  span.description {
+    font-weight: bold;
+  }
+
+}
