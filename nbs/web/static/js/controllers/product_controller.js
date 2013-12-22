@@ -1,6 +1,8 @@
 define([
   'controllers/admin_controller',
-], function(AdminController) {
+  'models/product_collection',
+  'views/admin/product/list_view',
+], function(AdminController, ProductsCollection, ProductListView) {
   "use strict";
 
   var ProductController = AdminController.extend({
@@ -12,7 +14,12 @@ define([
     },
 
     index: function(params) {
-      console.log('Product#index(%s)', params);
+      console.log('Product#index(%s)', JSON.stringify(params));
+      this.productList = new ProductsCollection();
+      this.view = new ProductListView({
+        collection: this.productList,
+        region: 'content',
+      });
     },
 
   });
