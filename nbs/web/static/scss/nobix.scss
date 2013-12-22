@@ -13,6 +13,9 @@
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
 
+// Custom mixins that overwrites default mixins
+@import "custom-mixins";
+
 // Reset
 @import "bootstrap/normalize";
 @import "bootstrap/print";
