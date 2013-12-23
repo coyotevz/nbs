@@ -4,10 +4,11 @@
 
 table.list {
   width: 100%;
+  table-layout: fixed;
   cursor: pointer;
 
   tr {
-    height: 21px;
+    height: 27px;
     line-height: 15px;
     color: $gray-darker;
 
@@ -33,7 +34,7 @@ table.list {
           display: inline-block;
           width: 15px;
           height: 15px;
-          margin: 0 0 1px;
+          margin: 0;
           @include border-radius($input-border-radius);
           vertical-align: middle;
           border: 1px solid $input-border;
@@ -66,7 +67,11 @@ table.list {
 
 table.product-list {
 
-  span.description {
+  td.sku {
+    padding: 3px 6px 3px 10px;
+  }
+
+  td.description span {
     font-weight: bold;
   }
 
