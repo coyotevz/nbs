@@ -67,12 +67,15 @@ table.list {
 
 table.product-list {
 
-  td.sku {
-    padding: 3px 6px 3px 10px;
+  col.sku {
+    width: 14ex;
   }
 
-  td.description span {
-    font-weight: bold;
-  }
+  td.description {
+    padding-left: 3px;
 
+    span {
+      font-weight: bold;
+    }
+  }
 }
