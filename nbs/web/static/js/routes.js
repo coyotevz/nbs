@@ -12,6 +12,8 @@ define(function() {
     match('', 'admin#index', {name: 'admin_index'});
 
     match('products', 'product#index', {name: 'product_index'});
+    match('products/new', 'product#new', {name: 'product_new'});
+    match('products/:id/edit', 'product#edit', {name: 'product_edit'});
 
     match('suppliers', 'supplier#index', {name: 'supplier_index'});
     match('suppliers/new', 'supplier#new', {name: 'supplier_new'});

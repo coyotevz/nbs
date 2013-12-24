@@ -3,10 +3,12 @@ define([
   'models/product_collection',
   'views/admin/product/list_view',
   'views/admin/product/sidebar_view',
+  'views/admin/product/edit_view',
 ], function(AdminController,
             ProductsCollection,
             ProductListView,
-            ProductSidebarView) {
+            ProductSidebarView,
+            ProductEditView) {
   "use strict";
 
   var ProductController = AdminController.extend({
@@ -19,12 +21,19 @@ define([
     },
 
     index: function(params) {
-      console.log('Product#index(%s)', JSON.stringify(params));
       this.productList = new ProductsCollection();
       this.view = new ProductListView({
         collection: this.productList,
         region: 'content',
       });
+    },
+
+    'new': function(params) {
+      this.view = new ProductEditView({region: 'content'});
+    },
+
+    edit: function(params) {
+      console.log('Product#edit(%s)', JSON.stringify(params));
     },
 
   });
