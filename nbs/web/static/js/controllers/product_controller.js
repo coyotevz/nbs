@@ -3,11 +3,13 @@ define([
   'models/product_collection',
   'views/admin/product/list_view',
   'views/admin/product/sidebar_view',
+  'views/admin/product/toolbar_view',
   'views/admin/product/edit_view',
 ], function(AdminController,
             ProductsCollection,
             ProductListView,
             ProductSidebarView,
+            ProductToolbarView,
             ProductEditView) {
   "use strict";
 
@@ -18,6 +20,7 @@ define([
       ProductController.__super__.beforeAction.apply(this, arguments);
       this.publishEvent('menu:setCurrent', 'product');
       this.compose('sidebar', ProductSidebarView, {region: 'sidebar'});
+      this.compose('toolbar', ProductToolbarView, {region: 'toolbar'});
     },
 
     index: function(params) {
