@@ -27,6 +27,14 @@
       }
     }
 
+    #content_wrapper {
+      overflow: hidden;
+
+      #scroll_wrapper {
+        overflow-y: scroll;
+      }
+    }
+
     #content_footer {
       color: $footer-font-color;
       font-size: 85%;

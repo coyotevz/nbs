@@ -26,6 +26,7 @@ define([
       BodyView.__super__.attach.apply(this, arguments);
       $(window).resize(this.resize).focus(this.resize);
       this.resize();
+      this.$('#scroll_wrapper').on('scroll', this.fixToolbar);
     },
 
     resize: function() {
@@ -41,6 +42,14 @@ define([
       contentWrapper.width(contentAvlWidth);
       contentWrapper.height(contentAvlHeight);
       scrollWrapper.height(contentAvlHeight);
+    },
+
+    fixToolbar: function(evt) {
+      if ($(this).scrollTop() > 0) {
+        $('#toolbar').addClass('fixed');
+      } else {
+        $('#toolbar').removeClass('fixed');
+      }
     },
   });
 
