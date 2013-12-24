@@ -2,7 +2,11 @@ define([
   'controllers/admin_controller',
   'models/product_collection',
   'views/admin/product/list_view',
-], function(AdminController, ProductsCollection, ProductListView) {
+  'views/admin/product/sidebar_view',
+], function(AdminController,
+            ProductsCollection,
+            ProductListView,
+            ProductSidebarView) {
   "use strict";
 
   var ProductController = AdminController.extend({
@@ -11,6 +15,7 @@ define([
     beforeAction: function() {
       ProductController.__super__.beforeAction.apply(this, arguments);
       this.publishEvent('menu:setCurrent', 'product');
+      this.compose('sidebar', ProductSidebarView, {region: 'sidebar'});
     },
 
     index: function(params) {

@@ -24,5 +24,9 @@ aside {
   .action {
     margin-left: 16px;
     padding: 0 4px 8px 0;
+
+    .btn {
+      text-transform: uppercase;
+    }
   }
 }
