@@ -11,16 +11,9 @@ define([
       this.delegate('click', '.btn[name="back"]', this.goBack);
     },
 
-    getTemplateData: function() {
-      return _.extend(
-        ProductToolbarView.__super__.getTemplateData.apply(this, arguments),
-        {cid: this.cid}
-      );
-    },
-
     goBack: function() {
       window.history.back();
-    }
+    },
   });
 
   return ProductToolbarView;

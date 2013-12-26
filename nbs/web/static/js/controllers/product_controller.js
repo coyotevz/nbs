@@ -2,15 +2,15 @@ define([
   'controllers/admin_controller',
   'models/product_collection',
   'views/admin/product/list_view',
+  'views/admin/product/edit_view',
   'views/admin/product/sidebar_view',
   'views/admin/product/toolbar_view',
-  'views/admin/product/edit_view',
 ], function(AdminController,
             ProductsCollection,
             ProductListView,
+            ProductEditView,
             ProductSidebarView,
-            ProductToolbarView,
-            ProductEditView) {
+            ProductToolbarView) {
   "use strict";
 
   var ProductController = AdminController.extend({
@@ -19,8 +19,8 @@ define([
     beforeAction: function() {
       ProductController.__super__.beforeAction.apply(this, arguments);
       this.publishEvent('menu:setCurrent', 'product');
-      this.compose('sidebar', ProductSidebarView, {region: 'sidebar'});
-      this.compose('toolbar', ProductToolbarView, {region: 'toolbar'});
+      //this.compose('sidebar', ProductSidebarView, {region: 'sidebar'});
+      //this.compose('toolbar', ProductToolbarView, {region: 'toolbar'});
     },
 
     index: function(params) {
@@ -32,7 +32,9 @@ define([
     },
 
     'new': function(params) {
-      this.view = new ProductEditView({region: 'content'});
+      this.view = new ProductEditView({
+        region: 'content',
+      });
     },
 
     edit: function(params) {

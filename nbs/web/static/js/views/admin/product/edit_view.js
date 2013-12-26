@@ -3,17 +3,9 @@ define([
 ], function(View) {
   "use strict";
 
-  var EditToolbarView = View.extend({
+  var EditToolbar = View.extend({
     template: 'admin/product/edit_toolbar.html',
-
-    initialize: function() {
-      EditToolbarView.__super__.initialize.apply(this, arguments);
-      this.delegate('click', '.btn[name="back"]', this.goBack);
-    },
-
-    goBack: function() {
-      window.history.back();
-    },
+    region: 'toolbar',
   });
 
   var ProductEditView = View.extend({
@@ -21,9 +13,14 @@ define([
     noWrap: true,
 
     initialize: function(params) {
+      var toolbar;
       ProductEditView.__super__.initialize.apply(this, arguments);
-      this.view = new EditToolbarView();
-      console.log('ProductEditView');
+      console.log('ProductEditView(%s)', JSON.stringify(params));
+      toolbar = new EditToolbar();
+      this.subview('toolbar', toolbar);
+
+      toolbar.delegate('click', '.btn[name="go-back"]', this.goBack);
+      toolbar.delegate('click', '.btn[name="save"]', this.saveChanges);
     },
 
     getTemplateData: function() {
@@ -33,6 +30,14 @@ define([
       );
     },
 
+    // toolbar callbacks
+    goBack: function() {
+      window.history.back();
+    },
+
+    saveChanges: function() {
+      console.log('saveChanges called!');
+    },
   });
 
   return ProductEditView;
