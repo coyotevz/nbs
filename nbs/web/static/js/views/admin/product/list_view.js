@@ -1,9 +1,10 @@
 define([
+  'underscore',
   'chaplin',
   'views/base/view',
   'views/base/collection_view',
   'views/admin/product/item_view',
-], function(Chaplin, View, CollectionView, ProductItemView) {
+], function(_, Chaplin, View, CollectionView, ProductItemView) {
   "use strict";
 
   var ListSidebar = View.extend({
@@ -23,26 +24,28 @@ define([
     itemView: ProductItemView,
     animationDuration: 0,
 
-    initialize: function(params) {
-      var toolbar, sidebar;
-      ProductListView.__super__.initialize.apply(this, arguments);
-      console.log('ProductListView(%s)', JSON.stringify(params));
+    render: function() {
+      ProductListView.__super__.render.apply(this, arguments);
+      this.initSubviews();
+    },
 
+    initSubviews: function() {
+      var toolbar, sidebar;
       toolbar = new ListToolbar({region: 'toolbar'});
       this.subview('toolbar', toolbar);
-      toolbar.delegate('click', '.btn[name="reload"]', this.reload);
-      toolbar.delegate('click', '.btn[name="prev-page"]', this.prevPage);
-      toolbar.delegate('click', '.btn[name="next-page"]', this.nextPage);
+      toolbar.delegate('click', '.btn[name="reload"]', _.bind(this.reload, this));
+      toolbar.delegate('click', '.btn[name="prev-page"]', _.bind(this.prevPage, this));
+      toolbar.delegate('click', '.btn[name="next-page"]', _.bind(this.nextPage, this));
 
       sidebar = new ListSidebar({region: 'sidebar'});
       this.subview('sidebar', sidebar);
-      sidebar.delegate('click', '.new-product', this.newProduct);
+      sidebar.delegate('click', '.new-product', _.bind(this.newProduct, this));
     },
 
     // Toolbar callbacks
 
     reload: function() {
-      console.log('reload');
+      this.collection.fetch();
     },
 
     prevPage: function() {
