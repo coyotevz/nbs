@@ -19,7 +19,7 @@ define([
       this.publishEvent('menu:setCurrent', 'supplier');
     },
 
-    index: function(params) {
+    list: function(params) {
       _.extend(params, {region: 'content'});
       console.log('Supplier#index(%s)', JSON.stringify(params));
       this.view = new SupplierListView(params);

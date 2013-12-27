@@ -59,7 +59,7 @@ define([
     // Sidebar callbacks
 
     newProduct: function() {
-      Chaplin.utils.redirectTo({url: 'products/new'});
+      Chaplin.utils.redirectTo({name: 'product_new'});
     },
   });
 
