@@ -13,6 +13,7 @@ define(function() {
 
     match('products', 'product#index', {name: 'product_index'});
     match('products/new', 'product#new', {name: 'product_new'});
+    match('products/:id', 'product#show', {name: 'product_show'});
     match('products/:id/edit', 'product#edit', {name: 'product_edit'});
 
     match('suppliers', 'supplier#index', {name: 'supplier_index'});

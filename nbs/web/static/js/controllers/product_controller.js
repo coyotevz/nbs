@@ -37,6 +37,10 @@ define([
       });
     },
 
+    show: function(params) {
+      console.log('Product#show(%s)', JSON.stringify(params));
+    },
+
     edit: function(params) {
       console.log('Product#edit(%s)', JSON.stringify(params));
     },
