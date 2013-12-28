@@ -1,6 +1,7 @@
 define([
+  'jquery',
   'chaplin',
-], function(Chaplin) {
+], function($, Chaplin) {
   "use strict";
 
   var Layout = Chaplin.Layout.extend({
@@ -16,18 +17,13 @@ define([
 
     initialize: function(options) {
       Layout.__super__.initialize.apply(this, options);
-      this.subscribeEvent("startupController", this.removeFallback);
+      console.log('Layout#initialize');
     },
 
     navigate: function(controller, params, route) {
-      console.log('navigate function');
+      this.$('[rel="tooltip"]').tooltip();
     },
 
-    removeFallback: function(opts) {
-      opts.controller.adjustTitle(opts.controller.title);
-      console.log('removeFallback function');
-      this.unsubsribeEvent('startupController', this.removeFallback);
-    },
   });
 
   return Layout;
