@@ -33,6 +33,7 @@ define([
       var toolbar, sidebar;
       toolbar = new ListToolbar({region: 'toolbar'});
       this.subview('toolbar', toolbar);
+      toolbar.delegate('click', 'input[name="select-all"]', _.bind(this.selectAll, this));
       toolbar.delegate('click', '.btn[name="reload"]', _.bind(this.reload, this));
       toolbar.delegate('click', '.btn[name="prev-page"]', _.bind(this.prevPage, this));
       toolbar.delegate('click', '.btn[name="next-page"]', _.bind(this.nextPage, this));
@@ -43,6 +44,13 @@ define([
     },
 
     // Toolbar callbacks
+
+    selectAll: function(evt) {
+      evt.preventDefault();
+      evt.currentTarget.checked = ~evt.currentTarget.checked;
+      console.log('select-all:', evt.currentTarget.checked, evt);
+      return false;
+    },
 
     reload: function() {
       this.collection.fetch();

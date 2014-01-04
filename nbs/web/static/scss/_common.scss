@@ -8,14 +8,3 @@ a:active {
   outline: 0;
   cursor: pointer;
 }
-
-button::-moz-focus-inner,
-input::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-  cursor: pointer;
-}

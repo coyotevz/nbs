@@ -8,7 +8,7 @@ button,
   display: inline-block;
   padding: $button-padding-vertical $button-padding-horizontal;
   margin-bottom: 0;
-  color: $button-font-color;
+  color: lighten($button-font-color, 37);
   font-size: $button-font-size;
   font-weight: $button-font-weight;
   line-height: $button-line-height;
@@ -23,15 +23,17 @@ button,
   @include gradient-vertical($button-background-color, $button-high-background-color);
   @include transition(all 0.118s ease 0s);
   @include user-select(none);
-  * { @include opacity(0.7); }
+  .inline-control {
+    margin-right: 10px;
+    z-index: $zindex-navbar;
+  }
 
   /* buttons states */
   &:hover {
-    color: #222;
+    color: $button-font-color;
     border-color: #c6c6c6;
     text-decoration: none;
     @include box-shadow(0 1px 1px rgba(0,0,0,0.1));
-    * { @include opacity(90); }
   }
 
   &.focus,
@@ -41,6 +43,7 @@ button,
   }
 
   .open &,
+  .open &.dropdown-toggle,
   &.active,
   &:active {
     @include gradient-vertical(#eee, #e0e0e0);
@@ -60,7 +63,7 @@ button,
       @include gradient-vertical($button-background-color, $button-high-background-color);
       @include box-shadow(none);
       border-color: $button-border-color;
-      color: #b8b8b8;
+      color: lighten($button-font-color, 60);
       * { @include opacity(65); }
     }
   }
