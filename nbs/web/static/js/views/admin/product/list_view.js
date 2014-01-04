@@ -46,9 +46,9 @@ define([
     // Toolbar callbacks
 
     selectAll: function(evt) {
-      evt.preventDefault();
-      evt.currentTarget.checked = ~evt.currentTarget.checked;
-      console.log('select-all:', evt.currentTarget.checked, evt);
+      var input = evt.currentTarget;
+      input.checked = input.checked ? false : true;
+      console.log('select-all:', evt.currentTarget.value, evt);
       return false;
     },
 

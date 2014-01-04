@@ -26,6 +26,7 @@ label.inline-control {
     position: absolute;
     opacity: 0;
     margin: 0;
+    z-index: $zindex-tooltip;
 
     & + span::before {
       content: "";
