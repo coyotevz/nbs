@@ -18,6 +18,16 @@
         @include box-shadow(0 2px 2px -1px rgba(0,0,0,0.1));
       }
 
+      .pages {
+        float: left;
+        vertical-align: middle;
+        display: inline-block;
+        position: relative;
+        line-height: 29px;
+        font-weight: bold;
+        margin-right: 5px
+      }
+
       .btn-group {
         float: left;
 

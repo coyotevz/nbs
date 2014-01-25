@@ -16,6 +16,17 @@ define([
       'click [name=next-page]': 'nextPage',
     },
 
+    render: function() {
+      var coll = this.collection;
+      window.coll = coll;
+      Pager.__super__.render.apply(this, arguments);
+      this.$('.first').text(coll.first().get(this.field).split(' ')[0]);
+      this.$('.last').text(coll.last().get(this.field).split(' ')[0]);
+      this.$('[name=prev-page]').prop('disabled', coll.page <= 1);
+      this.$('[name=next-page]').prop('disabled', coll.page >= coll.num_pages);
+      console.log('Pager#render()');
+    },
+
     prevPage: function(evt) {
       this._changePage(-1);
     },
@@ -53,7 +64,7 @@ define([
 
     events: {
       'click [name=select-all]': 'selectAll',
-      'click .btn[name=reload]': 'reload',
+      'click [name=reload]': 'reload',
     },
 
     regions: {
@@ -63,7 +74,11 @@ define([
     render: function() {
       var pager;
       ListToolbar.__super__.render.apply(this, arguments);
-      pager = new Pager({region: 'pager', collection: this.listv.collection});
+      pager = new Pager({
+        region: 'pager',
+        collection: this.listv.collection,
+        field: 'sku',
+      });
       this.subview('pager', pager);
     },
 
