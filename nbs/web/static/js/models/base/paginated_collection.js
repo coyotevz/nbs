@@ -19,14 +19,16 @@ define([
       return this.num_results < this.models.length;
     },
 
-    // multiple call of fetch will increase in page count
     fetch: function(options) {
       var collection = this;
 
       options = options ? _.clone(options) : {};
       options.data = options.data ? options.data : {};
-      if (!options.reset) {
+      options.increase = options.increase ? options.increase : false;
+      if (options.increase) {
         options.data["page"] = !this.page ? undefined : this.page < this.num_pages ? this.page + 1 : undefined;
+      } else {
+        options.data["page"] = !this.page ? undefined: this.page;
       }
 
       return PaginatedCollection.__super__.fetch.call(collection, options);
@@ -36,6 +38,7 @@ define([
       var objects = data.objects || data;
 
       this.num_results = data.num_results || data.length;
+      this.num_pages = data.num_pages || 1;
       this.page = data.page || 1;
       if (this.num_results < this.models.length + objects.length) {
         this.trigger("pagination", "load");
