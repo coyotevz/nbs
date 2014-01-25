@@ -8,43 +8,72 @@ define([
   "use strict";
 
   var Pager = View.extend({
-
-    setCollection: function(collection) {
-      this.collection = collection
+    template: 'admin/product/list_pager.html',
+    noWrap: true,
+    optionNames: View.prototype.optionNames.concat(['collection', 'field']),
+    events: {
+      'click [name=prev-page]': 'prevPage',
+      'click [name=next-page]': 'nextPage',
     },
 
-    setField: function(field) {
-      this.field = field;
+    prevPage: function(evt) {
+      this._changePage(-1);
     },
 
-    prevPage: function() {
-      console.log('Pager.prevPage');
+    nextPage: function(evt) {
+      this._changePage(+1);
+    },
+
+    _changePage: function(n) {
       this.$('[rel=tooltip]').tooltip('hide');
-      this.collection.fetch({ data: $.param({
-        page: this.collection.page - 1
-      })});
-    },
-
-    nextPage: function() {
-      console.log('Pager.nextPage');
-      this.$('[rel=tooltip]').tooltip('hide');
-      this.collection.fetch({ data: $.param({
-        page: this.collection.page + 1
-      })});
-    },
+      this.collection.fetch({
+        data: $.param({
+          page: this.collection.page + n
+        })
+      });
+    }
   });
 
   var ListSidebar = View.extend({
     template: 'admin/product/list_sidebar.html',
+    optionNames: View.prototype.optionNames.concat(['listv']),
+
+    events: {
+      'click .new-product': 'newProduct',
+    },
+
+    newProduct: function() {
+      Chaplin.utils.redirectTo({name: 'product_new'});
+    },
   });
 
   var ListToolbar = View.extend({
     template: 'admin/product/list_toolbar.html',
+    optionNames: View.prototype.optionNames.concat(['listv']),
 
-    initialize: function() {
-      var pager = this.pager = new Pager({collection: this.collection});
-      this.delegate('click', '[name=prev-page]', _.bind(pager.prevPage, pager));
-      this.delegate('click', '[name=next-page]', _.bind(pager.nextPage, pager));
+    events: {
+      'click [name=select-all]': 'selectAll',
+      'click .btn[name=reload]': 'reload',
+    },
+
+    regions: {
+      'pager': '.pager-container',
+    },
+
+    render: function() {
+      var pager;
+      ListToolbar.__super__.render.apply(this, arguments);
+      pager = new Pager({region: 'pager', collection: this.listv.collection});
+      this.subview('pager', pager);
+    },
+
+    reload: function() {
+      this.listv.collection.fetch();
+    },
+
+    selectAll: function(evt) {
+      console.log('select-all', evt.currentTarget.value, evt);
+      return false;
     },
   });
 
@@ -64,36 +93,10 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new ListToolbar({region: 'toolbar'});
+      toolbar = new ListToolbar({region: 'toolbar', listv: this});
       this.subview('toolbar', toolbar);
-      toolbar.delegate('click', 'input[name="select-all"]', _.bind(this.selectAll, this));
-      toolbar.delegate('click', '.btn[name="reload"]', _.bind(this.reload, this));
-
-      toolbar.pager.setCollection(this.collection);
-      toolbar.pager.setField('name');
-
-      sidebar = new ListSidebar({region: 'sidebar'});
+      sidebar = new ListSidebar({region: 'sidebar', listv: this});
       this.subview('sidebar', sidebar);
-      sidebar.delegate('click', '.new-product', _.bind(this.newProduct, this));
-    },
-
-    // Toolbar callbacks
-
-    selectAll: function(evt) {
-      var input = evt.currentTarget;
-      input.checked = input.checked ? false : true;
-      console.log('select-all:', evt.currentTarget.value, evt);
-      return false;
-    },
-
-    reload: function() {
-      this.collection.fetch();
-    },
-
-    // Sidebar callbacks
-
-    newProduct: function() {
-      Chaplin.utils.redirectTo({name: 'product_new'});
     },
   });
 
