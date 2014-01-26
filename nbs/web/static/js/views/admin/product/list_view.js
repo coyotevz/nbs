@@ -47,9 +47,9 @@ define([
     _changePage: function(n) {
       this.$('[rel=tooltip]').tooltip('hide');
       this.collection.fetch({
-        data: $.param({
+        data: {
           page: this.collection.page + n
-        })
+        }
       });
     }
   });

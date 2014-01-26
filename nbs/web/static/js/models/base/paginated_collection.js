@@ -20,16 +20,21 @@ define([
     },
 
     fetch: function(options) {
-      var collection = this;
+      var collection = this,
+          data = {};
 
       options = options ? _.clone(options) : {};
-      options.data = options.data ? options.data : {};
       options.increase = options.increase ? options.increase : false;
+      // FIXME: For Pager debug only
+      data['per_page'] = 8;
+
       if (options.increase) {
-        options.data["page"] = !this.page ? undefined : this.page < this.num_pages ? this.page + 1 : undefined;
+        data["page"] = !this.page ? undefined : this.page < this.num_pages ? this.page + 1 : undefined;
       } else {
-        options.data["page"] = !this.page ? undefined: this.page;
+        data["page"] = !this.page ? undefined: this.page;
       }
+
+      options.data = _.defaults(options.data ? options.data : {}, data);
 
       return PaginatedCollection.__super__.fetch.call(collection, options);
     },
