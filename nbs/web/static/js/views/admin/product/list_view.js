@@ -16,15 +16,14 @@ define([
       'click [name=next-page]': 'nextPage',
     },
 
+    initialize: function() {
+      Pager.__super__.initialize.apply(this, arguments);
+      this.listenTo(this.collection, 'sync', this._update);
+    },
+
     render: function() {
-      var coll = this.collection;
-      window.coll = coll;
       Pager.__super__.render.apply(this, arguments);
-      this.$('.first').text(coll.first().get(this.field).split(' ')[0]);
-      this.$('.last').text(coll.last().get(this.field).split(' ')[0]);
-      this.$('[name=prev-page]').prop('disabled', coll.page <= 1);
-      this.$('[name=next-page]').prop('disabled', coll.page >= coll.num_pages);
-      console.log('Pager#render()');
+      this._update();
     },
 
     prevPage: function(evt) {
@@ -33,6 +32,14 @@ define([
 
     nextPage: function(evt) {
       this._changePage(+1);
+    },
+
+    _update: function(coll, opts) {
+      var coll = this.collection;
+      this.$('.first').text(coll.first().get(this.field).split(' ')[0]);
+      this.$('.last').text(coll.last().get(this.field).split(' ')[0]);
+      this.$('[name=prev-page]').prop('disabled', coll.page <= 1);
+      this.$('[name=next-page]').prop('disabled', coll.page >= coll.num_pages);
     },
 
     _changePage: function(n) {
