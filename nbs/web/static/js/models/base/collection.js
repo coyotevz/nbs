@@ -5,11 +5,17 @@ define([
   "use strict";
 
   var Collection = Chaplin.Collection.extend({
-    model: Model
-    // Place your application-specific collection features here
+    model: Model,
+
+    // Mixin a synchronization state machine.
+    initialize: function() {
+      _.extend(this, Chaplin.SyncMachine);
+      Collection.__super__.initialize.apply(this, arguments);
+      this.on('request', this.beginSync);
+      this.on('sync', this.finishSync);
+      this.on('error', this.unsync);
+    },
   });
 
-  // TODO: remove next line
-  window.Collection = Collection;
   return Collection;
 });
