@@ -34,12 +34,14 @@ define([
       this._changePage(+1);
     },
 
-    _update: function(coll, opts) {
-      var coll = this.collection;
-      this.$('.first').text(coll.first().get(this.field).split(' ')[0]);
-      this.$('.last').text(coll.last().get(this.field).split(' ')[0]);
-      this.$('[name=prev-page]').prop('disabled', coll.page <= 1);
-      this.$('[name=next-page]').prop('disabled', coll.page >= coll.num_pages);
+    _update: function() {
+      if (this.collection.length > 0) {
+        var coll = this.collection;
+        this.$('.first').text(coll.first().get(this.field).split(' ')[0]);
+        this.$('.last').text(coll.last().get(this.field).split(' ')[0]);
+        this.$('[name=prev-page]').prop('disabled', coll.page <= 1);
+        this.$('[name=next-page]').prop('disabled', coll.page >= coll.num_pages);
+      }
     },
 
     _changePage: function(n) {
