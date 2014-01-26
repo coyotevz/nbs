@@ -92,6 +92,7 @@ define([
     },
 
     reload: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
       this.listv.collection.fetch();
     },
 
