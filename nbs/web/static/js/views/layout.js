@@ -21,7 +21,10 @@ define([
     },
 
     navigate: function(controller, params, route) {
-      this.$('[rel="tooltip"]').tooltip();
+      this.$('[rel="tooltip"]').tooltip({
+        container: 'body',
+        delay: { show: 500, hide: 0},
+      });
     },
 
   });
