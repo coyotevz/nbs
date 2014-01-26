@@ -28,19 +28,19 @@ define([
     'new': function(params) {
       _.extend(params, {region: 'content'});
       console.log('Supplier#new(%s)', JSON.stringify(params));
-      this.compose('sidebar', SideView, {region: 'sidebar'});
+      this.reuse('sidebar', SideView, {region: 'sidebar'});
       this.view = new SupplierEditView(params);
     },
 
     show: function(params) {
-      this.compose('sidebar', SideView, {region: 'sidebar'});
+      this.reuse('sidebar', SideView, {region: 'sidebar'});
       _.extend(params, {region: 'content'});
       console.log('Supplier#show(%s)', JSON.stringify(params));
       this.view = new SupplierDetailView(params);
     },
 
     edit: function(params) {
-      this.compose('sidebar', SideView, {region: 'sidebar'});
+      this.reuse('sidebar', SideView, {region: 'sidebar'});
       _.extend(params, {region: 'content'});
       console.log('Supplier#edit(%s)', JSON.stringify(params));
       this.view = new SupplierEditView(params);

@@ -23,8 +23,8 @@ define([
     beforeAction: function() {
       ProductController.__super__.beforeAction.apply(this, arguments);
       this.publishEvent('menu:setCurrent', 'product');
-      //this.compose('sidebar', ProductSidebarView, {region: 'sidebar'});
-      //this.compose('toolbar', ProductToolbarView, {region: 'toolbar'});
+      //this.reuse('sidebar', ProductSidebarView, {region: 'sidebar'});
+      //this.reuse('toolbar', ProductToolbarView, {region: 'toolbar'});
     },
 
     list: function(params) {

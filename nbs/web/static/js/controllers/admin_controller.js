@@ -15,10 +15,10 @@ define([
     title: 'Admin',
 
     beforeAction: function(params, route) {
-      this.compose('main', StandardView);
-      this.compose('header', HeaderView, {region: 'header'});
-      this.compose('body', BodyView, {region: 'body'});
-      this.compose('side_header', SideHeaderView, {region: 'sidebar_header'});
+      this.reuse('main', StandardView);
+      this.reuse('header', HeaderView, {region: 'header'});
+      this.reuse('body', BodyView, {region: 'body'});
+      this.reuse('side_header', SideHeaderView, {region: 'sidebar_header'});
     },
 
     index: function(params) {

@@ -19,7 +19,7 @@ var require = {
     'backbone.stickit':     'vendor/backbone-stickit-0.6.3',
     'backbone.relational':  'vendor/backbone-relational-0.8.6',
     'backbone.validation':  'vendor/backbone-validation-amd-0.9.0',
-    'chaplin':              'vendor/chaplin-0.12',
+    'chaplin':              'vendor/chaplin-1.0.0',
     'nunjucks':             'vendor/nunjucks-1.0.0',
     'bootstrap':            'vendor/bootstrap-3.0.3',
 
