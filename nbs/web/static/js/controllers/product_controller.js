@@ -53,7 +53,13 @@ define([
     },
 
     edit: function(params) {
-      console.log('Product#edit(%s)', JSON.stringify(params));
+      var model;
+      model = Product.findOrCreate({id: params.id});
+      model.fetch();
+      this.view = new ProductEditView({
+        region: 'content',
+        model: model,
+      });
     },
 
   });

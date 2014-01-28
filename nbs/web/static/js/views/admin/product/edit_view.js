@@ -6,6 +6,22 @@ define([
 
   var EditToolbar = View.extend({
     template: 'admin/product/edit_toolbar.html',
+    optionNames: View.prototype.optionNames.concat(['editv']),
+
+    events: {
+      'click [name=go-back]': 'goBack',
+      'click [name=save]': 'saveChanges',
+    },
+
+    goBack: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
+      window.history.back();
+    },
+
+    saveChanges: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
+      console.log('save changes');
+    },
   });
 
   var ProductEditView = View.extend({
@@ -19,20 +35,10 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new EditToolbar({region: 'toolbar'});
+      toolbar = new EditToolbar({region: 'toolbar', editv: this});
       this.subview('toolbar', toolbar);
-      toolbar.delegate('click', '.btn[name="go-back"]', _.bind(this.goBack, this));
-      toolbar.delegate('click', '.btn[name="save"]', _.bind(this.saveChanges, this));
     },
 
-    // toolbar callbacks
-    goBack: function() {
-      Chaplin.utils.redirectTo({name: 'product_list'});
-    },
-
-    saveChanges: function() {
-      console.log('saveChanges called!');
-    },
   });
 
   return ProductEditView;
