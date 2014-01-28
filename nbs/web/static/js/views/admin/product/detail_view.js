@@ -5,12 +5,46 @@ define([
 ], function(_, Chaplin, View) {
   "use strict";
 
-  var DetailToolbar = View.extend({
-    template: 'admin/product/detail_toolbar.html',
-  });
-
   var DetailSidebar = View.extend({
     template: 'admin/product/detail_sidebar.html',
+    optionNames: View.prototype.optionNames.concat(['detailv']),
+
+    events: {
+      'click .new-product': 'newProduct',
+    },
+
+    newProduct: function() {
+      Chaplin.utils.redirectTo({name: 'product_new'});
+    },
+  });
+
+  var DetailToolbar = View.extend({
+    template: 'admin/product/detail_toolbar.html',
+    optionNames: View.prototype.optionNames.concat(['detailv']),
+
+    events: {
+      'click [name=go-back]': 'goBack',
+      'click [name=edit]': 'edit',
+      'click [name=delete]': 'delete',
+    },
+
+    goBack: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
+      Chaplin.utils.redirectTo({name: 'product_list'});
+    },
+
+    edit: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
+      Chaplin.utils.redirectTo({
+        name: 'product_edit',
+        params: { id: this.detailv.model.id }
+      });
+    },
+
+    delete: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
+      console.log('delete');
+    },
   });
 
   var ProductDetailView = View.extend({
@@ -24,23 +58,10 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new DetailToolbar({region: 'toolbar'});
+      toolbar = new DetailToolbar({region: 'toolbar', detailv: this});
       this.subview('toolbar', toolbar);
-      toolbar.delegate('click', '.btn[name="go-back"]', _.bind(this.goBack, this));
-
-      sidebar = new DetailSidebar({region: 'sidebar'});
+      sidebar = new DetailSidebar({region: 'sidebar', detailv: this});
       this.subview('sidebar', sidebar);
-      sidebar.delegate('click', '.new-product', _.bind(this.newProduct, this));
-    },
-
-    // Toolbar callbacks
-    goBack: function() {
-      Chaplin.utils.redirectTo({name: 'product_list'});
-    },
-
-    // Sidebar callbacks
-    newProduct: function() {
-      Chaplin.utils.redirectTo({name: 'product_new'});
     },
   });
 
