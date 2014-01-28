@@ -5,87 +5,14 @@
   margin-right: 3px;
   margin-top: 12px;
 
-  & > div {
-    width: 100%;
-    @include clearfix();
+  .row {
+    margin-top: 5px;
   }
 
-  .edit-head {
-    margin-top: 12px;
-  }
-
-  .edit-body {
+  .separator {
     border-top: 1px solid #e4e4e4;
-    margin-top: 25px;
-    padding-top: 25px;
-  }
-
-  @mixin panel {
-    float: left;
-    width: 50%;
-    @include clearfix();
-  }
-
-  .edit-left-panel {
-    @include panel;
-    padding-right: 17px;
-  }
-
-  .edit-right-panel {
-    @include panel;
-    padding-left: 17px;
-  }
-
-  .edit-row {
-    @include clearfix;
-    line-height: 21px;
-    margin-top: 5px;
-  }
-
-  .edit-row-title {
-    float: left;
-    width: 102px;
-    margin-right: 29px;
-    text-align: right;
-    color: #777;
-  }
-
-  .edit-row-value {
-    float: left;
-  }
-
-  .edit-action-row {
-    text-align: center;
-    padding-top: 10px;
-    .btn-group {
-      display: inline-block;
-    }
-  }
-
-  .edit-row {
-    @include clearfix;
-    line-height: 21px;
-    margin-top: 5px;
-  }
-
-  .edit-row-title {
-    float: left;
-    width: 102px;
-    margin-right: 29px;
-    text-align: right;
-    color: #777;
-  }
-
-  .edit-row-value {
-    float: left;
-  }
-
-  .edit-action-row {
-    text-align: center;
-    padding-top: 10px;
-    .btn-group {
-      display: inline-block;
-    }
+    margin-top: 19px;
+    padding-top: 19px;
   }
 }
 
