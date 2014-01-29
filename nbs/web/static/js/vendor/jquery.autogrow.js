@@ -5,7 +5,9 @@
 
 define([
   'jquery',
-], function($) {
+  'backbone',
+  'backbone.stickit',
+], function($, Backbone) {
   "use strict";
 
   var testSubject,
@@ -44,7 +46,18 @@ define([
       };
 
       input.on('input.autogrow', check);
+      input.on('change.stickit', check);
       check();
     });
   };
+
+  /* Add handler for backbone stickit */
+  if (Backbone.Stickit) {
+    Backbone.Stickit.addHandler({
+      selector: '*',
+      afterUpdate: function($el) {
+        $el.trigger('change.stickit');
+      },
+    });
+  }
 });

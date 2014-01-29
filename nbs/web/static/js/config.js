@@ -17,7 +17,7 @@ var require = {
     'jquery.autogrow':      'vendor/jquery.autogrow',
     'underscore':           'vendor/lodash-2.4.1',
     'backbone':             'vendor/backbone-1.1.0',
-    'backbone.stickit':     'vendor/backbone-stickit-0.6.3',
+    'backbone.stickit':     'vendor/backbone-stickit-0.7.0',
     'backbone.relational':  'vendor/backbone-relational-0.8.6',
     'backbone.validation':  'vendor/backbone-validation-amd-0.9.0',
     'chaplin':              'vendor/chaplin-1.0.0',

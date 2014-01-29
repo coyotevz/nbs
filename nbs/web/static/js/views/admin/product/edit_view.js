@@ -28,6 +28,15 @@ define([
     template: 'admin/product/edit.html',
     noWrap: true,
 
+    bindings: {
+      '[name=sku]': 'sku',
+      '[name=description]': 'description',
+      '[name=price]': {
+        observe: 'price',
+        onGet: $.numeric,
+      },
+    },
+
     render: function(params) {
       ProductEditView.__super__.render.apply(this, arguments);
       this.initSubviews();
