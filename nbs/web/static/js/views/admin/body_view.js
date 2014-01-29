@@ -1,7 +1,8 @@
 define([
   'jquery',
+  'underscore',
   'views/base/view',
-], function($, View) {
+], function($, _, View) {
   "use strict";
 
   var BodyView = View.extend({
@@ -24,7 +25,8 @@ define([
 
     attach: function() {
       BodyView.__super__.attach.apply(this, arguments);
-      $(window).resize(this.resize).focus(this.resize);
+      $(window).on('resize', _.debounce(this.resize, 150));
+      $(window).on('focus', this.resize);
       this.resize();
       this.$('#scroll_wrapper').on('scroll', this.fixToolbar);
     },
