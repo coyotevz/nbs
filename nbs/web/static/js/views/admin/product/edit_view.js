@@ -33,6 +33,11 @@ define([
       this.initSubviews();
     },
 
+    attach: function() {
+      ProductEditView.__super__.attach.apply(this, arguments);
+      this.$('.autogrow').autogrow();
+    },
+
     initSubviews: function() {
       var toolbar, sidebar;
       toolbar = new EditToolbar({region: 'toolbar', editv: this});

@@ -6,6 +6,7 @@ define([
   // jQuery plugins
   'jquery.keycode',
   'jquery.number',
+  'jquery.autogrow',
 ], function(Chaplin, Layout) {
   'use strict';
 

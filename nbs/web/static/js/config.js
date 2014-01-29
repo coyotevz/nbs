@@ -14,6 +14,7 @@ var require = {
     'jquery':               'vendor/jquery-1.10.2',
     'jquery.keycode':       'vendor/jquery.keycode',
     'jquery.number':        'vendor/jquery.number-2.1.3',
+    'jquery.autogrow':      'vendor/jquery.autogrow',
     'underscore':           'vendor/lodash-2.4.1',
     'backbone':             'vendor/backbone-1.1.0',
     'backbone.stickit':     'vendor/backbone-stickit-0.6.3',
@@ -60,7 +61,7 @@ var require = {
           return $.number(val, 2, ',', '.');
         };
       }
-    }
+    },
   }
 
   // For easier development, disable browser caching
