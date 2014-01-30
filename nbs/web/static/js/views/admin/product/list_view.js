@@ -3,8 +3,9 @@ define([
   'chaplin',
   'views/base/view',
   'views/base/collection_view',
+  'views/toolbar',
   'views/admin/product/item_view',
-], function(_, Chaplin, View, CollectionView, ProductItemView) {
+], function(_, Chaplin, View, CollectionView, Toolbar, ProductItemView) {
   "use strict";
 
   var Pager = View.extend({
@@ -67,17 +68,17 @@ define([
     },
   });
 
-  var ListToolbar = View.extend({
+  var ListToolbar = Toolbar.extend({
     template: 'admin/product/list_toolbar.html',
-    optionNames: View.prototype.optionNames.concat(['listv']),
-
-    events: {
-      'click [name=select-all]': 'selectAll',
-      'click [name=reload]': 'reload',
-    },
 
     regions: {
       'pager': '.pager-container',
+    },
+
+    initialize: function() {
+      ListToolbar.__super__.initialize.apply(this, arguments);
+      this.delegate('click', '[name=select-all]', this.selectAll);
+      this.delegate('click','[name=reload]', this.reload);
     },
 
     render: function() {
@@ -85,7 +86,7 @@ define([
       ListToolbar.__super__.render.apply(this, arguments);
       pager = new Pager({
         region: 'pager',
-        collection: this.listv.collection,
+        collection: this.view.collection,
         field: 'sku',
       });
       this.subview('pager', pager);
@@ -93,7 +94,7 @@ define([
 
     reload: function() {
       this.$('[rel=tooltip]').tooltip('hide');
-      this.listv.collection.fetch();
+      this.view.collection.fetch();
     },
 
     selectAll: function(evt) {
@@ -118,7 +119,7 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new ListToolbar({region: 'toolbar', listv: this});
+      toolbar = new ListToolbar({region: 'toolbar', view: this});
       this.subview('toolbar', toolbar);
       sidebar = new ListSidebar({region: 'sidebar', listv: this});
       this.subview('sidebar', sidebar);

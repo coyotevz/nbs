@@ -6,15 +6,13 @@ define([
   'views/admin/product/detail_view',
   'views/admin/product/edit_view',
   'views/admin/product/sidebar_view',
-  'views/admin/product/toolbar_view',
 ], function(AdminController,
             Product,
             ProductsCollection,
             ProductListView,
             ProductDetailView,
             ProductEditView,
-            ProductSidebarView,
-            ProductToolbarView) {
+            ProductSidebarView) {
   "use strict";
 
   var ProductController = AdminController.extend({
@@ -24,7 +22,6 @@ define([
       ProductController.__super__.beforeAction.apply(this, arguments);
       this.publishEvent('menu:setCurrent', 'product');
       //this.reuse('sidebar', ProductSidebarView, {region: 'sidebar'});
-      //this.reuse('toolbar', ProductToolbarView, {region: 'toolbar'});
     },
 
     list: function(params) {

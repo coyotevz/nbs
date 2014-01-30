@@ -1,21 +1,15 @@
 define([
   'chaplin',
   'views/base/view',
-], function(Chaplin, View) {
+  'views/toolbar',
+], function(Chaplin, View, Toolbar) {
   "use strict";
 
-  var EditToolbar = View.extend({
+  var EditToolbar = Toolbar.extend({
     template: 'admin/product/edit_toolbar.html',
-    optionNames: View.prototype.optionNames.concat(['editv']),
 
     events: {
-      'click [name=go-back]': 'goBack',
       'click [name=save]': 'saveChanges',
-    },
-
-    goBack: function() {
-      this.$('[rel=tooltip]').tooltip('hide');
-      window.history.back();
     },
 
     saveChanges: function() {
@@ -49,7 +43,7 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new EditToolbar({region: 'toolbar', editv: this});
+      toolbar = new EditToolbar({region: 'toolbar', view: this});
       this.subview('toolbar', toolbar);
     },
 
