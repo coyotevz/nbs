@@ -3,6 +3,7 @@ define([
 ], function(View) {
   "use strict";
 
+  /* Base class for toolbar implementations */
   var Toolbar = View.extend({
     optionNames: View.prototype.optionNames.concat(['view']),
 
