@@ -39,6 +39,7 @@ define([
     attach: function() {
       ProductEditView.__super__.attach.apply(this, arguments);
       this.$('.autogrow').autogrow();
+      this.$('[name=sku]').focus().select();
     },
 
     initSubviews: function() {
