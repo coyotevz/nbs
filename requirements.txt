@@ -3,4 +3,4 @@ git+https://github.com/mattupstate/flask-principal#egg=Flask-Principal
 Flask-Script
 Flask-SQLAlchemy
 Flask-WTF
-WTForms-Alchemy==0.8.5
+WTForms-Alchemy
