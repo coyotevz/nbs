@@ -2,6 +2,19 @@
  * Custom buttons
  */
 
+@mixin disabled() {
+  &,
+  &:hover,
+  &:focus,
+  &:focus:hover,
+  &:active,
+  &:active:hover {
+    cursor: default;
+    @include opacity(0.5);
+    @include box-shadow(none);
+  }
+}
+
 button,
 [role=button],
 .btn {
@@ -53,19 +66,7 @@ button,
 
   &.disabled,
   &[disabled] {
-    &,
-    &:hover,
-    &:focus,
-    &:focus:hover,
-    &:active,
-    &:active:hover {
-      cursor: default;
-      @include gradient-vertical($button-background-color, $button-high-background-color);
-      @include box-shadow(none);
-      border-color: $button-border-color;
-      color: lighten($button-font-color, 60);
-      * { @include opacity(65); }
-    }
+    @include disabled();
   }
 
   &.btn-thin {
@@ -113,6 +114,11 @@ button,
     &:active {
       @include gradient-vertical($color3, $color5);
       @include box-shadow(inset 0 1px 2px rgba(0,0,0,0.3));
+    }
+
+    &.disabled,
+    &[disabled] {
+      @include disabled();
     }
 
   }
