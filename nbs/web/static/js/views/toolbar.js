@@ -13,9 +13,13 @@ define([
     },
 
     goBack: function() {
-      this.$('[rel=tooltip]').tooltip('hide');
+      this.hideTooltips();
       window.history.back();
     },
+
+    hideTooltips: function() {
+      this.$('[rel=tooltip]').tooltip('hide');
+    }
 
   });
 

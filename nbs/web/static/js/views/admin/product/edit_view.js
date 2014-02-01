@@ -13,14 +13,19 @@ define([
     },
 
     saveChanges: function() {
-      this.$('[rel=tooltip]').tooltip('hide');
+      this.hideTooltips();
       console.log('save changes');
     },
+
   });
 
   var ProductEditView = View.extend({
     template: 'admin/product/edit.html',
     noWrap: true,
+
+    listen: {
+      'change model': 'onModelChange',
+    },
 
     bindings: {
       '[name=sku]': 'sku',
@@ -46,6 +51,12 @@ define([
       var toolbar, sidebar;
       toolbar = new EditToolbar({region: 'toolbar', view: this});
       this.subview('toolbar', toolbar);
+    },
+
+    onModelChange: function(model, options) {
+      if (options.stickitChange) {
+        this.subview('toolbar').$('[name=save]').attr('disabled', false);
+      }
     },
 
   });
