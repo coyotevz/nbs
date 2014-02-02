@@ -22,7 +22,7 @@ var require = {
     'backbone.validation':  'vendor/backbone-validation-amd-0.9.0',
     'chaplin':              'vendor/chaplin-1.0.0',
     'nunjucks':             'vendor/nunjucks-1.0.0',
-    'bootstrap':            'vendor/bootstrap-3.0.3',
+    'bootstrap':            'vendor/bootstrap-3.1.0',
 
     // List internal paths
     // 'ClientModel': 'models/client',
