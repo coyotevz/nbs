@@ -19,9 +19,28 @@ define([
     serialize: Chaplin.Model.prototype.serialize,
     disposed: Chaplin.Model.prototype.disposed,
 
+    fetch: function(options) {
+      options = options ? _.clone(options) : {};
+      var success = options.success;
+      options.success = function(model, resp, options) {
+        model._serverAttributes = resp;
+        if (success) success(model, resp, options);
+      }
+      // FIXME: Remove next line!!
+      window.current_model = this;
+      return Backbone.RelationalModel.prototype.fetch.call(this, options);
+    },
+
+    save: function(key, val, options) {
+      console.debug("model save");
+      return Backbone.RelationalModel.prototype.fetch.call(this, key, val, options);
+    },
+
+    hasStoredChange: function() {
+      if (!this._serverAttributes) return false;
+    },
+
   }).extend(Chaplin.EventBroker);
 
-  // TODO: remove next line
-  window.Model = Model;
   return Model;
 });
