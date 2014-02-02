@@ -11,7 +11,7 @@ define([
     },
 
     initialize: function(attributes, options) {
-      Model.prototype.initialize.apply(this, arguments);
+      Product.__super__.initialize.apply(this, arguments);
     },
 
   });
