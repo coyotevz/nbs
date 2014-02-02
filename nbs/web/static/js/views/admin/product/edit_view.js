@@ -13,7 +13,6 @@ define([
     },
 
     saveChanges: function() {
-      this.hideTooltips();
       console.log('save changes');
     },
 
