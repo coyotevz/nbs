@@ -27,7 +27,25 @@
               <h1 class="panel-title">Productos</h1>
             </div>
             <div class="panel-body">
-              <p>Administre los <a href="{{ url_for('web.product.list') }}">productos</a> o servicios que vende se empresa.</p>
+              <p>Administre los <a href="/admin#products">productos</a> o servicios que ofrece su empresa.</p>
+            </div>
+          </div>
+          <div id="people_dashboard" class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Personas</h1>
+            </div>
+            <div class="panel-body">
+              <p>Administre los clientes, <a href="/admin#suppliers">proveedores</a> y usuarios del sistema.
+                Puede dar de alta nuevos clientes o <a href="/admin#suppliers/new">proveedores></a> si lo necesita.</p>
+            </div>
+          </div>
+          <div id="help_dashboard" class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Ayuda</h1>
+            </div>
+            <div class="panel-body">
+              <p>Encuentre toda la ayuda que necesita para operar el sistema de
+                manera más eficiente.</p>
             </div>
           </div>
         </div>
@@ -44,26 +62,6 @@
                 información vea el menú 'Tareas'.</p>
             </div>
           </div>
-        </div>
-
-      </div>
-
-      <div class="row">
-
-        <div class="col-md-6">
-          <div id="people_dashboard" class="panel panel-default">
-            <div class="panel-heading">
-              <h1 class="panel-title">Personas</h1>
-            </div>
-            <div class="panel-body">
-              <p>Administre los clientes, <a href="{{ url_for('web.supplier.index') }}">proveedores</a> y usuarios del sistema.
-                Puede dar de alta nuevos clientes o proveedores si lo
-                necesita.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
           <div id="documents_dashboard" class="panel panel-default">
             <div class="panel-heading">
               <h1 class="panel-title">Comprobantes</h1>
@@ -75,21 +73,6 @@
           </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div id="help_dashboard" class="panel panel-default">
-            <div class="panel-heading">
-              <h1 class="panel-title">Ayuda</h1>
-            </div>
-            <div class="panel-body">
-              <p>Encuentre toda la ayuda que necesita para operar el sistema de
-                la manera más eficiente.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </body>
 </html>
