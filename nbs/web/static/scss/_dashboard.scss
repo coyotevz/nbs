@@ -7,6 +7,14 @@
   color: #262626;
   font: 15px/1.4 arial,sans-serif;
 
+  .page-header {
+    background-color: $brand-primary;
+    border: none;
+    margin: 0;
+    margin-bottom: 20px;
+    padding: 2em 0;
+  }
+
   .panel {
     display: inline-block;
     background-color: $white;
@@ -34,11 +42,11 @@
       border-top: 5px solid #ffffff;
     }
 
-    &#products { border-top-color: #8cc474; }
-    &#tod { border-top-color: #e46f61; }
-    &#people { border-top-color: #76a7fa; }
-    &#documents { border-top-color: #6f85bf; }
-    &#help { border-top-color: #4dbfd9; }
+    &#products  { border-top-color: #8cc474; }
+    &#tod       { border-top-color: #76a7fa; }
+    &#people    { border-top-color: #e46f61; }
+    &#documents { border-top-color: #fbcb43; }
+    &#help      { border-top-color: #6f85bf; }
 
 
     /*
