@@ -2,7 +2,7 @@
  * Custom buttons
  */
 
-@mixin disabled() {
+@mixin disabled($font, $border) {
   &,
   &:hover,
   &:focus,
@@ -10,6 +10,8 @@
   &:active,
   &:active:hover {
     cursor: default;
+    color: lighten($font, 37);
+    border-color: $border;
     @include opacity(0.5);
     @include box-shadow(none);
   }
@@ -66,7 +68,7 @@ button,
 
   &.disabled,
   &[disabled] {
-    @include disabled();
+    @include disabled($button-font-color, $button-border-color);
   }
 
   &.btn-thin {
@@ -118,7 +120,7 @@ button,
 
     &.disabled,
     &[disabled] {
-      @include disabled();
+      @include disabled($white, $color1);
     }
 
   }
