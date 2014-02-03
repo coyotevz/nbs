@@ -8,7 +8,7 @@ aside {
 
   #sidebar_header {
     margin-left: 9px;
-    padding: 5px 16px 15px 1px;
+    padding: 8px 16px 8px 1px;
     min-height: 27px;
 
     .title {
@@ -19,6 +19,10 @@ aside {
         border-color: $sidebar-title-color transparent;
       }
     }
+  }
+
+  #sidebar {
+    padding-top: 7px;
   }
 
   .action {
