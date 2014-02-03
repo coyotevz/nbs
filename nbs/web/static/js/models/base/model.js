@@ -42,14 +42,13 @@ define([
 
     getPatch: function() {
       if (!this._serverAttributes) return false;
-      var diff = {},
-          keys = _.keys(this.attributes),
-          self = this;
-      _.each(keys, function(key) {
-        var orig_val = self._serverAttributes[key],
-            new_val = self.get(key);
-        if (!_.isEqual(orig_val, new_val)) diff[key] = new_val;
+      var attrs = this._serverAttributes,
+          diff = {};
+
+      _.each(this.attributes, function(val, key) {
+        if (!_.isEqual(val, attrs[key])) diff[key] = val;
       });
+
       if (!_.isEmpty(diff)) return diff;
       return false;
     },
