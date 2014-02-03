@@ -9,6 +9,7 @@
     #toolbar {
       border-bottom: 1px solid $toolbar-border-color;
       margin-left: -400px;
+      height: 44px;
       padding: 7px 16px 7px 400px;
       @include clearfix();
       &.fixed {
