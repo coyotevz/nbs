@@ -32,6 +32,9 @@ define([
       '[name=price]': {
         observe: 'price',
         onGet: $.numeric,
+        onSet: function(val) {
+          return val.replace('.','').replace(',','.');
+        }
       },
     },
 
@@ -54,7 +57,7 @@ define([
 
     onModelChange: function(model, options) {
       if (options.stickitChange) {
-        this.subview('toolbar').$('[name=save]').attr('disabled', false);
+        this.subview('toolbar').$('[name=save]').attr('disabled', !model.hasStoredChange());
       }
     },
 
