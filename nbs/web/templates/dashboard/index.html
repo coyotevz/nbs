@@ -7,13 +7,13 @@
 
     <title>Experimento</title>
 
-    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/nobix.css" type="text/css">
     <script src="/static/js/config.js"></script>
     <script src="/static/js/vendor/require.js" data-main="main">
     </script>
 
   </head>
-  <body>
+  <body id="dashboard">
     <div class="container">
 
       <div class="page-header">
@@ -22,15 +22,13 @@
 
       <div class="row">
         <div class="col-md-6">
-          <div id="products_dashboard" class="panel panel-default">
+          <div id="products" class="panel panel-special">
             <div class="panel-heading">
               <h1 class="panel-title">Productos</h1>
             </div>
-            <div class="panel-body">
-              <p>Administre los <a href="/admin#products">productos</a> o servicios que ofrece su empresa.</p>
-            </div>
+            <p>Administre los <a href="/admin#products">productos</a> o servicios que ofrece su empresa.</p>
           </div>
-          <div id="people_dashboard" class="panel panel-default">
+          <div id="people" class="panel panel-special">
             <div class="panel-heading">
               <h1 class="panel-title">Personas</h1>
             </div>
@@ -39,7 +37,7 @@
                 Puede dar de alta nuevos clientes o <a href="/admin#suppliers/new">proveedores></a> si lo necesita.</p>
             </div>
           </div>
-          <div id="help_dashboard" class="panel panel-default">
+          <div id="help" class="panel panel-special">
             <div class="panel-heading">
               <h1 class="panel-title">Ayuda</h1>
             </div>
@@ -51,7 +49,7 @@
         </div>
 
         <div class="col-md-6">
-          <div id="tod_dashboard" class="panel panel-default">
+          <div id="tod" class="panel panel-special">
             <div class="panel-heading">
               <h1 class="panel-title">Consejo del Día</h1>
             </div>
@@ -62,7 +60,7 @@
                 información vea el menú 'Tareas'.</p>
             </div>
           </div>
-          <div id="documents_dashboard" class="panel panel-default">
+          <div id="documents" class="panel panel-special">
             <div class="panel-heading">
               <h1 class="panel-title">Comprobantes</h1>
             </div>
