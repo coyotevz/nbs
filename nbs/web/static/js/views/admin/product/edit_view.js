@@ -13,7 +13,7 @@ define([
     },
 
     saveChanges: function() {
-      console.log('save changes');
+      console.log(this.view.model.getPatch());
     },
 
   });
