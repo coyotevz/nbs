@@ -27,6 +27,7 @@ define([
 
     initialize: function() {
       DocumentView.__super__.initialize.apply(this, arguments);
+      console.log("TODO: DocumentView needs to be rewrited");
       this.model = new Document();
 
       var appenderview = new AppenderView({model: this.model.appender});
@@ -49,17 +50,11 @@ define([
       }).scroll(function(evt) {
         var $t = $(evt.target);
 
-        if ($t.scrollTop() > 0) {
-          $t.prev().toggleClass("shadowed", true);
-        } else {
-          $t.prev().toggleClass("shadowed", false);
-        }
+        var hs = $t.scrollTop() > 0;
+        $t.prev().toggleClass("shadowed", hs);
 
-        if ($t.children('table').outerHeight() - $t.scrollTop() > $t.height()) {
-          $t.next().toggleClass("shadowed", true);
-        } else {
-          $t.next().toggleClass("shadowed", false);
-        }
+        var fs = ($t.children('table').outerHeight() - $t.scrollTop()) > $t.height()
+        $t.next().toggleClass("shadowed", fs);
       });
 
       // Set focus on last item-row
