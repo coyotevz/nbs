@@ -1,7 +1,7 @@
 // Admin application
 require([
   'chaplin',
-  'views/admin/layout',
+  'views/layout',
   'routes/admin',
   'bootstrap',
 

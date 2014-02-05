@@ -5,11 +5,8 @@ define(function() {
   // `match` is a match method of the Router
   var routes = function(match) {
 
-    /* dashboard controller */
-    //match('', 'dashboard#index', {name: 'index'});
-    //match('dashboard', 'dashboard#index', {name: 'index'});
-    //match('pos', 'pos#index', {name: 'pos_index'});
-    match('', 'admin#index', {name: 'admin_index'});
+    match('', 'dashboard#index', {name: 'dashboard'});
+    match('dashboard', 'dashboard#index', {name: 'dashboard'});
 
     match('products', 'product#list', {name: 'product_list'});
     match('products/new', 'product#new', {name: 'product_new'});

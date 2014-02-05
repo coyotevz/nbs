@@ -5,7 +5,7 @@ define([
   "use strict";
 
   var Layout = Chaplin.Layout.extend({
-    title: 'Point of Sale',
+    title: 'Nobix',
 
     listen: {
       'dispatcher:dispatch mediator': 'navigate',
@@ -15,13 +15,11 @@ define([
       main: '',
     },
 
-    initialize: function(options) {
-      Layout.__super__.initialize.apply(this, options);
-      console.log('PosLayout#initialize');
-    },
-
     navigate: function(controller, params, route) {
-      console.log('pos navigate');
+      this.$('[rel="tooltip"]').tooltip({
+        container: 'body',
+        delay: { show: 500, hide: 0},
+      });
     },
 
   });
