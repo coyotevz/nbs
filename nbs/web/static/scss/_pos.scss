@@ -99,7 +99,12 @@ $footer-height: 60px;
             outline: none;
             height: 40px;
             border-width: 0px;
-            background-color: transparent;
+
+            &, &:hover {
+              @include box-shadow(none);
+              border-color: transparent;
+              background-color: transparent;
+            }
 
             &.code {
               width: 14ex;
