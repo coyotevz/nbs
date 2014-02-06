@@ -6,7 +6,6 @@ define([
   var StandardView = View.extend({
     id: 'wrapper',
     template: 'standard_page.html',
-    region: 'main',
     regions: {
       'header': 'header',
       'body': '#body',
