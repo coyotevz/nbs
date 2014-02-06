@@ -1,0 +1,36 @@
+//
+// Overwrite some modals styles
+//
+
+.modal-content {
+  @include border-radius($modal-border-radius);
+  @include box-shadow($modal-border-shadow);
+  padding: $modal-padding;
+
+  .modal-header {
+    margin-bottom: 30px;
+    border-bottom: none;
+
+    .modal-title {
+      font-size: $modal-title-font-size;
+      font-weight: normal;
+      color: #000;
+    }
+
+    .modal-close {
+    }
+  }
+
+  .modal-body {
+    padding: 0;
+  }
+
+  .modal-footer {
+    margin-top: 16px;
+    padding: 0;
+    border-top: none;
+    text-align: left;
+  }
+}
+
+// vim:ft=scss:sw=2

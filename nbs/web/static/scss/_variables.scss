@@ -64,5 +64,16 @@ $button-high-background-color:  #f1f1f1;
 $input-border-hover:            #a6a6a6;
 $input-border-focus:            #4d90fe;
 
+// Modals
+$modal-content-border-color:    rgba(0,0,0,.333);
+$modal-border-radius:           2px;
+$modal-border-shadow:           0 4px 16px rgba(0,0,0,0.2);
+$modal-padding:                 30px 32px;
+$modal-title-line-height:       24px;
+$modal-title-font-size:         16px;
+$modal-title-padding:           0px;
+$modal-backdrop-bg:             $white;
+$modal-backdrop-opacity:        .75;
+
 // Footer
 $footer-font-color:             #777;

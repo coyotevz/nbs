@@ -14,7 +14,8 @@ define([
     },
 
     newProduct: function() {
-      Chaplin.utils.redirectTo({name: 'product_new'});
+      _dialog.show();
+      //Chaplin.utils.redirectTo({name: 'product_new'});
     },
   });
 
