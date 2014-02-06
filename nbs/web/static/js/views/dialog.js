@@ -17,7 +17,20 @@ define([
       this.$el.modal({
         show: false,
       });
-  fade     window.$el = this.$el; 
+      // Grab global copy of this instance
+      window._dialog = this;
+    },
+
+    show: function() {
+      this.$el.modal('show');
+    },
+
+    hide: function() {
+      this.$el.modal('hide');
+    },
+
+    toggle: function() {
+      this.$el.modal('toggle');
     },
   });
 
