@@ -12,7 +12,7 @@ define([
 
   var testSubject,
       inherit = ['font', 'font-family', 'font-weight', 'font-size',
-                 'letter-spacing'];
+                 'letter-spacing', 'text-transform'];
 
   var getTestSubject = function() {
     if (!testSubject) {

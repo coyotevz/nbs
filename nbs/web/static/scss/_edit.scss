@@ -69,6 +69,11 @@ textarea {
     line-height: 33px;
     padding: 2px 5px;
   }
+
+  // Custom styles
+  &[name=sku] {
+    text-transform: uppercase;
+  }
 }
 
 textarea {
@@ -81,11 +86,11 @@ textarea {
   }
 }
 
-::-webkit-input-placeholder { color: #777; }
-::-moz-placeholder { color: #777; }
-:-ms-input-placeholder { color: #777; }
-input:-moz-placeholder { color: #777; }
-textarea:-moz-placeholder { color: #777; }
+::-webkit-input-placeholder { color: #777; text-transform: none;}
+         ::-moz-placeholder { color: #777; text-transform: none;}
+     :-ms-input-placeholder { color: #777; text-transform: none;}
+     input:-moz-placeholder { color: #777; text-transform: none;}
+  textarea:-moz-placeholder { color: #777; text-transform: none;}
 
 /* vim:ft=scss:sw=2
  */
