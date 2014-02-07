@@ -10,8 +10,16 @@ define([
     defaults: {
     },
 
-    initialize: function(attributes, options) {
-      Product.__super__.initialize.apply(this, arguments);
+    validation: {
+      'sku': {
+        required: true,
+      },
+      'description': {
+        required: true,
+      },
+      'price': {
+        required: true,
+      },
     },
 
   });

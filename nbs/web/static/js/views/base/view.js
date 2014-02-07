@@ -42,6 +42,7 @@ define([
       View.__super__.render.apply(this, arguments);
       if (this.bindings && this.model) {
         this.stickit();
+        Backbone.Validation.bind(this);
       }
     },
 

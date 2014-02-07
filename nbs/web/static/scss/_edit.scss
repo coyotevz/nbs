@@ -24,7 +24,7 @@ textarea {
   background-color: $white;
   border-width: 1px;
   border-style: solid;
-  border-color: transparent;
+  border-color: #c0c0c0 #d9d9d9 #d9d9d9 #d9d9d9 ;
   background-color: $white;
   color: $gray-darker;
   margin: 1px;
@@ -36,6 +36,10 @@ textarea {
   &.void,
   &.bordered {
     border-color: #c0c0c0 #d9d9d9 #d9d9d9 #d9d9d9 ;
+  }
+
+  &.noborder {
+    border-color: transparent;
   }
 
   &:hover {
@@ -83,4 +87,5 @@ textarea {
 input:-moz-placeholder { color: #777; }
 textarea:-moz-placeholder { color: #777; }
 
-/* vim:ft=scss:sw=2 */
+/* vim:ft=scss:sw=2
+ */
