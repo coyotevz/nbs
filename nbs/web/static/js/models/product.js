@@ -1,19 +1,16 @@
 define([
-  'models/base/model'
-], function(Model) {
+  'backbone',
+  'models/base/model',
+  'models/search',
+], function(Backbone, Model) {
   "use strict";
 
   var Product = Model.extend({
 
     urlRoot: '/api/products',
 
-    defaults: {
-    },
-
     validation: {
-      'sku': {
-        required: true,
-      },
+      'sku': 'validateSku',
       'description': {
         required: true,
       },
@@ -22,7 +19,34 @@ define([
       },
     },
 
+    validateSku: function(val, attr, model) {
+      // validate required
+      var error = Backbone.Validation.validators.required(val, attr, true, this);
+      if (!error) {
+        // validate max field length 14
+        error = Backbone.Validation.validators.maxLength(val, attr, 14, this);
+      }
+      if (!error) {
+        // Validate start with number
+        if (Backbone.Validation.validators.pattern(val, attr, /^\d+.*$/, this)) {
+          error = "El código debe comenzar con un número"
+        }
+      }
+      if (!error) {
+        // Validate sku uniqueness
+        var product = Product.search.one({sku: val.toUpperCase()});
+        if (product && product.id !== this.id) {
+          error = "El código ya es utilizado por otro producto";
+        }
+      }
+      if (error) {
+        console.log("error", error);
+        return error;
+      }
+    },
   });
+
+  Product.search = new Search(Product);
 
   return Product;
 });

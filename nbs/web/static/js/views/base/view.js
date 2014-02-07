@@ -46,6 +46,11 @@ define([
       }
     },
 
+    remove: function() {
+      Backbone.Validation.unbind(this);
+      View.__super__.remove.apply(this, arguments);
+    },
+
     /* extra method, borrowed from controller */
     compose: function(name) {
       var method;

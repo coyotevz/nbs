@@ -2,9 +2,8 @@ define([
   'underscore',
   'views/base/view',
   'models/product',
-  'models/search',
   'models/document_item',
-], function(_, View, Product, Search, DocumentItem) {
+], function(_, View, Product, DocumentItem) {
   "use strict";
 
   var letter = /^[a-z]$/,
@@ -45,7 +44,6 @@ define([
       BaseRowView.__super__.initialize.apply(this, arguments);
       this.initUiEvents();
       Backbone.Validation.bind(this);
-      this.search = new Search(Product);
     },
 
     _show: function($el, val, options) {
@@ -104,7 +102,7 @@ define([
       // search and get one article based on user provided sku
       var product, val = $(evt.target).val();
       if (/^\d/.test(val)) {
-        product = this.search.one({sku: val.toUpperCase()});
+        product = Product.search.one({sku: val.toUpperCase()});
       } else {
         return false;
       }
