@@ -32,7 +32,7 @@ button,
   cursor: pointer;
   border: 1px solid $button-border-color;
   word-wrap: normal;
-  min-width: 54px;
+  min-width: $button-min-width;
   @include border-radius($button-border-radius);
   @include box-shadow(none);
   @include gradient-vertical($button-background-color, $button-high-background-color);

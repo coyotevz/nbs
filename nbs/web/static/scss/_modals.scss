@@ -2,34 +2,65 @@
 // Overwrite some modals styles
 //
 
-.modal-content {
-  @include border-radius($modal-border-radius);
-  @include box-shadow($modal-border-shadow);
-  padding: $modal-padding;
+.modal {
+  overflow-y: auto;
+}
 
-  .modal-header {
-    margin-bottom: 30px;
-    border-bottom: none;
+.modal-dialog {
+  position: absolute;
+  margin: 0;
+  width: auto;
+  top: -9999px;
+  left: -9999px;
 
-    .modal-title {
-      font-size: $modal-title-font-size;
-      font-weight: normal;
-      color: #000;
+  .modal-content {
+    @include border-radius($modal-border-radius);
+    @include box-shadow($modal-border-shadow);
+    padding: $modal-padding;
+
+    .modal-header {
+      margin-bottom: 30px;
+      border-bottom: none;
+
+      .modal-title {
+        font-size: $modal-title-font-size;
+        font-weight: normal;
+        color: #000;
+      }
+
+      .modal-close {
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 11px;
+        padding: 2px;
+        margin: 10px;
+        @include opacity(.5);
+        position: absolute;
+        top: 0;
+        right: 0;
+        cursor: pointer;
+        @include user-select(none);
+
+        &:hover {
+          @include opacity(1);
+        }
+      }
     }
 
-    .modal-close {
+    .modal-body {
+      padding: 0;
     }
-  }
 
-  .modal-body {
-    padding: 0;
-  }
+    .modal-footer {
+      margin-top: 16px;
+      padding: 0;
+      border-top: none;
+      text-align: left;
 
-  .modal-footer {
-    margin-top: 16px;
-    padding: 0;
-    border-top: none;
-    text-align: left;
+      .btn + .btn {
+        margin-left: 16px;
+      }
+    }
   }
 }
 
