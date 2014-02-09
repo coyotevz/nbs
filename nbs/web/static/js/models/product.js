@@ -34,7 +34,10 @@ define([
       }
       if (!error) {
         // Validate sku uniqueness
-        var product = Product.search.one({sku: val.toUpperCase()});
+        // merge = false is important in options because Backbone.Relations
+        // update the current model fields and Backbone.stickit updates current
+        // view with server data.
+        var product = Product.search.one({sku: val.toUpperCase()}, {merge: false});
         if (product && product.id !== this.id) {
           error = "El código ya es utilizado por otro producto";
         }

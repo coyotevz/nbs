@@ -36,17 +36,20 @@ define([
       this.options = options || {};
     },
 
-    one: function(condition) {
+    one: function(condition, options) {
+      options = options ? _.clone(options) : {};
+      options.condition = condition || {};
+      options.async = options.async ? options.async : false;
       this.reset();
-      this.fetch({condition: condition, async: false});
+      this.fetch(options);
       return this.at(0);
     },
 
-    many: function(condition) {
+    many: function(condition, options) {
+      options = options ? _.clone(options) : {};
+      options.condition = condition || {};
       this.reset();
-      this.fetch({
-        condition: condition
-      });
+      this.fetch(options);
       return this.models;
     },
 

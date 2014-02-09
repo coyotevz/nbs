@@ -40,8 +40,7 @@ define([
 
     show: function(params) {
       console.log('Product#show', params);
-      var model;
-      model = Product.findOrCreate({id: params.id});
+      var model = Product.findOrCreate({id: params.id});
       model.fetch();
       this.view = new ProductDetailView({
         region: 'content',
@@ -50,8 +49,7 @@ define([
     },
 
     edit: function(params) {
-      var model;
-      model = Product.findOrCreate({id: params.id});
+      var model = Product.findOrCreate({id: params.id});
       model.fetch();
       this.view = new ProductEditView({
         region: 'content',
