@@ -13,7 +13,8 @@ define([
     },
 
     saveChanges: function() {
-      console.log(this.view.model.getPatch());
+      var model = this.view.model;
+      model.save(model.getPatch(), {patch: true, validate: false});
     },
 
   });

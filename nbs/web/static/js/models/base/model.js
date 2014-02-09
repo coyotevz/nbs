@@ -31,11 +31,6 @@ define([
       return Backbone.RelationalModel.prototype.fetch.call(this, options);
     },
 
-    save: function(key, val, options) {
-      console.debug("model save");
-      return Backbone.RelationalModel.prototype.fetch.call(this, key, val, options);
-    },
-
     hasStoredChange: function() {
       return _.isObject(this.getPatch()) ? true : false;
     },
