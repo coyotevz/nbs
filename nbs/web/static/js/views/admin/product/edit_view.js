@@ -59,7 +59,8 @@ define([
     onModelChange: function(model, options) {
       window.current_model = model;
       if (options.stickitChange) {
-        this.subview('toolbar').$('[name=save]').attr('disabled', !(model.hasStoredChange() && this.model.isValid(true)));
+        var error = model.hasStoredChange() && this.model.isValid(options.stickitChange.observe);
+        this.subview('toolbar').$('[name=save]').attr('disabled', !error);
       }
     },
 
