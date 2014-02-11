@@ -29,7 +29,7 @@ define([
       if (!error) {
         // Validate start with number
         if (Backbone.Validation.validators.pattern(val, attr, /^\d+.*$/, this)) {
-          error = "El código debe comenzar con un número"
+          error = "El código debe comenzar con un número";
         }
       }
       if (!error) {
