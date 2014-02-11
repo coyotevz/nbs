@@ -43,7 +43,6 @@ define([
         }
       }
       if (error) {
-        console.log("error", error);
         return error;
       }
     },

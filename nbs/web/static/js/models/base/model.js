@@ -54,8 +54,6 @@ define([
           error,
           isValid;
 
-      console.log('calling isAttributeValid() on %s', attr);
-
       if (attr === true) {
         this.validate();
         return this.validation ? this._isValid : true;
