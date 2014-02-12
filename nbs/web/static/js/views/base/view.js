@@ -42,13 +42,33 @@ define([
       View.__super__.render.apply(this, arguments);
       if (this.bindings && this.model) {
         this.stickit();
-        Backbone.Validation.bind(this);
+        Backbone.Validation.bind(this, {
+          invalid: this.invalid,
+          valid: this.valid,
+        });
       }
     },
 
     remove: function() {
       Backbone.Validation.unbind(this);
       View.__super__.remove.apply(this, arguments);
+    },
+
+    /* called when validation of an attribute results invalid */
+    invalid: function(view, attr, error, selector) {
+      if (view.model) {
+        view.model.validationError = _.extend({}, view.model.validationError);
+        view.model.validationError[attr] = error;
+      }
+    },
+
+    /* called when validation of an atribute results valid */
+    valid: function(view, attr, selector) {
+      if (view.model) {
+        view.model.validationError = _.extend({}, view.model.validationError);
+        delete view.model.validationError[attr];
+        if (_.isEmpty(view.model.validationError)) view.model.validationError = null;
+      }
     },
 
     /* extra method, borrowed from controller */

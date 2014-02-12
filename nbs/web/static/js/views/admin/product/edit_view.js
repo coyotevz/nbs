@@ -1,8 +1,9 @@
 define([
+  'underscore',
   'chaplin',
   'views/base/view',
   'views/toolbar',
-], function(Chaplin, View, Toolbar) {
+], function(_, Chaplin, View, Toolbar) {
   "use strict";
 
   var EditToolbar = Toolbar.extend({
@@ -59,8 +60,8 @@ define([
     onModelChange: function(model, options) {
       window.current_model = model;
       if (options.stickitChange) {
-        var isValid = this.model.isAttributeValid(options.stickitChange.observe),
-            enabled = isValid && model.hasStoredChange() && model.isValid();
+        var isValid = model.isValid(options.stickitChange.observe),
+            enabled = isValid && model.hasStoredChange() && _.isEmpty(model.validationError || {});
         this.subview('toolbar').$('[name=save]').attr('disabled', !enabled);
       }
     },
