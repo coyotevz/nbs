@@ -14,7 +14,7 @@ define([
       sidebar_footer: '#sidebar_footer',
       toolbar: '#toolbar',
       content_header: '#content_header',
-      content: '#content',
+      content: '.content',
       content_footer: '#content_footer',
     },
 
@@ -36,13 +36,13 @@ define([
        *    body { overflow: hidden; }
        * in CSS and that 'aside' view exists to work properly
        */
-      var contentWrapper = this.$('#content_wrapper'),
-          scrollWrapper = this.$('#scroll_wrapper'),
+      var container = this.$('.view-container'),
+          scrollWrapper = this.$('.scroll-container'),
           contentAvlWidth = $(window).width() - this.$('aside').width(),
-          contentAvlHeight = $(window).height() - contentWrapper.position().top;
+          contentAvlHeight = $(window).height() - container.position().top;
 
-      contentWrapper.width(contentAvlWidth);
-      contentWrapper.height(contentAvlHeight);
+      container.width(contentAvlWidth);
+      container.height(contentAvlHeight);
       scrollWrapper.height(contentAvlHeight);
     },
 

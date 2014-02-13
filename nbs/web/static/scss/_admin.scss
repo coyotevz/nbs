@@ -3,7 +3,7 @@
 #body {
   @include clearfix();
 
-  #main_content {
+  #viewpane {
     float: left;
 
     #toolbar {
@@ -35,10 +35,10 @@
       }
     }
 
-    #content_wrapper {
+    .view-container {
       overflow: hidden;
 
-      #scroll_wrapper {
+      .scroll-container {
         overflow-y: scroll;
       }
     }
