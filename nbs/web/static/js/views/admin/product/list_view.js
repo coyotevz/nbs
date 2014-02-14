@@ -82,10 +82,12 @@ define([
 
     attach: function() {
       ProductListView.__super__.attach.apply(this, arguments);
-      this.resizeHeaderWidths();
+      $(window).on('resize', _.debounce(this.resizeTableHeader, 150));
+      $(window).on('focus', this.resizeTableHeader);
+      this.resizeTableHeader();
     },
 
-    resizeHeaderWidths: function() {
+    resizeTableHeader: function() {
       self = this;
       this.$('col').each(function(index, element) {
         var cls = element.className.replace(/col-/, 'header-');
