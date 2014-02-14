@@ -6,7 +6,7 @@
   #viewpane {
     float: left;
 
-    #toolbar {
+    .toolbar {
       border-bottom: 1px solid $toolbar-border-color;
       margin-left: -400px;
       height: 44px;
@@ -40,21 +40,7 @@
 
       .scroll-container {
         overflow-y: scroll;
-      }
-    }
-
-    #content_footer {
-      /*
-      color: $footer-font-color;
-      font-size: 85%;
-      text-align: center;
-      margin-bottom: 5px;
-      margin-top: 5px;
-      padding-top: 8px;
-      */
-      a {
-        color: $footer-font-color;
-        text-decoration: underline;
+        position: relative;
       }
     }
   }

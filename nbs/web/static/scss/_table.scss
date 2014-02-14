@@ -2,11 +2,63 @@
  * Nobix Tables
  */
 
+.list-container {
+  padding-top: 28px;
+}
+
 table {
   &.list {
     width: 100%;
     table-layout: fixed;
     cursor: default;
+
+    thead {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      width: 100%;
+
+      tr {
+        height: 28px;
+        color: #555;
+        font-size: 11px;
+
+        transition: all 0.218s ease 0s;
+
+        th {
+          background-color: $white;
+          font-weight: normal;
+          text-transform: uppercase;
+          z-index: 1;
+          border-bottom: 1px solid #e5e5e5;
+          empty-cells: show;
+          overflow: hidden;
+          text-align: left;
+          white-space: nowrap;
+          height: 28px;
+          display: table-cell;
+
+          &.header-sorted {
+            color: #dd4b39;
+            font-weight: bold;
+          }
+
+          &.header-active-indicator { width: 4px; }
+          &.header-checkbox { width: 23px; }
+          &.header-sku { width: 14ex; }
+          &.header-description { width: 100%; }
+          &.header-date { width: 10ex; }
+          &.header-price { width: 10ex; }
+
+          .header-label {
+            padding: 0 0 0 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: text-top;
+          }
+        }
+      }
+    }
 
     tr {
       height: 27px;
@@ -34,27 +86,6 @@ table {
     .col-description { width: 100%; }
     .col-date { width: 10ex; }
     .col-price { width: 10ex; }
-
-    thead {
-      tr {
-        height: 24px;
-        color: #555;
-        font-size: 11px;
-
-        th {
-          background-color: $white;
-          font-weight: normal;
-          text-transform: uppercase;
-          z-index: 1;
-          border-bottom: 1px solid #e5e5e5;
-          empty-cells: show;
-          overflow: hidden;
-          padding: 0 0 0 6px;
-          text-align: left;
-          white-space: nowrap;
-        }
-      }
-    }
   }
 
 

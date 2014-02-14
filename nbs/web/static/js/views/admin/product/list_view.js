@@ -79,6 +79,19 @@ define([
       sidebar = new ListSidebar({region: 'sidebar', listv: this});
       this.subview('sidebar', sidebar);
     },
+
+    attach: function() {
+      ProductListView.__super__.attach.apply(this, arguments);
+      this.resizeHeaderWidths();
+    },
+
+    resizeHeaderWidths: function() {
+      self = this;
+      this.$('col').each(function(index, element) {
+        var cls = element.className.replace(/col-/, 'header-');
+        self.$('th.'+cls).css('width', $(element).width());
+      });
+    },
   });
 
   return ProductListView;
