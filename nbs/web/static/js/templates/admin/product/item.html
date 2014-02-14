@@ -1,11 +1,18 @@
-<td></td>
-<td>
+<td class="cell-active"></td>
+<td class="cell-checkbox">
   <label class="inline-control">
     <input name="product:{{ id }}" type="checkbox"/>
     <span></span>
   </label>
 </td>
-<td class="sku"><span>{{ sku }}</span></td>
-<td class="description"><span>{{ description }}</span></td>
-<td></td>
-<td class="price"><span>{{ price }}</span></td>
+<td class="cell-sku">
+  <a class="link-product-sku" href="#"><span class="product-sku label-container">{{ sku }}</span></a>
+</td>
+<td class="cell-description">
+  <a class="link-product-description" href="#">
+    <span class="icon-image product-icon"></span>
+    <span class="product-description label-container">{{ description }}</span>
+  </a>
+</td>
+<td class="cell-date"></td>
+<td class="cell-price"><span class="product-price label-container">{{ price }}</span></td>
