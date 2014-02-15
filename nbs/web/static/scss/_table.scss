@@ -64,39 +64,46 @@ table {
       &.selected {
         background-color: #ffc;
       }
-    }
 
-    td {
-      border-bottom: 1px solid #e5e5e5;
-      empty-cells: show;
-      white-space: nowrap;
-      padding-left: 6px;
-
-      .icon-image {
-        width: 16px;
-        height: 16px;
-        padding: 0;
-        margin-top: 5px;
-        margin-right: 3px;
-        background-repeat: no-repeat;
-        display: inline-block;
+      &:hover {
+        background-color: #ffc;
       }
 
-      span {
-        padding: 0 1px 0 4px;
-      }
-
-      a {
-        color: #222;
-        text-decoration: none;
-        line-height: 23px;
+      td {
         height: 23px;
+        border-bottom: 1px solid #ebebeb;
+        empty-cells: show;
+        white-space: nowrap;
+        padding-left: 6px;
+        vertical-align: top;
 
-        &:hover {
-          color: #1155cc;
-          text-decoration: underline;
+        .icon-image {
+          width: 16px;
+          height: 17px;
+          padding: 0;
+          margin-right: 3px;
+          background-repeat: no-repeat;
+          display: inline-block;
+          vertical-align: middle;
+
+          & + .cell-label-container { padding: 0 1px 0 4px; }
+        }
+
+        .cell-label-container {
+          margin-top: 1px;
+        }
+
+        a {
+          color: #222;
+          text-decoration: none;
+
+          &:hover {
+            color: #1155cc;
+            text-decoration: underline;
+          }
         }
       }
+
     }
   }
 
