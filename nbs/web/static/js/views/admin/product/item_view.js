@@ -12,18 +12,19 @@ define([
     initialize: function() {
       ProductItemView.__super__.initialize.apply(this, arguments);
       this.delegate('change', 'input[type=checkbox]', this.checked);
-      this.delegate('click', 'td', this.open);
+      this.delegate('click', 'td', this.select);
     },
 
-    checked: function(evt) {
-      this.selected = this.$(evt.target).is(':checked');
+    checked: function(target) {
+      this.selected = this.$(target).is(':checked');
       this.$el.toggleClass('selected', this.selected);
       this.trigger('selected', this.selected);
     },
 
-    open: function(evt) {
-      if (this.$(evt.target).is('input[type=checkbox]')) return this.checked(evt);
-      Chaplin.utils.redirectTo({name: 'product_show'}, {id: this.model.id})
+    select: function(evt) {
+      console.log('select:', this.$el, evt);
+      this.checked(this.$('input[type="checkbox"]'));
+      //if (this.$(evt.target).is('input[type=checkbox]')) return this.checked(evt);
     },
 
   });

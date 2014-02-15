@@ -79,18 +79,18 @@ table {
 
         .icon-image {
           width: 16px;
-          height: 17px;
+          height: 16px;
           padding: 0;
           margin-right: 3px;
           background-repeat: no-repeat;
           display: inline-block;
-          vertical-align: middle;
+          vertical-align: text-bottom;
 
           & + .cell-label-container { padding: 0 1px 0 4px; }
         }
 
         .cell-label-container {
-          margin-top: 1px;
+          line-height: 26px;
         }
 
         a {
@@ -100,6 +100,14 @@ table {
           &:hover {
             color: #1155cc;
             text-decoration: underline;
+          }
+        }
+
+        label.inline-control input[type="checkbox"] {
+          margin-top: 8px;
+
+          & + span:before {
+            margin-top: 6px;
           }
         }
       }
