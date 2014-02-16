@@ -94,6 +94,40 @@ define([
         self.$('th.'+cls).css('width', $(element).width());
       });
     },
+
+    initItemView: function(model) {
+      if (this.itemView) {
+        var view = new this.itemView({
+          autoRender: true,
+          model: model,
+          parent: this,
+        });
+        this.listenTo(view, 'selected', this.onItemSelected);
+        this.listenTo(view, 'unselected', this.onItemUnselected);
+        return view;
+      } else {
+        throw new Error("The CollectionView#itemView property " +
+                        "must be defined or initItemView() must be overridden.");
+      }
+    },
+
+    onItemSelected: function(item) {
+    },
+
+    onItemUnselected: function(item) {
+    },
+
+    selectAll: function() {
+      _.invoke(_.values(this.getItemViews()), 'toggleSelect', true);
+    },
+
+    unselectAll: function() {
+      _.invoke(_.values(this.getItemViews()), 'toggleSelect', false);
+    },
+
+    getSelected: function() {
+      return _.filter(_.values(this.getItemViews()), 'selected');
+    },
   });
 
   return ProductListView;

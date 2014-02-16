@@ -1,30 +1,45 @@
 define([
+  'underscore',
   'chaplin',
   'views/base/view',
-], function(Chaplin, View) {
+], function(_, Chaplin, View) {
   "use strict";
 
   var ProductItemView = View.extend({
     template: 'admin/product/item.html',
     tagName: 'tr', // we can't insert <tr> element inside <div> with native code
     selected: false,
+    optionNames: View.prototype.optionNames.concat(['parent']),
 
     initialize: function() {
       ProductItemView.__super__.initialize.apply(this, arguments);
-      this.delegate('change', 'input[type=checkbox]', this.checked);
+      this.delegate('click', '.control-checkbox', this.onCheckboxClick);
       this.delegate('click', 'td', this.select);
     },
 
-    checked: function(target) {
-      this.selected = this.$(target).is(':checked');
-      this.$el.toggleClass('selected', this.selected);
-      this.trigger('selected', this.selected);
+    render: function() {
+      ProductItemView.__super__.render.apply(this, arguments);
+      this.$checkbox = this.$('.control-checkbox');
     },
 
-    select: function(evt) {
-      console.log('select:', this.$el, evt);
-      this.checked(this.$('input[type="checkbox"]'));
-      //if (this.$(evt.target).is('input[type=checkbox]')) return this.checked(evt);
+    select: function() {
+      this.parent.unselectAll();
+      this.toggleSelect(true);
+    },
+
+    onCheckboxClick: function(evt) {
+      this.toggleSelect();
+      return false;
+    },
+
+    toggleSelect: function(opt) {
+      opt = (opt !== undefined) ? Boolean(opt) : !this.selected;
+      if (opt !== this.selected) {
+        this.$checkbox.toggleClass('control-checkbox-checked', opt);
+        this.$el.toggleClass('selected', opt);
+        this.selected = opt;
+        this.trigger({true: 'selected', false: 'unselected'}[opt], this);
+      }
     },
 
   });

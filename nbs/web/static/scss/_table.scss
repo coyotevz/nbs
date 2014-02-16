@@ -66,7 +66,7 @@ table {
       }
 
       &:hover {
-        background-color: #ffc;
+        background-color: #ffffd6;
       }
 
       td {
@@ -76,6 +76,15 @@ table {
         white-space: nowrap;
         padding-left: 6px;
         vertical-align: top;
+
+        &.cell-active {
+          border-bottom: transparent;
+        }
+        &.cell-active, &.cell-checkbox {
+          padding-left: 0;
+          text-align: center;
+        }
+
 
         .icon-image {
           width: 16px;
@@ -91,6 +100,10 @@ table {
 
         .cell-label-container {
           line-height: 26px;
+        }
+
+        .control-checkbox {
+          margin-top: 6px;
         }
 
         a {
@@ -123,9 +136,6 @@ table {
     .col-description { width: 100%; }
     .col-date { width: 10ex; }
     .col-price { width: 10ex; }
-
-    .cell-active { border-bottom: transparent; }
-    .cell-active, .cell-checkbox { padding-left: 0; }
 
     .product-icon {
       background-image: url(/static/img/product-icon.png);

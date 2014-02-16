@@ -5,3 +5,8 @@
      -moz-border-radius: $radius;
           border-radius: $radius;
 }
+
+@mixin inline-block() {
+  display: inline-block;
+  position: relative;
+}
