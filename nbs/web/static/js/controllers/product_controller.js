@@ -30,6 +30,8 @@ define([
         collection: this.productList,
         region: 'content',
       });
+      // FIXME: For debug only
+      window.view = this.view;
     },
 
     'new': function(params) {

@@ -28,6 +28,7 @@ define([
     },
 
     onCheckboxClick: function(evt) {
+      evt.preventDefault();
       this.toggleSelect();
       return false;
     },

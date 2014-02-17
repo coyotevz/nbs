@@ -42,6 +42,10 @@ table {
             border-bottom: transparent;
           }
 
+          &.header-checkbox {
+            text-align: center;
+          }
+
           &.header-sorted {
             color: #dd4b39;
             font-weight: bold;

@@ -32,7 +32,6 @@ define([
 
     initialize: function() {
       ListToolbar.__super__.initialize.apply(this, arguments);
-      this.delegate('click', '[name=select-all]', this.selectAll);
       this.delegate('click','[name=reload]', this.reload);
     },
 
@@ -51,11 +50,6 @@ define([
       this.$('[rel=tooltip]').tooltip('hide');
       this.view.collection.fetch();
     },
-
-    selectAll: function(evt) {
-      console.log('select-all', evt.currentTarget.value, evt);
-      return false;
-    },
   });
 
   var ProductListView = CollectionView.extend({
@@ -69,6 +63,7 @@ define([
 
     render: function() {
       ProductListView.__super__.render.apply(this, arguments);
+      this.delegate('click', 'th .control-checkbox', this.onCheckboxClick);
       this.initSubviews();
     },
 
@@ -89,10 +84,15 @@ define([
 
     resizeTableHeader: function() {
       self = this;
+      /*
       this.$('col').each(function(index, element) {
         var cls = element.className.replace(/col-/, 'header-');
         self.$('th.'+cls).css('width', $(element).width());
-      });
+      });*/
+     this.$('tr:first td').each(function(index, element) {
+       var cls = element.className.replace(/cell-/, 'heade-');
+       self.$('th.'+cls).css('width', $(element).css('width'));
+     });
     },
 
     initItemView: function(model) {
@@ -109,6 +109,12 @@ define([
         throw new Error("The CollectionView#itemView property " +
                         "must be defined or initItemView() must be overridden.");
       }
+    },
+
+    onCheckboxClick: function(evt) {
+      evt.preventDefault();
+      console.log('onCheckboxClick');
+      return false;
     },
 
     onItemSelected: function(item) {
