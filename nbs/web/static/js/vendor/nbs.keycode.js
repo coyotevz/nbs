@@ -1,7 +1,11 @@
 /**
  * jQuery keycode inspection Plugin
  */
-(function($, _) {
+
+define([
+  'jquery',
+  'underscore',
+], function($, _) {
   "use strict";
 
   var special_keys = {
@@ -46,4 +50,4 @@
   $.keycode_is = function(event, keys) {
     return _.contains(keys.split(' '), $.keycode(event));
   };
-})(jQuery, _);
+});

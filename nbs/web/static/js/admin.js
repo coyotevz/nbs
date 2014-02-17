@@ -5,10 +5,10 @@ require([
   'routes/admin',
   'bootstrap',
 
-  // jQuery plugins
-  'jquery.keycode',
   'jquery.number',
-  'jquery.autogrow',
+  'nbs.keycode',
+  'nbs.autogrow',
+  'nbs.fixedheader',
 ], function(Chaplin, AdminLayout, routes) {
   "use strict";
 

@@ -12,9 +12,10 @@ var require = {
     // Specify the paths for vendor libraries
     'json':                 'vendor/json2-2013-05-25',
     'jquery':               'vendor/jquery-1.10.2',
-    'jquery.keycode':       'vendor/jquery.keycode',
     'jquery.number':        'vendor/jquery.number-2.1.3',
-    'jquery.autogrow':      'vendor/jquery.autogrow',
+    'nbs.keycode':          'vendor/nbs.keycode',
+    'nbs.autogrow':         'vendor/nbs.autogrow',
+    'nbs.fixedheader':      'vendor/nbs.fixedheader',
     'underscore':           'vendor/lodash-2.4.1',
     'backbone':             'vendor/backbone-1.1.0',
     'backbone.stickit':     'vendor/backbone-stickit-0.7.0',
@@ -49,9 +50,6 @@ var require = {
     'bootstrap': {
       deps: ['jquery'],
       exports: 'bootstrap'
-    },
-    'jquery.keycode': {
-      deps: ['jquery', 'underscore']
     },
     'jquery.number': {
       deps: ['jquery', 'underscore'],

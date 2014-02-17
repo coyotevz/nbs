@@ -5,9 +5,8 @@ require([
   'routes/pos',
   'bootstrap',
 
-  // jQuery plugins
-  'jquery.keycode',
-  'jquery.number',
+  'nbs.keycode',
+  'nbs.number',
 ], function(Chaplin, PosLayout, routes) {
   "use strict";
 
