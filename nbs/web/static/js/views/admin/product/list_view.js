@@ -77,27 +77,7 @@ define([
 
     attach: function() {
       ProductListView.__super__.attach.apply(this, arguments);
-      this.$('table').fixedHeader();
-      /*
-      $(window).on('resize', _.debounce(this.resizeTableHeader, 150));
-      $(window).on('focus', this.resizeTableHeader);
-      this.resizeTableHeader();*/
-    },
-
-    resizeTableHeader: function() {
-      self = this;
-      /* Firefox */
-    /*
-      this.$('col').each(function(index, element) {
-        var cls = element.className.replace(/col-/, 'header-');
-        self.$('th.'+cls).css('width', $(element).width());
-      });
-     /* WebKit */
-     /*
-     this.$('tr:first td').each(function(index, element) {
-       var cls = element.className.replace(/cell-/, 'header-');
-       self.$('th.'+cls).css('width', $(element).css('width'));
-     });*/
+      this.$('table').fixHeader();
     },
 
     initItemView: function(model) {

@@ -6,6 +6,7 @@
 }
 
 table {
+
   &.list {
     width: 100%;
     table-layout: fixed;
@@ -19,8 +20,6 @@ table {
         height: 28px;
         color: #555;
         font-size: 11px;
-
-        transition: all 0.218s ease 0s;
 
         th {
           background-color: $white;
@@ -129,14 +128,22 @@ table {
     }
   }
 
+  /* fix table header plugin */
+  &.fixed {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+  }
+
   /* Product List */
   &.productlist {
     .col-active-indicator { width: 4px; }
     .col-checkbox { width: 23px; }
-    .col-sku { width: 14ex; }
+    .col-sku { width: 98px; }
     .col-description { width: 100%; }
-    .col-date { width: 10ex; }
-    .col-price { width: 10ex; }
+    .col-date { width: 70px; }
+    .col-price { width: 70px; }
 
     .product-icon {
       background-image: url(/static/img/product-icon.png);

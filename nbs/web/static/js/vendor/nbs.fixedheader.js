@@ -1,32 +1,30 @@
 /*
- * Table fixed headers
+ * Fix table headers
  */
 
 define([
   'jquery',
-], function($) {
+  'underscore',
+], function($, _) {
   "use strict";
 
-  $.fn.fixedHeader = function(options) {
+  $.fn.fixHeader = function(options) {
     return this.each(function() {
-      var offset, scrollTop, $cloned,
-          $e = $(this),
-          $h = $('thead tr', $e);
-      offset = $e.offset();
-      scrollTop = $(window).scrollTop();
+      var $table = $(this),
+          $parent = $table.parent(),
+          $cloned = $table.clone(),
+          resize;
 
-      if ((scrollTop > offset.top) && scrollTop < offset.top + $e.height()) {
-        $h.css({
-          'visibility': 'visible',
-          'top': Math.min(scrollTop - offset.top, $e.height() - $h.height()) + "px",
-        });
-      } else {
-        $h.css({
-          'visibility': 'hidden',
-          'top': '0px',
-        });
-      }
+      $cloned.insertBefore($table).find('tbody').remove();
+      $cloned.addClass('fixed');
+      $table.find('thead').css('visibility', 'hidden');
 
+      resize = _.partial(function($f, $p) {
+        $f.width($p.width());
+      }, $cloned, $table);
+
+      resize();
+      $(window).on('resize', _.debounce(resize, 150));
     });
   }
 });
