@@ -16,17 +16,12 @@ define([
       content: '.content',
     },
 
-    initialize: function() {
-      BodyView.__super__.initialize.apply(this, arguments);
-      console.log('BodyView#initialize(%s)', this.cid);
-    },
-
     attach: function() {
       BodyView.__super__.attach.apply(this, arguments);
       $(window).on('resize', _.debounce(this.resize, 150));
       $(window).on('focus', this.resize);
       this.resize();
-      this.$('.scroll-container').on('scroll', this.fixToolbar);
+      this.$('.scroll-container').on('scroll', this.scrolled);
     },
 
     resize: function() {
@@ -44,13 +39,14 @@ define([
       scrollContainer.height(contentAvlHeight);
     },
 
-    fixToolbar: function(evt) {
+    scrolled: function(evt) {
       if ($(this).scrollTop() > 0) {
-        $('.toolbar').addClass('fixed');
+        $('#viewpane').addClass('scrolled');
       } else {
-        $('.toolbar').removeClass('fixed');
+        $('#viewpane').removeClass('scrolled');
       }
     },
+
   });
 
   return BodyView;

@@ -6,15 +6,16 @@
   #viewpane {
     float: left;
 
+    &.scrolled .fixed {
+      @include box-shadow(0 2px 2px -1px rgba(0,0,0,0.1));
+    }
+
     .toolbar {
       border-bottom: 1px solid $toolbar-border-color;
       margin-left: -400px;
       height: 44px;
       padding: 7px 16px 7px 400px;
       @include clearfix();
-      &.fixed {
-        @include box-shadow(0 2px 2px -1px rgba(0,0,0,0.1));
-      }
 
       .pages {
         float: left;
