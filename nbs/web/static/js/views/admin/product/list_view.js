@@ -107,7 +107,7 @@ define([
       return false;
     },
 
-    onItemSelected: function() {
+    onItemSelected: function(item) {
       if (_.keys(this.getItemViews()).length > this.getSelected().length) {
         /* partial selection */
         this.$selectionControl.removeClass('control-checkbox-checked');
@@ -117,9 +117,10 @@ define([
         this.$selectionControl.removeClass('control-checkbox-partial');
         this.$selectionControl.addClass('control-checkbox-checked');
       }
+      if (item) this.setActive(item);
     },
 
-    onItemUnselected: function() {
+    onItemUnselected: function(item) {
       if (this.getSelected().length > 0) {
         /* partial selection */
         this.$selectionControl.removeClass('control-checkbox-checked');
@@ -129,6 +130,7 @@ define([
         this.$selectionControl.removeClass('control-checkbox-partial');
         this.$selectionControl.removeClass('control-checkbox-checked');
       }
+      if (item) this.setActive(item);
     },
 
     selectAll: function() {
@@ -143,6 +145,13 @@ define([
 
     getSelected: function() {
       return _.filter(_.values(this.getItemViews()), 'selected');
+    },
+
+    setActive: function(item) {
+      this.$('tbody tr').removeClass('active-row');
+      if (item) {
+        item.$el.addClass('active-row');
+      }
     },
   });
 

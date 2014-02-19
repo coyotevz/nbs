@@ -7,6 +7,8 @@
 
 table {
 
+  border-collapse: inherit;
+
   &.list {
     width: 100%;
     table-layout: fixed;
@@ -80,11 +82,11 @@ table {
         &.cell-active {
           border-bottom: transparent;
         }
+
         &.cell-active, &.cell-checkbox {
           padding-left: 0;
           text-align: center;
         }
-
 
         .icon-image {
           width: 16px;
@@ -122,6 +124,12 @@ table {
           & + span:before {
             margin-top: 6px;
           }
+        }
+      }
+
+      &.active-row {
+        .cell-active {
+          border-left: 2px solid #4D90F0;
         }
       }
 
