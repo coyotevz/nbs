@@ -1,8 +1,6 @@
 define([
-  'underscore',
-  'chaplin',
   'views/base/view',
-], function(_, Chaplin, View) {
+], function(View) {
   "use strict";
 
   var ProductItemView = View.extend({
@@ -13,8 +11,8 @@ define([
 
     initialize: function() {
       ProductItemView.__super__.initialize.apply(this, arguments);
-      this.delegate('click', '.control-checkbox', this.onCheckboxClick);
-      this.delegate('click', 'td', this.select);
+      this.delegate('click', '.cell-checkbox', this.onCheckboxClick);
+      this.delegate('click', 'td:not(.cell-checkbox)', this.select);
     },
 
     render: function() {
