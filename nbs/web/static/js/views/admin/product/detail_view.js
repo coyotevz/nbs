@@ -24,14 +24,8 @@ define([
     template: 'admin/product/detail_toolbar.html',
 
     events: {
-      'click [name=go-back]': 'goBack',
       'click [name=edit]': 'edit',
       'click [name=delete]': 'delete',
-    },
-
-    goBack: function() {
-      this.$('[rel=tooltip]').tooltip('hide');
-      Chaplin.utils.redirectTo({name: 'product_list'});
     },
 
     edit: function() {
