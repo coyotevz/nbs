@@ -78,6 +78,7 @@ define([
     attach: function() {
       ProductListView.__super__.attach.apply(this, arguments);
       this.$('table').fixHeader();
+      this.$selectionControl = this.$('th .control-checkbox');
     },
 
     initItemView: function(model) {
@@ -98,22 +99,46 @@ define([
 
     onCheckboxClick: function(evt) {
       evt.preventDefault();
-      console.log('onCheckboxClick');
+      if (this.getSelected().length > 0) {
+        this.unselectAll();
+      } else {
+        this.selectAll();
+      }
       return false;
     },
 
-    onItemSelected: function(item) {
+    onItemSelected: function() {
+      if (_.keys(this.getItemViews()).length > this.getSelected().length) {
+        /* partial selection */
+        this.$selectionControl.removeClass('control-checkbox-checked');
+        this.$selectionControl.addClass('control-checkbox-partial');
+      } else {
+        /* full selection */
+        this.$selectionControl.removeClass('control-checkbox-partial');
+        this.$selectionControl.addClass('control-checkbox-checked');
+      }
     },
 
-    onItemUnselected: function(item) {
+    onItemUnselected: function() {
+      if (this.getSelected().length > 0) {
+        /* partial selection */
+        this.$selectionControl.removeClass('control-checkbox-checked');
+        this.$selectionControl.addClass('control-checkbox-partial');
+      } else {
+        /* all unselected */
+        this.$selectionControl.removeClass('control-checkbox-partial');
+        this.$selectionControl.removeClass('control-checkbox-checked');
+      }
     },
 
     selectAll: function() {
-      _.invoke(_.values(this.getItemViews()), 'toggleSelect', true);
+      _.invoke(_.values(this.getItemViews()), 'toggleSelect', true, false);
+      this.onItemSelected();
     },
 
     unselectAll: function() {
-      _.invoke(_.values(this.getItemViews()), 'toggleSelect', false);
+      _.invoke(_.values(this.getItemViews()), 'toggleSelect', false, false);
+      this.onItemUnselected();
     },
 
     getSelected: function() {

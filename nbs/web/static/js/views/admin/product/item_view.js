@@ -31,13 +31,16 @@ define([
       return false;
     },
 
-    toggleSelect: function(opt) {
+    toggleSelect: function(opt, trigger) {
       opt = (opt !== undefined) ? Boolean(opt) : !this.selected;
+      trigger = (trigger !== undefined) ? Boolean(trigger) : true;
       if (opt !== this.selected) {
         this.$checkbox.toggleClass('control-checkbox-checked', opt);
         this.$el.toggleClass('selected', opt);
         this.selected = opt;
-        this.trigger({true: 'selected', false: 'unselected'}[opt], this);
+        if (trigger) {
+          this.trigger({true: 'selected', false: 'unselected'}[opt], this);
+        }
       }
     },
 

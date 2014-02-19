@@ -43,4 +43,10 @@ div.control-checkbox {
       background: url(/static/img/checkmark.png) no-repeat scroll -5px -3px rgba(0,0,0,0);
     }
   }
+
+  &.control-checkbox-partial {
+    .control-checkbox-checkmark {
+      background: url(/static/img/checkmark-partial.png) no-repeat scroll -5px -3px rgba(0,0,0,0);
+    }
+  }
 }
