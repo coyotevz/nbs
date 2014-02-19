@@ -4,15 +4,15 @@ define([
   'views/base/view',
   'views/base/collection_view',
   'views/toolbar',
+  'views/sidebar',
   'views/pager',
   'views/admin/product/item_view',
-], function(_, Chaplin, View, CollectionView, Toolbar, Pager,
+], function(_, Chaplin, View, CollectionView, Toolbar, Sidebar, Pager,
             ProductItemView) {
   "use strict";
 
-  var ListSidebar = View.extend({
+  var ListSidebar = Sidebar.extend({
     template: 'admin/product/list_sidebar.html',
-    optionNames: View.prototype.optionNames.concat(['listv']),
 
     events: {
       'click .new-product': 'newProduct',
@@ -71,7 +71,7 @@ define([
       var toolbar, sidebar;
       toolbar = new ListToolbar({region: 'toolbar', view: this});
       this.subview('toolbar', toolbar);
-      sidebar = new ListSidebar({region: 'sidebar', listv: this});
+      sidebar = new ListSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
     },
 

@@ -52,7 +52,7 @@ define([
     },
 
     initSubviews: function() {
-      var toolbar, sidebar;
+      var toolbar;
       toolbar = new EditToolbar({region: 'toolbar', view: this});
       this.subview('toolbar', toolbar);
     },

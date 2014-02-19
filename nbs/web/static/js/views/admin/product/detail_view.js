@@ -2,12 +2,13 @@ define([
   'underscore',
   'chaplin',
   'views/base/view',
-], function(_, Chaplin, View) {
+  'views/toolbar',
+  'views/sidebar',
+], function(_, Chaplin, View, Toolbar, Sidebar) {
   "use strict";
 
-  var DetailSidebar = View.extend({
+  var DetailSidebar = Sidebar.extend({
     template: 'admin/product/detail_sidebar.html',
-    optionNames: View.prototype.optionNames.concat(['detailv']),
 
     events: {
       'click .new-product': 'newProduct',
@@ -19,9 +20,8 @@ define([
     },
   });
 
-  var DetailToolbar = View.extend({
+  var DetailToolbar = Toolbar.extend({
     template: 'admin/product/detail_toolbar.html',
-    optionNames: View.prototype.optionNames.concat(['detailv']),
 
     events: {
       'click [name=go-back]': 'goBack',
@@ -38,7 +38,7 @@ define([
       this.$('[rel=tooltip]').tooltip('hide');
       Chaplin.utils.redirectTo({
         name: 'product_edit',
-        params: { id: this.detailv.model.id }
+        params: { id: this.view.model.id }
       });
     },
 
@@ -59,9 +59,9 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new DetailToolbar({region: 'toolbar', detailv: this});
+      toolbar = new DetailToolbar({region: 'toolbar', view: this});
       this.subview('toolbar', toolbar);
-      sidebar = new DetailSidebar({region: 'sidebar', detailv: this});
+      sidebar = new DetailSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
     },
   });
