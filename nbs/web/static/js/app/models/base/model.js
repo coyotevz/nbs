@@ -27,7 +27,7 @@ define([
         // save a copy of recently fetched attributes
         model._serverAttributes = _.clone(model.attributes);
         if (success) success(model, resp, options);
-      }
+      };
       return Backbone.RelationalModel.prototype.fetch.call(this, options);
     },
 

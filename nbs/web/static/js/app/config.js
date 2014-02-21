@@ -60,9 +60,9 @@ var require = {
         };
       }
     },
-  }
+  },
 
   // For easier development, disable browser caching
   // Of course, this should be remove in production environment
-  ,urlArgs: 'ver=' + (new Date()).getTime()
+  urlArgs: 'ver=' + (new Date()).getTime()
 };

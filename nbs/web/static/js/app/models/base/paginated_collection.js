@@ -26,12 +26,12 @@ define([
       options = options ? _.clone(options) : {};
       options.increase = options.increase ? options.increase : false;
       // FIXME: For Pager debug only
-      data['per_page'] = 8;
+      data.per_page = 8;
 
       if (options.increase) {
-        data["page"] = !this.page ? undefined : this.page < this.num_pages ? this.page + 1 : undefined;
+        data.page = !this.page ? undefined : this.page < this.num_pages ? this.page + 1 : undefined;
       } else {
-        data["page"] = !this.page ? undefined: this.page;
+        data.page = !this.page ? undefined: this.page;
       }
 
       options.data = _.defaults(options.data ? options.data : {}, data);

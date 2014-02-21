@@ -46,7 +46,7 @@ define([
     setCurrentMenu: function(menu) {
       if (this._current == menu) return;
       var item = this._getMenuItem(menu);
-      if (item != null) {
+      if (item !== null) {
         this._current = menu;
         this.$('.dropdown-toggle span').text(item.title);
         this.$('.dropdown-menu li.current').removeClass('current');

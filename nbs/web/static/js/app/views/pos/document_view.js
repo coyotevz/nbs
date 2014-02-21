@@ -53,7 +53,7 @@ define([
         var hs = $t.scrollTop() > 0;
         $t.prev().toggleClass("shadowed", hs);
 
-        var fs = ($t.children('table').outerHeight() - $t.scrollTop()) > $t.height()
+        var fs = ($t.children('table').outerHeight() - $t.scrollTop()) > $t.height();
         $t.next().toggleClass("shadowed", fs);
       });
 

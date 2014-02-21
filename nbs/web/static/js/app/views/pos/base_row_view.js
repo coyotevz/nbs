@@ -93,7 +93,7 @@ define([
       if (cellTop < scrollTop) {
         content.scrollTop(cellTop - 3);
       } else if (cellBottom > scrollTop + content.height()) {
-        content.scrollTop(cellBottom - content.height() + 3)
+        content.scrollTop(cellBottom - content.height() + 3);
       }
     },
 
@@ -110,7 +110,7 @@ define([
       if (product !== undefined) {
         this.model.set('product', product);
         var q = this.$('.quantity');
-        var val = q.val() || 1;
+        val = q.val() || 1;
         q.val(val).focus().select();
       }
       return false;
@@ -153,7 +153,7 @@ define([
       }
 
       var ks = k.split('shift+')[0] || k;
-      if (letter.test(ks) && evt.target.selectionStart == 0) {
+      if (letter.test(ks) && evt.target.selectionStart === 0) {
         console.log("// TODO: lanzar busqueda que comience con", ks);
         return false;
       }
@@ -167,7 +167,7 @@ define([
         this.model.set('quantity', $(evt.target).val());
         this.trigger('row-done', $(evt.target));
         return false;
-      };
+      }
     },
 
   });
