@@ -4,4 +4,5 @@
 *.egg-info
 docs/_build
 .sass-cache
+node_modules
 nobix.css
