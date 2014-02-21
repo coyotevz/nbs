@@ -13,9 +13,6 @@ var require = {
     'json':                 'vendor/json2-2013-05-25',
     'jquery':               'vendor/jquery-1.10.2',
     'jquery.number':        'vendor/jquery.number-2.1.3',
-    'nbs.keycode':          'vendor/nbs.keycode',
-    'nbs.autogrow':         'vendor/nbs.autogrow',
-    'nbs.fixedheader':      'vendor/nbs.fixedheader',
     'underscore':           'vendor/lodash-2.4.1',
     'backbone':             'vendor/backbone-1.1.0',
     'backbone.stickit':     'vendor/backbone-stickit-0.7.0',
@@ -24,6 +21,11 @@ var require = {
     'chaplin':              'vendor/chaplin-1.0.0',
     'nunjucks':             'vendor/nunjucks-1.0.0',
     'bootstrap':            'vendor/bootstrap-3.1.0',
+
+    // Custom plugins for this project
+    'nbs.keycode':          'lib/nbs.keycode',
+    'nbs.autogrow':         'lib/nbs.autogrow',
+    'nbs.fixedheader':      'lib/nbs.fixedheader',
 
     // List internal paths
     // 'ClientModel': 'models/client',
