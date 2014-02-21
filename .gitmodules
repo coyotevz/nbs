@@ -1,3 +1,3 @@
-[submodule "nbs/web/static/js/vendor/backbone.validation"]
-	path = nbs/web/static/js/vendor/backbone.validation
+[submodule "nbs/web/static/js/app/vendor/backbone.validation"]
+	path = nbs/web/static/js/app/vendor/backbone.validation
 	url = git@github.com:coyotevz/backbone.validation.git

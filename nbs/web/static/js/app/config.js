@@ -6,7 +6,7 @@
 var require = {
 
   // Path where JavaScript root modules are located
-  baseUrl: "/static/js",
+  baseUrl: "/static/js/app",
 
   paths: {
     // Specify the paths for vendor libraries
