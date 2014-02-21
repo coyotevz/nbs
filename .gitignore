@@ -5,4 +5,6 @@
 docs/_build
 .sass-cache
 node_modules
+nbs-pos*.js
+nbs-admin*.js
 nobix.css

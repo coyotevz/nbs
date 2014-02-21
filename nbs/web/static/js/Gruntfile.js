@@ -14,7 +14,16 @@ module.exports = function(grunt) {
         }
       }
     },
-    requirejs: {},
+    requirejs: {
+      compile: {
+        options: {
+          baseUrl: "app",
+          mainConfigFile: "app/config.js",
+          name: "admin",
+          out: "<%= pkg.name %>-admin.min.js",
+        }
+      }
+    },
     nunjucks: {},
   });
 
@@ -22,5 +31,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-nunjucks');
 
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('default', ['jshint', 'requirejs']);
 };
