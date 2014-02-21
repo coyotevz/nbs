@@ -26,5 +26,5 @@ define([
       resize();
       $(window).on('resize', _.debounce(resize, 150));
     });
-  }
+  };
 });
