@@ -1,12 +1,12 @@
-// Admin application
+// Pos application
 require([
   'chaplin',
   'views/layout',
   'routes/pos',
   'bootstrap',
 
+  'jquery.number',
   'nbs.keycode',
-  'nbs.number',
 ], function(Chaplin, PosLayout, routes) {
   "use strict";
 
