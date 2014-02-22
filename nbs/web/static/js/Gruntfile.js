@@ -15,21 +15,35 @@ module.exports = function(grunt) {
       }
     },
     requirejs: {
-      compile: {
+      admin: {
         options: {
           baseUrl: "app",
           mainConfigFile: "app/config.js",
           name: "admin",
           out: "<%= pkg.name %>-admin.min.js",
+          preserveLicenseComments: false,
+          optimize: "none",
+        }
+      },
+      pos: {
+        options: {
+          baseUrl: "app",
+          mainConfigFile: "app/config.js",
+          name: "pos",
+          out: "<%= pkg.name %>-pos.min.js",
+          preserveLicenseComments: false,
+          optimize: "none",
         }
       }
     },
     nunjucks: {},
+    clean: ['<%= pkg.name %>-admin.min.js', '<%= pkg.name %>-pos.min.js'],
   });
 
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-nunjucks');
 
-  grunt.registerTask('default', ['jshint', 'requirejs']);
+  grunt.registerTask('default', ['clean', 'jshint', 'requirejs']);
 };
