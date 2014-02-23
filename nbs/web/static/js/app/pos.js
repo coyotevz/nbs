@@ -7,9 +7,6 @@ require([
 
   'jquery.number',
   'nbs.keycode',
-
-  /* Only for include in optimized version */
-  'controllers/pos_controller',
 ], function(Chaplin, PosLayout, routes) {
   "use strict";
 

@@ -21,7 +21,13 @@ module.exports = function(grunt) {
           mainConfigFile: 'app/config.js',
           name: "../node_modules/almond/almond",
           out: '<%= pkg.name %>-admin.min.js',
-          include: 'admin',
+          include: [
+            'admin',
+            'controllers/admin_controller',
+            'controllers/dashboard_controller',
+            'controllers/supplier_controller',
+            'controllers/product_controller',
+          ],
           insertRequire: ['admin'],
           preserveLicenseComments: false,
           wrap: true,
@@ -34,7 +40,10 @@ module.exports = function(grunt) {
           mainConfigFile: 'app/config.js',
           name: "../node_modules/almond/almond",
           out: '<%= pkg.name %>-pos.min.js',
-          include: 'pos',
+          include: [
+            'pos',
+            'controllers/pos_controller'
+          ],
           insertRequire: ['pos'],
           preserveLicenseComments: false,
           wrap: true,
@@ -44,7 +53,8 @@ module.exports = function(grunt) {
     },
     nunjucks: {},
     clean: {
-      generated: ['<%= pkg.name %>-admin.min.js', '<%= pkg.name %>-pos.min.js'],
+      generated: ['<%= pkg.name %>-admin.min.js',
+                  '<%= pkg.name %>-pos.min.js'],
     }
   });
 

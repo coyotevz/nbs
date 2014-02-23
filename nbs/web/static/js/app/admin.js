@@ -9,12 +9,6 @@ require([
   'nbs.keycode',
   'nbs.autogrow',
   'nbs.fixedheader',
-
-  /* Only for include in optimized version */
-  'controllers/admin_controller',
-  'controllers/dashboard_controller',
-  'controllers/supplier_controller',
-  'controllers/product_controller',
 ], function(Chaplin, AdminLayout, routes) {
   "use strict";
 
