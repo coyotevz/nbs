@@ -17,27 +17,35 @@ module.exports = function(grunt) {
     requirejs: {
       admin: {
         options: {
-          baseUrl: "app",
-          mainConfigFile: "app/config.js",
-          name: "admin",
-          out: "<%= pkg.name %>-admin.min.js",
+          baseUrl: 'app',
+          mainConfigFile: 'app/config.js',
+          name: "../node_modules/almond/almond",
+          out: '<%= pkg.name %>-admin.min.js',
+          include: 'admin',
+          insertRequire: ['admin'],
           preserveLicenseComments: false,
-          optimize: "none",
+          wrap: true,
+          optimize: "uglify",
         }
       },
       pos: {
         options: {
-          baseUrl: "app",
-          mainConfigFile: "app/config.js",
-          name: "pos",
-          out: "<%= pkg.name %>-pos.min.js",
+          baseUrl: 'app',
+          mainConfigFile: 'app/config.js',
+          name: "../node_modules/almond/almond",
+          out: '<%= pkg.name %>-pos.min.js',
+          include: 'pos',
+          insertRequire: ['pos'],
           preserveLicenseComments: false,
-          optimize: "none",
+          wrap: true,
+          optimize: "uglify",
         }
       }
     },
     nunjucks: {},
-    clean: ['<%= pkg.name %>-admin.min.js', '<%= pkg.name %>-pos.min.js'],
+    clean: {
+      generated: ['<%= pkg.name %>-admin.min.js', '<%= pkg.name %>-pos.min.js'],
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');

@@ -1,8 +1,7 @@
 define([
-  'require',
   'nunjucks',
   'templates/templates',
-], function(require, nunjucks) {
+], function(nunjucks) {
   "use strict";
 
   /* Check if have precompiled templates else use HttpLoader */
@@ -10,7 +9,7 @@ define([
     var CustomLoader = nunjucks.WebLoader.extend({
 
       getSource: function(name) {
-        var url = require.toUrl(this.baseURL + '/' + name);
+        var url = 'static/js/app/' + this.baseURL + '/' + name;
         var src = this.fetch(url);
         var _this = this;
 

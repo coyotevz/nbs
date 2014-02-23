@@ -11,8 +11,12 @@
     </script>
     <script src="/static/js/app/vendor/modernizr.js"></script>
 
+    {% if config.DEBUG %}
     <script src="/static/js/app/config.js"></script>
     <script src="/static/js/app/vendor/require.js" data-main="admin"></script>
+    {% else %}
+    <script src="/static/js/nbs-admin.min.js"></script>
+    {% endif %}
   </head>
 
   <body>
