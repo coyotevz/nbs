@@ -1,34 +1,44 @@
-define([
-  'nunjucks',
-  'templates/templates',
-], function(nunjucks) {
+define(function(require) {
   "use strict";
+  var nunjucks;
 
-  /* Check if have precompiled templates else use HttpLoader */
-  if (!nunjucks.env) {
-    var CustomLoader = nunjucks.WebLoader.extend({
+  if (window.nunjucksPrecompiled) {
 
-      getSource: function(name) {
-        var url = 'static/js/app/' + this.baseURL + '/' + name;
-        var src = this.fetch(url);
-        var _this = this;
+    /* we have precompiled templates, use them */
+    nunjucks = require('nunjucks-slim');
+    if (!nunjucks.env) {
+      nunjucks.env = new nunjucks.Environment();
+    }
+  } else {
 
-        if (!src) {
-          return null;
+    /* we are in development mode */
+    nunjucks = require('nunjucks');
+    if (!nunjucks.env) {
+      var CustomLoader = nunjucks.WebLoader.extend({
+
+        getSource: function(name) {
+          var url = require.toUrl(this.baseURL + '/' + name);
+          var src = this.fetch(url);
+          var _this = this;
+
+          if (!src) {
+            return null;
+          }
+
+          return { src: src,
+            path: name,
+            upToDate: function() { return _this.neverUpdate; }
+          };
         }
 
-        return { src: src,
-                 path: name,
-                 upToDate: function() { return _this.neverUpdate; }
-        };
-      }
+      });
 
-    });
-
-    nunjucks.env = new nunjucks.Environment(
-      new CustomLoader('templates')
-    );
+      nunjucks.env = new nunjucks.Environment(
+        new CustomLoader('templates')
+      );
+    }
   }
 
+  /* Check if have precompiled templates else use HttpLoader */
   return nunjucks.env;
 });

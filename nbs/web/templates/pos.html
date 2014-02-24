@@ -10,9 +10,12 @@
 {% endblock %}
 
 {% block module_js %}
+{% if config.DEBUG %}
 <script src="/static/js/app/config.js"></script>
-<script src="/static/js/app/vendor/require.js" data-main="pos">
-</script>
+<script src="/static/js/app/vendor/require.js" data-main="pos"></script>
+{% else %}
+<script src="/static/js/nbs-pos.js"></script>
+{% endif %}
 {% endblock %}
 
 {% block body %}

@@ -19,7 +19,8 @@ var require = {
     'backbone.relational':  'vendor/backbone-relational-0.8.7',
     'backbone.validation':  'vendor/backbone.validation/dist/backbone-validation-amd',
     'chaplin':              'vendor/chaplin-1.0.0',
-    'nunjucks':             'vendor/nunjucks-1.0.0',
+    'nunjucks':             'vendor/nunjucks-1.0.1',
+    'nunjucks-slim':        'vendor/nunjucks-slim-1.0.1',
     'bootstrap':            'vendor/bootstrap-3.1.0',
 
     // Custom plugins for this project

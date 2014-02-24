@@ -9,14 +9,12 @@
     <script type="text/javascript" charset="utf-8">
       var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
-    <script src="/static/js/app/vendor/modernizr.js"></script>
-
-    {% if config.DEBUG %}
+    {%- if config.DEBUG %}
     <script src="/static/js/app/config.js"></script>
     <script src="/static/js/app/vendor/require.js" data-main="admin"></script>
-    {% else %}
-    <script src="/static/js/nbs-admin.min.js"></script>
-    {% endif %}
+    {%- else %}
+    <script src="/static/js/nbs-admin.js"></script>
+    {%- endif %}
   </head>
 
   <body>

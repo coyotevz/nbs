@@ -20,13 +20,14 @@ module.exports = function(grunt) {
           baseUrl: 'app',
           mainConfigFile: 'app/config.js',
           name: "../node_modules/almond/almond",
-          out: '<%= pkg.name %>-admin.min.js',
+          out: '<%= pkg.name %>-admin.js',
           include: [
             'admin',
             'controllers/admin_controller',
             'controllers/dashboard_controller',
             'controllers/supplier_controller',
             'controllers/product_controller',
+            '../<%= nunjucks.admin.dest %>',
           ],
           insertRequire: ['admin'],
           preserveLicenseComments: false,
@@ -39,10 +40,11 @@ module.exports = function(grunt) {
           baseUrl: 'app',
           mainConfigFile: 'app/config.js',
           name: "../node_modules/almond/almond",
-          out: '<%= pkg.name %>-pos.min.js',
+          out: '<%= pkg.name %>-pos.js',
           include: [
             'pos',
-            'controllers/pos_controller'
+            'controllers/pos_controller',
+            '../<%= nunjucks.pos.dest %>',
           ],
           insertRequire: ['pos'],
           preserveLicenseComments: false,
@@ -51,10 +53,37 @@ module.exports = function(grunt) {
         }
       }
     },
-    nunjucks: {},
+    nunjucks: {
+      admin: {
+        baseDir: 'app/templates',
+        src: ['app/templates/*.html', 'app/templates/admin/**/*.html'],
+        dest: '<%= pkg.name %>-admin-templates.js',
+        options: {
+          name: function(filename) {
+            return filename.replace('app/templates/', '');
+          }
+        }
+      },
+      pos: {
+        baseDir: 'app/templates',
+        src: ['app/templates/*.html', 'app/templates/pos/**/*.html'],
+        dest: '<%= pkg.name %>-pos-templates.js',
+        options: {
+          name: function(filename) {
+            return filename.replace('app/templates/', '');
+          }
+        }
+      }
+    },
     clean: {
-      generated: ['<%= pkg.name %>-admin.min.js',
-                  '<%= pkg.name %>-pos.min.js'],
+      built: [
+        '<%= requirejs.admin.options.out %>',
+        '<%= requirejs.pos.options.out %>',
+      ],
+      generated: [
+        '<%= nunjucks.admin.dest %>',
+        '<%= nunjucks.pos.dest %>',
+      ],
     }
   });
 
@@ -63,5 +92,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-nunjucks');
 
-  grunt.registerTask('default', ['clean', 'jshint', 'requirejs']);
+  grunt.registerTask('default',
+    ['clean', 'jshint', 'nunjucks', 'requirejs', 'clean:generated']
+  );
 };
