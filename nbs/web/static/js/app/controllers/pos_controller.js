@@ -19,14 +19,20 @@ define([
       this.reuse('dialog', DialogView, {region: 'main'});
     },
 
-    index: function(params) {
+    create: function(params) {
       var model = new Document();
-      model.fetch();
       this.view = new DocumentView({
         model: model,
         region: 'body',
       });
-    }
+    },
+    edit: function(params) {
+      var model = Document.findOrFetch({id: params.id});
+      this.view = new DocumentView({
+        model: model,
+        region: 'body',
+      });
+    },
   });
 
   return PosController;

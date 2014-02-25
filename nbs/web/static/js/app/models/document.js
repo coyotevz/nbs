@@ -7,7 +7,7 @@ define([
 
   var Document = Model.extend({
 
-    urlRoot: '/api/document',
+    urlRoot: '/api/documents',
 
     defaults: {
       type: 'FAC',
