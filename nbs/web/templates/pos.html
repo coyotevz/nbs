@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}Point of Sale{% endblock %}
+{% extends "layout.html" %}
 
 {% block module_style %}
 <link rel="stylesheet" href="/static/css/nobix.css" type="text/css">
-<style type="text/css" media="screen">
-  input.code { text-transform: uppercase; }
-</style>
 {% endblock %}
 
 {% block module_js %}
@@ -18,6 +13,7 @@
 {% endif %}
 {% endblock %}
 
+{#
 {% block body %}
 <div id="pos">
   <header>header</header>
@@ -57,3 +53,4 @@
   <!-- End model dialog -->
 </div>
 {% endblock %}
+#}
