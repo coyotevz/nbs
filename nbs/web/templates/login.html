@@ -1,14 +1,16 @@
-{% extends "base.html" %}
-{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
 
-{% block content %}
-<div class="signin-box">
-  <form id="login" method="post" action="{{ url_for('auth.login') }}" class="clearfix">
-    {{ form.hidden_tag() }}
-    {{ render_field(form.username) }}
-    {{ render_field(form.password) }}
-    <p>{{ form.remember }} Remember me</p>
-    <p><input type="submit" name="submit" value="Login"></p>
-  </form>
-</div>
+{% block module_css %}
+<link rel="stylesheet" href="/static/css/nobix.css" type="text/css">
 {% endblock %}
+
+{% block module_js %}
+{%- if config.DEBUG %}
+<script src="/static/js/app/config.js"></script>
+<script src="/static/js/app/vendor/require.js" data-main="login"></script>
+{%- else %}
+<script src="/static/js/nbs-login.js"></script>
+{%- endif %}
+{% endblock %}
+{# vim:ft=jinja:sw=2
+#}
