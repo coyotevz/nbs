@@ -1,22 +1,17 @@
-{% extends "base.html" %}
-
-{% block title %}Layout{% endblock %}
-
-{% block module_style %}
-<link rel="stylesheet" type="text/css" href="/static/css/nobix.css">
-{% endblock %}
-
-{% block module_js %}
-{% block page_js %}{% endblock %}
-{% endblock %}
-
-{% block body %}
-<div id="wrapper">
-  {% block header %}{% endblock %}
-  {% block page %}{% endblock %}
-  {% block footer %}{% endblock %}
-</div>
-<!-- page-specific script -->
-{% block js %}{% endblock %}
-<!-- end page-specific script -->
-{% endblock %}
+<!doctype html>
+<html class="no-js" lang="es-ar">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="{% block description %}{% endblock %}">
+    <meta name="author" content="Augusto Roccasalva [augusto@rocctech.com.ar]">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no">
+    <title>Nobix</title>
+    {%- block module_css %}{% endblock %}
+    <script type="text/javascript" charset="utf-8">
+      var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    {%- block module_js %}{% endblock %}
+  </head>
+  <body>{%- block body %}{% endblock %}</body>
+</html>
