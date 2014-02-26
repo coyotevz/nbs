@@ -97,7 +97,7 @@ define([
     /* class methods */
     findOrFetch: function(attributes, options) {
       var _model = this.find(attributes, options);
-      if (_model == null) {
+      if (_model === null) {
         _model = this.findOrCreate(attributes, options);
         _model.fetch();
       }
