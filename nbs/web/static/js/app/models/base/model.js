@@ -2,23 +2,18 @@ define([
   'backbone',
   'underscore',
   'chaplin',
-  'backbone.relational',
+  'backbone.associations',
   'backbone.validation',
 ], function(Backbone, _, Chaplin) {
   "use strict";
 
-  var Model = Backbone.RelationalModel.extend({
-
-    dispose: function() {
-      if (this.disposed) return;
-      this.trigger('relational:unregister', this, this.collection);
-      return Chaplin.Model.prototype.dispose.call(this);
-    },
+  var Model = Backbone.AssociatedModel.extend({
 
     // Methods & properties inherited from Chaplin.Model
-    getAttributes: Chaplin.Model.prototype.getAttributes,
-    serialize: Chaplin.Model.prototype.serialize,
-    disposed: Chaplin.Model.prototype.disposed,
+    getAttributes:  Chaplin.Model.prototype.getAttributes,
+    serialize:      Chaplin.Model.prototype.serialize,
+    disposed:       Chaplin.Model.prototype.disposed,
+    dispose:        Chaplin.Model.prototype.dispose,
 
     fetch: function(options) {
       options = options ? _.clone(options) : {};
@@ -28,7 +23,7 @@ define([
         model._serverAttributes = _.clone(model.attributes);
         if (success) success(model, resp, options);
       };
-      return Backbone.RelationalModel.prototype.fetch.call(this, options);
+      return Model.__super__.fetch.call(this, options);
     },
 
     hasStoredChange: function() {
@@ -92,18 +87,6 @@ define([
 
       return isValid;
     },
-
-  },{
-    /* class methods */
-    findOrFetch: function(attributes, options) {
-      var _model = this.find(attributes, options);
-      if (_model == null) {
-        _model = this.findOrCreate(attributes, options);
-        _model.fetch();
-      }
-      return _model;
-    },
-
   }).extend(Chaplin.EventBroker);
 
   return Model;

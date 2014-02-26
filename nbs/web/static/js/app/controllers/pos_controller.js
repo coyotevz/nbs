@@ -27,11 +27,12 @@ define([
       });
     },
     edit: function(params) {
-      var model = Document.findOrFetch({id: params.id});
+      var model = new Document({id: params.id});
       this.view = new DocumentView({
         model: model,
         region: 'body',
       });
+      model.fetch();
     },
   });
 

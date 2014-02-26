@@ -10,23 +10,23 @@ var require = {
 
   paths: {
     // Specify the paths for vendor libraries
-    'json':                 'vendor/json2-2013-05-25',
-    'jquery':               'vendor/jquery-1.10.2',
-    'jquery.number':        'vendor/jquery.number-2.1.3',
-    'underscore':           'vendor/lodash-2.4.1',
-    'backbone':             'vendor/backbone-1.1.0',
-    'backbone.stickit':     'vendor/backbone-stickit-0.7.0',
-    'backbone.relational':  'vendor/backbone-relational-0.8.7',
-    'backbone.validation':  'vendor/backbone.validation/dist/backbone-validation-amd',
-    'chaplin':              'vendor/chaplin-1.0.0',
-    'nunjucks':             'vendor/nunjucks-1.0.1',
-    'nunjucks-slim':        'vendor/nunjucks-slim-1.0.1',
-    'bootstrap':            'vendor/bootstrap-3.1.0',
+    'json':                   'vendor/json2-2013-05-25',
+    'jquery':                 'vendor/jquery-1.10.2',
+    'jquery.number':          'vendor/jquery.number-2.1.3',
+    'underscore':             'vendor/lodash-2.4.1',
+    'backbone':               'vendor/backbone-1.1.0',
+    'backbone.stickit':       'vendor/backbone-stickit-0.7.0',
+    'backbone.associations':  'vendor/backbone-associations-0.6.1',
+    'backbone.validation':    'vendor/backbone.validation/dist/backbone-validation-amd',
+    'chaplin':                'vendor/chaplin-1.0.0',
+    'nunjucks':               'vendor/nunjucks-1.0.1',
+    'nunjucks-slim':          'vendor/nunjucks-slim-1.0.1',
+    'bootstrap':              'vendor/bootstrap-3.1.0',
 
     // Custom plugins for this project
-    'nbs.keycode':          'lib/nbs.keycode',
-    'nbs.autogrow':         'lib/nbs.autogrow',
-    'nbs.fixedheader':      'lib/nbs.fixedheader',
+    'nbs.keycode':            'lib/nbs.keycode',
+    'nbs.autogrow':           'lib/nbs.autogrow',
+    'nbs.fixedheader':        'lib/nbs.fixedheader',
 
     // List internal paths
     // 'ClientModel': 'models/client',
@@ -44,7 +44,7 @@ var require = {
     'backbone.stickit': {
       deps: ['jquery', 'backbone'],
     },
-    'backbone.relational': {
+    'backbone.associations': {
       deps: ['backbone']
     },
     'nunjucks': {

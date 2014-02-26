@@ -38,8 +38,8 @@ define([
     },
 
     show: function(params) {
-      console.log('Product#show', params);
-      var model = Product.findOrFetch({id: params.id});
+      var model = new Product({id: params.id});
+      model.fetch();
       this.view = new ProductDetailView({
         region: 'content',
         model: model,
@@ -47,7 +47,8 @@ define([
     },
 
     edit: function(params) {
-      var model = Product.findOrFetch({id: params.id});
+      var model = new Product({id: params.id});
+      model.fetch();
       this.view = new ProductEditView({
         region: 'content',
         model: model,
