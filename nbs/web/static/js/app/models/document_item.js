@@ -34,7 +34,7 @@ define([
     }],
 
     initialize: function(attributes, options) {
-      DocumentItem.__super__.initialize.apply(this, arguments);
+      Model.prototype.initialize.apply(this, arguments);
       this.on('change:quantity change:price', this.recalcTotal);
       this.recalcTotal();
     },

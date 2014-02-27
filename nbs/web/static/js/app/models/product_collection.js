@@ -10,7 +10,7 @@ define([
     url: '/api/products',
 
     initialize: function() {
-      ProductsCollection.__super__.initialize.apply(this, arguments);
+      PaginatedCollection.prototype.initialize.apply(this, arguments);
       this.fetch();
     },
 

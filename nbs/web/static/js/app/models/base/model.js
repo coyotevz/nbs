@@ -23,7 +23,7 @@ define([
         model._serverAttributes = _.clone(model.attributes);
         if (success) success(model, resp, options);
       };
-      return Model.__super__.fetch.call(this, options);
+      return Backbone.AssociatedModel.prototype.fetch.call(this, options);
     },
 
     hasStoredChange: function() {

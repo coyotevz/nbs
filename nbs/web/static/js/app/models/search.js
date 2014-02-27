@@ -66,7 +66,7 @@ define([
       options = options ? _.clone(options) : {};
       attrs = options.condition || {};
       options.data = _.extend(options.data || {}, this._makeFilters(attrs));
-      return Search.__super__.fetch.call(this, options);
+      return PaginatedCollection.prototype.fetch.call(this, options);
     },
 
     /**
