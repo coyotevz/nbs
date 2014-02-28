@@ -39,7 +39,7 @@ define([
 
     show: function(params) {
       var model = new Product({id: params.id});
-      model.fetch();
+      model.fetch({async: false});
       this.view = new ProductDetailView({
         region: 'content',
         model: model,
