@@ -48,7 +48,7 @@ define([
 
     edit: function(params) {
       var model = new Product({id: params.id});
-      model.fetch();
+      model.fetch({async: false});
       this.view = new ProductEditView({
         region: 'content',
         model: model,
