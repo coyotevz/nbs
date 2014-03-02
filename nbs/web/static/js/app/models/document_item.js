@@ -18,20 +18,22 @@ define([
      * line_order
      */
 
+    relations: [{
+      type: Backbone.One,
+      key: 'product',
+      relatedModel: Product,
+    }],
+
+    defaults: {
+      total: 0,
+    },
+
     validation: {
       quantity: {
         required: true,
         pattern: 'number',
       },
     },
-
-    relations: [{
-      type: Backbone.HasOne,
-      key: 'product',
-      relatedModel: Product,
-      keyDestination: 'product_id',
-      includeInJSON: 'id',
-    }],
 
     initialize: function(attributes, options) {
       Model.prototype.initialize.apply(this, arguments);
