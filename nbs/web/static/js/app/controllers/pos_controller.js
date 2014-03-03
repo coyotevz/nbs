@@ -26,13 +26,14 @@ define([
         region: 'body',
       });
     },
+
     edit: function(params) {
       var model = new Document({id: params.id});
+      model.fetch();
       this.view = new DocumentView({
         model: model,
         region: 'body',
       });
-      model.fetch();
     },
   });
 

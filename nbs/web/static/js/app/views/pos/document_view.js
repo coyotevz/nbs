@@ -8,6 +8,24 @@ define([
   "use strict";
 
   var DocumentView = View.extend({
+    el: 'div#pos',
+    autoRender: true,
+
+    regions: {
+      'header': 'header',
+      'body': '#content',
+      'footer': 'footer',
+    },
+
+    bindings: {
+      '#total': {
+        observe: 'total',
+        onGet: $.numeric,
+      }
+    },
+  });
+
+  var DocumentView_old = View.extend({
 
     el: 'div#pos',
     autoRender: true,
