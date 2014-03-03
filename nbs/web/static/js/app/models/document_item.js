@@ -25,6 +25,7 @@ define([
     }],
 
     defaults: {
+      quantity: 1,
       total: 0,
     },
 
@@ -37,12 +38,21 @@ define([
 
     initialize: function(attributes, options) {
       Model.prototype.initialize.apply(this, arguments);
-      this.on('change:quantity change:price', this.recalcTotal);
-      this.recalcTotal();
+      this.on('change:quantity change:price', this.updateTotal);
+      this.on('change:product', this.updateProduct);
+      if (this.has('product')) {
+        this.updateProduct();
+      }
     },
 
-    recalcTotal: function() {
-      this.set('total', this.get('price') * this.get('quantity'));
+    updateTotal: function() {
+      if (this.has('price') && this.has('quantity')) {
+        this.set('total', this.get('price') * this.get('quantity'));
+      }
+    },
+
+    updateProduct: function() {
+      this.set(this.get('product').pick(['price', 'description']);
     },
 
   });
