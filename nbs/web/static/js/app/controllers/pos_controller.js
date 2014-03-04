@@ -25,6 +25,7 @@ define([
         model: model,
         region: 'body',
       });
+      window.view = this.view;
     },
 
     edit: function(params) {

@@ -1,27 +1,70 @@
 define([
   'jquery',
   'views/base/view',
-  'views/pos/appender_view',
-  'views/pos/items_view',
+  'views/base/collection_view',
+  'views/pos/base_row_view',
   'models/document',
-], function($, View, AppenderView, ItemsView, Document) {
+  'models/document_item',
+], function($, View, CollectionView, BaseRowView, Document, DocumentItem) {
   "use strict";
 
-  var DocumentView = View.extend({
-    el: 'div#pos',
+  var AppenderView = BaseRowView.extend({
+    id: 'appender',
     autoRender: true,
 
-    regions: {
-      'header': 'header',
-      'body': '#content',
-      'footer': 'footer',
+    listen: {
+      'row-done': 'onRowDone',
     },
+
+    onRowDone: function(target) {
+      this.trigger('append', this.model.clone());
+      this.model.clear();
+      this.$('.composed-field input').focus().val("");
+    },
+  });
+
+  var ItemView = BaseRowView.extend({
+    className: 'item-row',
+
+    listen: {
+      'row-done': 'onRowDone',
+    },
+
+    onRowDone: function(target) {
+      this.$el.next().find('input:first').focus();
+    },
+  });
+
+  var ItemsView = CollectionView.extend({
+    template: 'pos/document_items.html',
+    noWrap: true,
+    listSelector: 'tbody',
+    itemView: ItemView,
+    animationDuration: 0,
+  });
+
+  var DocumentView = View.extend({
+    noWrap: true,
 
     bindings: {
       '#total': {
         observe: 'total',
         onGet: $.numeric,
       }
+    },
+
+    render: function() {
+      DocumentView.__super__.render.apply(this, arguments);
+      this.initSubviews();
+    },
+
+    initSubviews: function() {
+      var appender = new AppenderView({model: new DocumentItem()});
+      this.subview('appender', appender);
+      this.subview('itemslist', new ItemsView({
+        region: 'body',
+        collection: this.model.get('items')
+      }));
     },
   });
 

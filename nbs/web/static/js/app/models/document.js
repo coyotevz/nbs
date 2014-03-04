@@ -2,8 +2,7 @@ define([
   'backbone',
   'models/base/model',
   'models/document_items',
-  'models/document_item',
-], function(Backbone, Model, DocumentItems, DocumentItem) {
+], function(Backbone, Model, DocumentItems) {
   "use strict";
 
   var Document = Model.extend({
@@ -11,8 +10,9 @@ define([
 
     defaults: {
       type: 'FAC',
-      customer: null,
       total: 0,
+      customer: null,
+      items: [],
     },
 
     relations: [
@@ -21,12 +21,6 @@ define([
         key: 'items',
         collectionType: DocumentItems,
       },
-      {
-        type: Backbone.One,
-        key: 'appender',
-        relatedModel: DocumentItem,
-        isTransient: true,
-      },
       // TODO: Add relations to: customer, salesman
     ],
 
@@ -34,8 +28,7 @@ define([
       Model.prototype.initialize.apply(this, arguments);
       this.on('add:items remove:items', this.updateTotal);
       this.on('change:items[*].total', this.updateTotal);
-      this.on('change:appender.total', this.updateTotal);
-      if (this.has('items') || this.has('appender')) {
+      if (this.has('items')) {
         this.updateTotal();
       }
     },
@@ -43,7 +36,7 @@ define([
     updateTotal: function() {
       var total = this.get('items').reduce(function(tot, item) {
         return tot + item.get('total');
-      }, this.get('appender').get('total') || 0);
+      }, 0);
       this.set('total', total);
     },
   });
