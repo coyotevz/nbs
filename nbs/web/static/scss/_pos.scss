@@ -63,7 +63,7 @@ $footer-height: 60px;
     }
   }
 
-  #content {
+  #body {
     visibility: hidden;
     position: fixed;
     width: 100%;
@@ -106,7 +106,7 @@ $footer-height: 60px;
               background-color: transparent;
             }
 
-            &.code {
+            &.sku {
               width: 14ex;
             }
             &.quantity {
@@ -116,7 +116,7 @@ $footer-height: 60px;
           }
         }
 
-        .unit-price, .total-price {
+        .cell-unit-price, .cell-total-price {
           text-align: right;
           visibility: visible;
         }
@@ -125,7 +125,7 @@ $footer-height: 60px;
           td {
             border-bottom: 1px solid #e5e5e5;
           }
-          .unit-price, .total-price {
+          .cell-unit-price, .cell-total-price {
             span { visibility: hidden; }
           }
         }

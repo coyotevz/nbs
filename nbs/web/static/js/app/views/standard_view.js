@@ -4,7 +4,7 @@ define([
   "use strict";
 
   var StandardView = View.extend({
-    id: 'wrapper',
+    className: 'wrapper',
     template: 'standard_page.html',
     regions: {
       'header': 'header',

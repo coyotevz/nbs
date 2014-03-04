@@ -14,6 +14,11 @@ define([
       'row-done': 'onRowDone',
     },
 
+    initialize: function() {
+      AppenderView.__super__.initialize.apply(this, arguments);
+      this.model.clear();
+    },
+
     onRowDone: function(target) {
       this.trigger('append', this.model.clone());
       this.model.clear();
@@ -72,11 +77,17 @@ define([
       });
       this.listenTo(appenderView, 'append', this.onAppend);
       this.subview('appender', appenderView);
-      appenderView.$('input:first').focus();
 
       // header
 
       // footer
+
+      $('#body').css({
+        'top': $('header').outerHeight(),
+        'bottom': $('footer').outerHeight(),
+        'visibility': 'visible',
+      });
+      appenderView.$('input:first').focus();
     },
 
     onAppend: function(item) {

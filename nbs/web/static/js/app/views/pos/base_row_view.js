@@ -17,12 +17,12 @@ define([
     loadingSelector: '.loading',
 
     bindings: {
-      '.total-price span': {
+      '.cell-total-price span': {
         observe: 'total',
         onGet: $.numeric,
         afterUpdate: '_show',
       },
-      '.unit-price span': {
+      '.cell-unit-price span': {
         observe: 'price',
         onGet: $.numeric,
         afterUpdate: '_show',
@@ -50,7 +50,7 @@ define([
     initUiEvents: function() {
       this.delegate('click', '.composed-field', this.onComposedClick);
       this.delegate('focusin focusout', 'input', this.onInputFocusChange);
-      this.delegate('keydown', 'input.code', this.onCodeKeydown);
+      this.delegate('keydown', 'input.sku', this.onSkuKeydown);
       this.delegate('keydown', 'input.quantity', this.onQuantityKeydown);
     },
 
@@ -62,7 +62,7 @@ define([
       var $target = $(evt.target);
       if (evt.type == "focusin") {
         $target.select();
-        if ($target.is("input.code")) {
+        if ($target.is("input.sku")) {
           this.checkScrollFor($target);
         }
       }
@@ -103,7 +103,7 @@ define([
       return false;
     },
 
-    onCodeKeydown: function(evt) {
+    onSkuKeydown: function(evt) {
 
       var k = $.keycode(evt);
 
