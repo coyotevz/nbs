@@ -52,7 +52,9 @@ define([
     },
 
     updateProduct: function() {
-      this.set(this.get('product').pick(['price', 'sku', 'description']));
+      if (this.has('product')) {
+        this.set(this.get('product').pick(['price', 'sku', 'description']));
+      }
     },
 
   });

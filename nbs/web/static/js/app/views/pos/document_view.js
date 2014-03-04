@@ -10,8 +10,6 @@ define([
 
   var AppenderView = BaseRowView.extend({
     id: 'appender',
-    autoRender: true,
-
     listen: {
       'row-done': 'onRowDone',
     },
@@ -59,12 +57,34 @@ define([
     },
 
     initSubviews: function() {
-      var appender = new AppenderView({model: new DocumentItem()});
-      this.subview('appender', appender);
-      this.subview('itemslist', new ItemsView({
+      var itemsView, appenderView, header, footer;
+
+      // items list
+      itemsView = new ItemsView({
         region: 'body',
         collection: this.model.get('items')
-      }));
+      });
+      this.subview('itemslist', itemsView);
+
+      // appender row
+      appenderView = new AppenderView({
+        model: new DocumentItem()
+      });
+      this.listenTo(appenderView, 'append', this.onAppend);
+      this.subview('appender', appenderView);
+      appenderView.$('input:first').focus();
+
+      // header
+
+      // footer
+    },
+
+    onAppend: function(item) {
+      this.model.get('items').add(item);
+    },
+
+    resizeItemlist: function() {
+      console.log('time for resize...');
     },
   });
 

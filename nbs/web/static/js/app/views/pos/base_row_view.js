@@ -34,16 +34,9 @@ define([
       }
     },
 
-    listen: {
-      'change:product model': 'onProductChange',
-    },
-
-    model: DocumentItem,
-
     initialize: function() {
       BaseRowView.__super__.initialize.apply(this, arguments);
       this.initUiEvents();
-      Backbone.Validation.bind(this);
     },
 
     _show: function($el, val, options) {
@@ -51,12 +44,6 @@ define([
         $el.css('visibility', 'visible');
       } else {
         $el.css('visibility', 'hidden');
-      }
-    },
-
-    onProductChange: function(model, product, options) {
-      if (product !== null) {
-        this.model.set(product.pick("sku", "description", "price"));
       }
     },
 
