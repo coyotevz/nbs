@@ -8,6 +8,10 @@ define([
 ], function($, View, CollectionView, BaseRowView, Document, DocumentItem) {
   "use strict";
 
+  var HeaderView = View.extend({
+    noWrap: true,
+  });
+
   var AppenderView = BaseRowView.extend({
     id: 'appender',
     listen: {
@@ -46,6 +50,10 @@ define([
     animationDuration: 0,
   });
 
+  var FooterView = View.extend({
+    noWrap: true,
+  });
+
   var DocumentView = View.extend({
     noWrap: true,
 
@@ -79,15 +87,39 @@ define([
       this.subview('appender', appenderView);
 
       // header
+      header = new HeaderView({
+        model: this.model,
+        region: 'header',
+      });
+      this.subview('header', header);
 
       // footer
+      footer = new FooterView({
+        model: this.model,
+        region: 'footer',
+      });
+      this.subview('footer', footer);
 
-      $('#body').css({
-        'top': $('header').outerHeight(),
-        'bottom': $('footer').outerHeight(),
+      this.$el.css({
+        'top': header.$el.outerHeight(),
+        'bottom': footer.$el.outerHeight(),
         'visibility': 'visible',
       });
       appenderView.$('input:first').focus();
+
+      /*
+       * Scroll event handler to signal list scroll
+       *
+      .scroll(function(evt) {
+        var $t = $(evt.target);
+
+        var hs = $t.scrollTop() > 0;
+        $t.prev().toggleClass("shadowed", hs);
+
+        var fs = ($t.children('table').outerHeight() - $t.scrollTop()) > $t.height();
+        $t.next().toggleClass("shadowed", fs);
+      })
+       */
     },
 
     onAppend: function(item) {
@@ -96,71 +128,6 @@ define([
 
     resizeItemlist: function() {
       console.log('time for resize...');
-    },
-  });
-
-  var DocumentView_old = View.extend({
-
-    el: 'div#pos',
-    autoRender: true,
-
-    regions: {
-      'header': 'header',
-      'body': '#content',
-      'footer': 'footer',
-    },
-
-    bindings: {
-      '#total': {
-        observe: 'total',
-        onGet: $.numeric
-      }
-    },
-
-    initialize: function() {
-      DocumentView.__super__.initialize.apply(this, arguments);
-      console.log("TODO: DocumentView needs to be rewrited");
-      this.model = new Document();
-
-      var appenderview = new AppenderView({model: this.model.appender});
-      this.listenTo(appenderview, 'append', this.onAppend);
-      this.subview('appender', appenderview);
-
-      this.subview('itemslist', new ItemsView({
-        collection: this.model.items
-      }));
-
-      this.setupHtml();
-    },
-
-    setupHtml: function() {
-      // First set height to #content base on header and footer elements
-      this.$('#content').css({
-        'top': this.$('header').outerHeight(),
-        'bottom': this.$('footer').outerHeight(),
-        'visibility': 'visible', // Avoid flickr unpositioned element
-      }).scroll(function(evt) {
-        var $t = $(evt.target);
-
-        var hs = $t.scrollTop() > 0;
-        $t.prev().toggleClass("shadowed", hs);
-
-        var fs = ($t.children('table').outerHeight() - $t.scrollTop()) > $t.height();
-        $t.next().toggleClass("shadowed", fs);
-      });
-
-      // Set focus on last item-row
-      $('.item-list tr#appender input:first').focus();
-
-      // Only for test
-      $('#modal').modal({
-        show: false,
-        backdrop: "static",
-      });
-    },
-
-    onAppend: function(model) {
-      this.model.items.add(model);
     },
   });
 
