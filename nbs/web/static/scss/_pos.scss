@@ -29,8 +29,15 @@ $header-height: 60px;
 $footer-height: 60px;
 
 #pos {
+  .container-sku,
+  .cell-quantity,
+  .cell-unit-price,
+  .cell-total-price,
+  .total-container {
+    font-family: 'RobotoCondensed',arial,sans-serif;
+  }
 
-  font-family: 'RobotoCondensed',arial,sans-serif;
+  font-family: arial,sans-serif;
 
   header, footer {
     width: 100%;
