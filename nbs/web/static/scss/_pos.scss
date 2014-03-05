@@ -116,6 +116,30 @@ $footer-height: 60px;
           }
         }
 
+        .cell-sku-description {
+          line-height: 18px;
+
+          .container-sku, .container-description {
+            display: inline-block;
+          }
+          .container-description {
+            font-family: Roboto;
+            vertical-align: middle;
+
+            span { display: block; }
+
+            .description {
+              font-size: 18px;
+              font-weight: 500;
+            }
+
+            .stock-info {
+              color: #999;
+              font-size: 14px;
+            }
+          }
+        }
+
         .cell-unit-price, .cell-total-price {
           text-align: right;
           visibility: visible;
@@ -128,6 +152,7 @@ $footer-height: 60px;
           .cell-unit-price, .cell-total-price {
             span { visibility: hidden; }
           }
+          .container-description { visibility: hidden; }
         }
       }
     }

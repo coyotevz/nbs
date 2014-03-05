@@ -20,14 +20,17 @@ define([
       '.cell-total-price span': {
         observe: 'total',
         onGet: $.numeric,
-        afterUpdate: '_show',
+        afterUpdate: '_showPrice',
       },
       '.cell-unit-price span': {
         observe: 'price',
         onGet: $.numeric,
-        afterUpdate: '_show',
+        afterUpdate: '_showPrice',
       },
-      '.description': 'description',
+      '.description': {
+        observe: 'description',
+        afterUpdate: '_showDescription',
+      },
       '.quantity': {
         observe: 'quantity',
         updateModel: false,
@@ -39,11 +42,19 @@ define([
       this.initUiEvents();
     },
 
-    _show: function($el, val, options) {
+    _showPrice: function($el, val, options) {
       if (this.model.get('price')) {
         $el.css('visibility', 'visible');
       } else {
         $el.css('visibility', 'hidden');
+      }
+    },
+
+    _showDescription: function($el, val, options) {
+      if (this.model.get('description')) {
+        this.$('.container-description').css('visibility', 'visible');
+      } else {
+        this.$('.container-description').css('visibility', 'hidden');
       }
     },
 
@@ -66,7 +77,7 @@ define([
           this.checkScrollFor($target);
         }
       }
-      $target.parent().toggleClass("focused", evt.type == "focusin");
+      $target.parents('.border').toggleClass("focused", evt.type == "focusin");
     },
 
     checkScrollFor: function(cell) {

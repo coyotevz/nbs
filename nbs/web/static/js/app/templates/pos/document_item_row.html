@@ -1,7 +1,12 @@
 <td class="composed-field cell-sku-description">
   <div class="border">
-    <input class="sku" type="text" size="14" maxlength="14" spellcheck="false" value="{{ sku }}">
-    <span class="description">{{ description }}</span>
+    <div class="container-sku">
+      <input class="sku" type="text" size="14" maxlength="14" spellcheck="false" value="{{ sku }}">
+    </div>
+    <div class="container-description">
+      <span class="description">{{ description }}</span>
+      <span class="stock-info">Sin Stock</span>
+    </div>
   </div>
 </td>
 <td class="cell-quantity">
