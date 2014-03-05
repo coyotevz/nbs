@@ -153,6 +153,7 @@ define([
       var ks = k.split('shift+')[0] || k;
       if (letter.test(ks) && evt.target.selectionStart === 0) {
         console.log("// TODO: lanzar busqueda que comience con", ks);
+        _dialog.show();
         return false;
       }
 
