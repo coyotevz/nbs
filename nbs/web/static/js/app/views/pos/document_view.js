@@ -67,6 +67,7 @@ define([
 
     render: function() {
       DocumentView.__super__.render.apply(this, arguments);
+      this.delegate('scroll', this.onScroll);
       this.initSubviews();
     },
 
@@ -107,28 +108,18 @@ define([
         'visibility': 'visible',
       });
       appenderView.$('input:first').focus();
-
-      /*
-       * Scroll event handler to signal list scroll
-       *
-      .scroll(function(evt) {
-        var $t = $(evt.target);
-
-        var hs = $t.scrollTop() > 0;
-        $t.prev().toggleClass("shadowed", hs);
-
-        var fs = ($t.children('table').outerHeight() - $t.scrollTop()) > $t.height();
-        $t.next().toggleClass("shadowed", fs);
-      })
-       */
     },
 
     onAppend: function(item) {
       this.model.get('items').add(item);
     },
 
-    resizeItemlist: function() {
-      console.log('time for resize...');
+    onScroll: function(evt) {
+      var hs, fs, $t = $(evt.target);
+      hs = $t.scrollTop() > 0;
+      $t.prev().toggleClass("shadowed", hs);
+      fs = ($t.find('table').outerHeight() - $t.scrollTop() - 3) > $t.height();
+      $t.next().toggleClass("shadowed", fs);
     },
   });
 
