@@ -35,10 +35,17 @@ define([
 
     listen: {
       'row-done': 'onRowDone',
+      'remove': 'onRemove',
     },
 
     onRowDone: function(target) {
       this.$el.next().find('input:first').focus();
+    },
+
+    onRemove: function(target) {
+      var m = target.model;
+      target.$el.next().find('input:first').focus();
+      m.collection.remove(m);
     },
   });
 
@@ -112,6 +119,10 @@ define([
 
     onAppend: function(item) {
       this.model.get('items').add(item);
+    },
+
+    onRemove: function() {
+      console.log('onRemove handler:', arguments);
     },
 
     onScroll: function(evt) {

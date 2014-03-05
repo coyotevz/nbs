@@ -137,8 +137,7 @@ define([
           return false;
 
         case 'ctrl+d':
-          // TODO: Forzar la eliminación de la fila.
-          console.log("// TODO: eliminar fila");
+          this.trigger('remove', this);
           return false;
 
         case '*':
