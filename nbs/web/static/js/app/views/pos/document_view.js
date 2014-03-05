@@ -52,17 +52,18 @@ define([
 
   var FooterView = View.extend({
     noWrap: true,
-  });
-
-  var DocumentView = View.extend({
-    noWrap: true,
+    template: 'pos/document_footer.html',
 
     bindings: {
       '#total': {
         observe: 'total',
         onGet: $.numeric,
       }
-    },
+    }
+  });
+
+  var DocumentView = View.extend({
+    noWrap: true,
 
     render: function() {
       DocumentView.__super__.render.apply(this, arguments);
