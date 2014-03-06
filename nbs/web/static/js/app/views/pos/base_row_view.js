@@ -34,6 +34,10 @@ define([
       '.quantity': {
         observe: 'quantity',
         updateModel: false,
+      },
+      '.stock-info': {
+        observe: 'product.stock',
+        // TODO: Set correct configuration for this
       }
     },
 
