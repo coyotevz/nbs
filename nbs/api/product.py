@@ -31,9 +31,11 @@ read_price_permission  = Permission(Need('read',  'product.price'))
 write_price_permission = Permission(Need('write', 'product.price'))
 
 def get_stock(product):
-    stocks = {}
+    stocks = []
     for sitem in product.get_stock_items():
-        stocks[str(sitem.warehouse.id)+':'+sitem.warehouse.name] = sitem.quantity
+        stocks.append({'warehouse_name': sitem.warehouse.name,
+                       'warehouse_id': sitem.warehouse.id,
+                       'quantity': sitem.quantity})
     return stocks
 
 
