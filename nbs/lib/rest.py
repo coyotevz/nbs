@@ -317,15 +317,22 @@ def to_dict(obj, fields=None):
     # default. Specifically, convert datetime and date objects to ISO8601
     # format, UUID objects to exadecimal and Decimal objects to string.
     for key, value in result.items():
-        if isinstance(value, datetime.date):
-            result[key] = value.isoformat()
-        elif isinstance(value, (uuid.UUID, decimal.Decimal)):
-            result[key] = str(value)
-        elif is_mapped_class(type(value)):
-            result[key] = to_dict(value)
+        result[key] = _clean(value)
 
     return result
 
+def _clean(value):
+    if isinstance(value, datetime.date):
+        return value.isoformat()
+    elif isinstance(value, (uuid.UUID, decimal.Decimal)):
+        return str(value)
+    elif is_mapped_class(type(value)):
+        return to_dict(value)
+    elif isinstance(value, dict):
+        return {k: _clean(v) for k, v in value.iteritems()}
+    elif isinstance(value, list):
+        return [_clean(v) for v in value]
+    return value
 
 def get_columns(model):
     columns = [p.key for p in class_mapper(model).iterate_properties
