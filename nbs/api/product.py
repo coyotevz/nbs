@@ -30,10 +30,19 @@ write_cost_permission  = Permission(Need('write', 'product.cost'))
 read_price_permission  = Permission(Need('read',  'product.price'))
 write_price_permission = Permission(Need('write', 'product.price'))
 
+def get_stock(product):
+    stocks = {}
+    for sitem in product.get_stock_items():
+        stocks[str(sitem.warehouse.id)+':'+sitem.warehouse.name] = sitem.quantity
+    return stocks
+
+
 _spec = {
-    'map': {},
+    'map': {
+        'stock': get_stock
+    },
     'required': ['id', 'sku'],
-    'defaults': ['id', 'sku', 'description', 'short_description', 'price'],
+    'defaults': ['id', 'sku', 'description', 'stock', 'price'],
     'authorized': [],
 }
 
