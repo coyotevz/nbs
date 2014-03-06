@@ -37,7 +37,13 @@ define([
       },
       '.stock-info': {
         observe: 'product.stock',
-        // TODO: Set correct configuration for this
+        onGet: function(value, options) {
+          if (value && value.length) {
+            return value[0].quantity;
+          } else {
+            return 'Sin control stock';
+          }
+        },
       }
     },
 
