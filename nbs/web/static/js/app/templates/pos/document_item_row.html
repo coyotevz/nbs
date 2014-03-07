@@ -4,7 +4,7 @@
       <input class="sku" type="text" size="14" maxlength="14" spellcheck="false" value="{{ sku }}">
     </div>
     <div class="container-description">
-      <span class="description">{{ description }}</span>
+      <span class="description">{#{ description }#}</span>
       <span class="stock-info">Sin control de stock</span>
     </div>
   </div>
@@ -14,5 +14,7 @@
     <input class="quantity" type="text" size="5" maxlength="5" value="{{ quantity }}">
   </div>
 </td>
-<td class="cell-unit-price"><span>{{ price }}</span></td>
+<td class="cell-unit-price"><span>{#{ price }#}</span></td>
 <td class="cell-total-price"><span>{{ total }}</span></td>
+{# vim:sw=2:ft=jinja
+#}

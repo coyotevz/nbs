@@ -5,9 +5,18 @@ define([
 ], function(Backbone, Model) {
   "use strict";
 
+  var StockInfo = Model.extend({
+  });
+
   var Product = Model.extend({
 
     urlRoot: '/api/products',
+
+    relations: [{
+      type: Backbone.Many,
+      key: 'stock',
+      relatedModel: StockInfo,
+    }],
 
     validation: {
       'sku': 'validateSku',

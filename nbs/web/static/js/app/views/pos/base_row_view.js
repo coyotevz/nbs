@@ -38,17 +38,21 @@ define([
       '.stock-info': {
         observe: 'product.stock',
         onGet: function(value, options) {
+          console.log('value:', value, 'options:', options);
+          /*
           if (value && value.length) {
             return value[0].quantity;
           } else {
-            return 'Sin control stock';
-          }
+            return 'No se lleva control sobr este producto.';
+          }*/
+         return 'N/A'
         },
       }
     },
 
     initialize: function() {
       BaseRowView.__super__.initialize.apply(this, arguments);
+      this.listenTo(this.model, 'change:product.stock', function() { console.log('change:', arguments); });
       this.initUiEvents();
     },
 
@@ -116,6 +120,7 @@ define([
       }
 
       if (product !== undefined) {
+        console.log('product.stock:', product.get('stock'));
         this.model.set('product', product);
         var q = this.$('.quantity');
         val = q.val() || 1;
@@ -166,7 +171,7 @@ define([
         return false;
       }
 
-      console.log("Unhandled input:", k);
+      //console.log("Unhandled input:", k);
 
     },
 
