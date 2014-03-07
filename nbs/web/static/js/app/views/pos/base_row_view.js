@@ -36,16 +36,16 @@ define([
         updateModel: false,
       },
       '.stock-info': {
-        observe: 'product.stock',
-        onGet: function(value, options) {
-          console.log('value:', value, 'options:', options);
-          /*
-          if (value && value.length) {
-            return value[0].quantity;
-          } else {
-            return 'No se lleva control sobr este producto.';
-          }*/
-         return 'N/A'
+        observe: 'product',
+        onGet: function(product, options) {
+          console.log('value:', product, 'options:', options);
+          if (product) {
+            console.log('we have product:', product);
+            if (product.get('stock').length > 0) {
+              return 'Stock: ' + $.number(product.get('stock[0].quantity'), 0);
+            }
+            return 'Sin control de stock'
+          }
         },
       }
     },
