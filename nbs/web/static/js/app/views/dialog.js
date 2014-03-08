@@ -3,7 +3,14 @@ define([
 ], function(View) {
   "use strict";
 
+  // NOTE: We are wrapping Bootstrap modal dialog.
+
+  var DialogContentView = View.extend({
+    optionNames: View.prototype.optionNames.concat(['template']),
+  });
+
   var DialogView = View.extend({
+    autoRender: false,
     template: 'dialog.html',
     noWrap: true,
 
@@ -11,6 +18,10 @@ define([
       'click .modal-close': 'hide',
       'click [name=save]': 'save',
       'click [name=close]': 'hide',
+    },
+
+    regions: {
+      'dialog-content': '.modal-body',
     },
 
     render: function() {
@@ -47,7 +58,48 @@ define([
     save: function() {
       console.log("action save on modal dialog");
       this.hide();
-    }
+    },
+
+    run: function(options) {
+      options || (options = {});
+    },
+
+    /*
+    run: function(contentTemplate) {
+      this.subview('dialog-content', new DialogContentView({
+        template: contentTemplate,
+        region: 'dialog-content',
+      }));
+      this.render();
+      this.show();
+    },*/
+
+   /* API Details:
+    * dialog.run({
+    *   contentView: CustomContentView,
+    *   contentArgs: { arguments to use in contentView instantiation }
+    * });
+    *
+    * dialog.run({
+    *   title: 'Some title',
+    *   displayFooter: false,
+    *   bodyHtml: '<p>Hello, we are in dialog body</p>',
+    *   bodyText: 'Hello, we are in dialog paragraph.',
+    *   bodyTemplate: 'templates/body.html',
+    *   buttons: {
+    *     'success': {
+    *       'label': 'OK',
+    *       'style': 'primary',
+    *       'action': <some callback>(dialog,),
+    *     },
+    *     'cancel': {
+    *       'label': 'Cancel',
+    *       <style=default> as default,
+    *       'action': <some callback>(dialog,),
+    *     }
+    *   }
+    * });
+    */
   });
 
   return DialogView;
