@@ -111,7 +111,7 @@ define([
 
       this.$el.css({
         'top': header.$el.outerHeight(),
-        'bottom': footer.$el.outerHeight(),
+        'bottom': footer.$el.outerHeight() + 3,
         'visibility': 'visible',
       });
       appenderView.$('input:first').focus();
