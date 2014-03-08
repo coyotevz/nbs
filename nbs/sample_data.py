@@ -3,6 +3,7 @@
 """Load initial data for test"""
 
 from decimal import Decimal
+from random import randint
 from nbs.models import db
 from nbs.models.contact import Contact
 from nbs.models.product import ProductCategory, Product, PriceComponent
@@ -95,6 +96,9 @@ def install_fixtures():
         psi = ProductSupplierInfo(supplier=gen, product=pro,
                 description=p['d'][:-11], base_cost=Decimal(p['p']),
                 automatic_cost=True, bonus_components=[bc])
+
+        for w in (w1, w2):
+            pro.register_initial_stock(randint(randint(0,10), randint(10, 60)), w, pro.cost)
 
         db.session.add(pro)
 
