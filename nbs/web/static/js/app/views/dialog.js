@@ -61,7 +61,7 @@ define([
     },
 
     run: function(options) {
-      options || (options = {});
+      options = options || {};
     },
 
     /*

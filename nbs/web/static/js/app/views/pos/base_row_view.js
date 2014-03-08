@@ -42,7 +42,7 @@ define([
             if (product.has('stock')) {
               return 'Stock: ' + $.number(product.get('stock.local'), 0);
             }
-            return 'Sin control de stock'
+            return 'Sin control de stock';
           }
         },
       }
