@@ -13,7 +13,7 @@ define([
     urlRoot: '/api/products',
 
     relations: [{
-      type: Backbone.Many,
+      type: Backbone.One,
       key: 'stock',
       relatedModel: StockInfo,
     }],

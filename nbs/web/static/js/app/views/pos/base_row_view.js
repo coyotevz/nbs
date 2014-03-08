@@ -38,11 +38,9 @@ define([
       '.stock-info': {
         observe: 'product',
         onGet: function(product, options) {
-          console.log('value:', product, 'options:', options);
           if (product) {
-            console.log('we have product:', product);
-            if (product.get('stock').length > 0) {
-              return 'Stock: ' + $.number(product.get('stock[0].quantity'), 0);
+            if (product.has('stock')) {
+              return 'Stock: ' + $.number(product.get('stock.local'), 0);
             }
             return 'Sin control de stock'
           }
@@ -52,7 +50,6 @@ define([
 
     initialize: function() {
       BaseRowView.__super__.initialize.apply(this, arguments);
-      this.listenTo(this.model, 'change:product.stock', function() { console.log('change:', arguments); });
       this.initUiEvents();
     },
 
@@ -120,7 +117,6 @@ define([
       }
 
       if (product !== undefined) {
-        console.log('product.stock:', product.get('stock'));
         this.model.set('product', product);
         var q = this.$('.quantity');
         val = q.val() || 1;

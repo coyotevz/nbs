@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, jsonify, json, current_app
 from werkzeug.datastructures import MultiDict
-from nbs.models import db, Product, ProductSupplierInfo
+from nbs.models import db, Product, ProductSupplierInfo, Warehouse
 from nbs.auth import Need, Permission, permission_required
 from nbs.lib import rest
 from nbs.utils import is_json, jsonify_status_code, jsonify_form
@@ -31,13 +31,17 @@ read_price_permission  = Permission(Need('read',  'product.price'))
 write_price_permission = Permission(Need('write', 'product.price'))
 
 def get_stock(product):
-    stocks = []
-    for sitem in product.get_stock_items():
-        stocks.append({'warehouse_name': sitem.warehouse.name,
-                       'warehouse_id': sitem.warehouse.id,
-                       'quantity': sitem.quantity})
-    return stocks
-
+    # FIXME: Fake warehouse id, this must be fetched from session data
+    wid = 8
+    warehouse = Warehouse.query.get(wid)
+    local = product.get_stock_for_warehouse(warehouse, False)
+    if not local:
+        return None
+    else:
+        return {
+            'local': local.quantity,
+            'global': product.get_consolidated_stock(),
+        }
 
 _spec = {
     'map': {

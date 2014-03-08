@@ -302,7 +302,7 @@ class Product(db.Model, TimestampMixin):
 
     def get_stock_for_warehouse(self, warehouse, create=True):
         """
-        Return the stock balance for the product in a certain warehouse.
+        Return the stock item for the product in a certain warehouse.
         With create=True if the stock item wasn't exist create one with stock
         quantity 0.
 
