@@ -8,10 +8,25 @@ define([
 
   var DialogContentView = View.extend({
     template: 'dialog_content.html',
+    optionNames: View.prototype.optionNames.concat([
+      'dialog', 'title', 'text', 'buttons', 'template'
+    ]),
 
-    initialize: function(attrs) {
-      console.log('DialogContentView#initialize,', attrs);
+    initialize: function() {
       DialogContentView.__super__.initialize.apply(this, arguments);
+      for (var key in this.buttons) {
+        this.delegate('click', '[name='+key+']',
+          _.wrap(this.buttons[key].action, this.wrapper)
+        );
+      }
+    },
+
+    wrapper: function(action, evt) {
+      return action(this.dialog, evt);
+    },
+
+    getTemplateData: function() {
+      return this;
     },
   });
 
@@ -21,9 +36,7 @@ define([
     noWrap: true,
 
     events: {
-      'click .modal-close': 'hide',
-      'click [name=save]': 'save',
-      'click [name=close]': 'hide',
+      'click .modal-close': 'close',
     },
 
     render: function() {
@@ -54,36 +67,21 @@ define([
       this.$el.modal('hide');
     },
 
+    close: function() {
+      this.$el.modal('hide');
+      this.removeSubview('modal-content');
+    },
+
     toggle: function() {
       this.$el.modal('toggle');
     },
 
-    save: function() {
-      console.log("action save on modal dialog");
-      this.hide();
-    },
-
-    /*
-    run: function(contentTemplate) {
-      this.subview('dialog-content', new DialogContentView({
-        template: contentTemplate,
-      }));
-      this.render();
-      this.show();
-    },*/
-
    /* API Details:
     * dialog.run({
-    *   contentView: CustomContentView,
-    *   contentArgs: { arguments to use in contentView instantiation }
-    * });
-    *
-    * dialog.run({
     *   title: 'Some title',
-    *   displayFooter: false,
-    *   bodyHtml: '<p>Hello, we are in dialog body</p>',
-    *   bodyText: 'Hello, we are in dialog paragraph.',
-    *   bodyTemplate: 'templates/body.html',
+    *   text: 'Hello, we are in dialog paragraph.',
+    *   view: CustomContentView, // inherited from DialogContentView
+    *   template: 'templates/body.html', // extend from dialog_content.html
     *   buttons: {
     *     'success': {
     *       'label': 'OK',
@@ -98,15 +96,26 @@ define([
     *   }
     * });
     */
-   run: function() {
-     var content = new DialogContentView({
+   run: function(options) {
+     var defaults = {
        className: 'modal-content',
        container: this.$d,
-     });
-     this.subview('modal-content', content);
+       dialog: this,
+
+       title: null,
+       text: null,
+       buttons: {},
+     };
+     var ContentView = options.view || DialogContentView;
+     delete options.view;
+     options = _.extend(defaults, options);
+     
+     this.subview('modal-content', new ContentView(options));
      this.show();
    },
   });
+
+  DialogView.DialogContentView = DialogContentView;
 
   return DialogView;
 });

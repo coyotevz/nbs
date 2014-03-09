@@ -1,13 +1,20 @@
 <div class="modal-header">
-  <span class="modal-title">{{ title }} - Dialog title</span>
+  {% block header %}
+  <span class="modal-title">{{ title }}</span>
   <span class="modal-close">&times;</span>
+  {% endblock %}
 </div>
 <div class="modal-body">
-  <p>Dialog body</p>
+  {% block body %}
+  <p>{{ text }}</p>
+  {% endblock %}
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary" name="save">Primary</button>
-  <button class="btn" name="close">Close</button>
+  {% block footer %}
+  {% for name, button in buttons %}
+  <button class="btn{% if button.style %} btn-{{ button.style }}{% endif %}" name="{{ name }}">{{ button.label }}</button>
+  {% endfor %}
+  {% endblock %}
 </div>
 {# vim:ft=jinja:sw=2
 #}
