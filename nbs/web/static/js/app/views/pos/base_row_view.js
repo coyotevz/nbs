@@ -163,7 +163,19 @@ define([
       var ks = k.split('shift+')[0] || k;
       if (letter.test(ks) && evt.target.selectionStart === 0) {
         console.log("// TODO: lanzar busqueda que comience con", ks);
-        _dialog.show();
+        _dialog.run({
+          title: 'Busqueda de Artículos',
+          text: 'Aquí aparecerá la vista de busqueda de articulos',
+          buttons: {
+            'close': {
+              'label': 'OK',
+              'style': 'info show center-block',
+              'action': function(dialog, evt) {
+                dialog.close();
+              },
+            }
+          }
+        });
         return false;
       }
 
