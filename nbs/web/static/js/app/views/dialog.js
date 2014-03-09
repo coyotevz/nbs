@@ -1,12 +1,18 @@
 define([
+  'underscore',
   'views/base/view',
-], function(View) {
+], function(_, View) {
   "use strict";
 
   // NOTE: We are wrapping Bootstrap modal dialog.
 
   var DialogContentView = View.extend({
-    optionNames: View.prototype.optionNames.concat(['template']),
+    template: 'dialog_content.html',
+
+    initialize: function(attrs) {
+      console.log('DialogContentView#initialize,', attrs);
+      DialogContentView.__super__.initialize.apply(this, arguments);
+    },
   });
 
   var DialogView = View.extend({
@@ -18,10 +24,6 @@ define([
       'click .modal-close': 'hide',
       'click [name=save]': 'save',
       'click [name=close]': 'hide',
-    },
-
-    regions: {
-      'dialog-content': '.modal-body',
     },
 
     render: function() {
@@ -44,6 +46,7 @@ define([
     },
 
     show: function() {
+      this.reposition();
       this.$el.modal('show');
     },
 
@@ -60,15 +63,10 @@ define([
       this.hide();
     },
 
-    run: function(options) {
-      options = options || {};
-    },
-
     /*
     run: function(contentTemplate) {
       this.subview('dialog-content', new DialogContentView({
         template: contentTemplate,
-        region: 'dialog-content',
       }));
       this.render();
       this.show();
@@ -100,6 +98,14 @@ define([
     *   }
     * });
     */
+   run: function() {
+     var content = new DialogContentView({
+       className: 'modal-content',
+       container: this.$d,
+     });
+     this.subview('modal-content', content);
+     this.show();
+   },
   });
 
   return DialogView;
