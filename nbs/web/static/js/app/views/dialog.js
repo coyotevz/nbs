@@ -42,9 +42,17 @@ define([
     render: function() {
       DialogView.__super__.render.apply(this, arguments);
       this.delegate('shown.bs.modal', this.reposition);
+      this.delegate('shown.bs.modal', function() {
+        this.subview('modal-content').trigger('show');
+      });
+      this.delegate('hidden.bs.modal', function() {
+        this.subview('modal-content').trigger('hide');
+      });
+
       this.$el.modal({
         show: false,
       });
+
       this.$d = this.$('.modal-dialog');
 
       // Grab global copy of this instance
@@ -59,7 +67,6 @@ define([
     },
 
     show: function() {
-      this.reposition();
       this.$el.modal('show');
     },
 

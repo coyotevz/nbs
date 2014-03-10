@@ -1,20 +1,37 @@
 define([
   'underscore',
   'views/base/view',
+  'views/dialog',
   'models/product',
   'models/document_item',
-], function(_, View, Product, DocumentItem) {
+], function(_, View, DialogView, Product, DocumentItem) {
   "use strict";
 
   var letter = /^[a-z]$/,
       number = /^\d$/;
 
+  var SearchDialogView = DialogView.DialogContentView.extend({
+    optionNames: DialogView.DialogContentView.prototype.optionNames.concat(['firstChar', 'currentFocus']),
+
+    listen: {
+      'show': function() {
+        this.$('[name=term]').focus().val(this.firstChar || '');
+      },
+      'hide': function() {
+        var selector = 'input:first';
+        if (this.selected) {
+          selector = 'input.quantity';
+        }
+        this.currentFocus.find(selector).focus();
+      },
+    },
+
+  });
+
   var BaseRowView = View.extend({
     template: 'pos/document_item_row.html',
     container: 'tbody',
     tagName: 'tr',
-    fallbackSelector: '.fallback',
-    loadingSelector: '.loading',
 
     bindings: {
       '.cell-total-price span': {
@@ -164,17 +181,10 @@ define([
       if (letter.test(ks) && evt.target.selectionStart === 0) {
         console.log("// TODO: lanzar busqueda que comience con", ks);
         _dialog.run({
-          title: 'Busqueda de Artículos',
-          text: 'Aquí aparecerá la vista de busqueda de articulos',
-          buttons: {
-            'close': {
-              'label': 'OK',
-              'style': 'info show center-block',
-              'action': function(dialog, evt) {
-                dialog.close();
-              },
-            }
-          }
+          view: SearchDialogView,
+          template: 'pos/search_product.html',
+          firstChar: ks,
+          currentFocus: this.$el,
         });
         return false;
       }
