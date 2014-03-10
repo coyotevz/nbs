@@ -18,12 +18,29 @@ define([
         this.$('[name=term]').focus().val(this.firstChar || '');
       },
       'hide': function() {
+        console.log('hide event fired');
         var selector = 'input:first';
         if (this.selected) {
           selector = 'input.quantity';
         }
+        console.log('currentFocus:', this.currentFocus, 'selector:', selector);
         this.currentFocus.find(selector).focus();
       },
+    },
+
+    render: function() {
+      SearchDialogView.__super__.render.apply(this, arguments);
+      this.delegate('keydown', '[name=term]', this.onTermKeydown);
+    },
+
+    onTermKeydown: function(evt) {
+      var k = $.keycode(evt);
+      console.log('pressed', k);
+
+      switch(k) {
+        case 'esc':
+          this.dialog.hide();
+      }
     },
 
   });
@@ -179,7 +196,6 @@ define([
 
       var ks = k.split('shift+')[0] || k;
       if (letter.test(ks) && evt.target.selectionStart === 0) {
-        console.log("// TODO: lanzar busqueda que comience con", ks);
         _dialog.run({
           view: SearchDialogView,
           template: 'pos/search_product.html',

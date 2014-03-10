@@ -7,7 +7,15 @@
 {% block body %}
 <div class="search-container">
   <input class="search" name="term"></input>
-  <p>Aquí van los resultados</p>
+  <table class="search-results list">
+    <tbody>
+      <tr>
+        <td class="sku">código</td>
+        <td class="description">descripción</td>
+        <td class="price">precio</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 {% endblock %}
 
