@@ -18,7 +18,7 @@ class NobixClientApp(object):
 
         self.window = Gtk.Window()
         self.window.add(scrolled)
-        self.window.set_size_request(800, 600)
+        self.window.set_size_request(1024, 600)
 
         self.window.connect("destroy", self.quit)
 
@@ -35,11 +35,7 @@ class NobixClientApp(object):
         self.webview.load_uri(url)
 
 def main():
-    #app = NobixClientApp('file:///home/augusto/dev/code/nbs_client_init/index.html')
-    #app = NobixClientApp('http://localhost:5000/dashboard')
     app = NobixClientApp('http://localhost:5000/pos')
-    #app = NobixClientApp('file:///home/augusto/dev/src/live-git/jquery-hotkeys/test-static-05.html')
-    #app = NobixClientApp('file:///home/augusto/pos.html')
     app.run()
 
 if __name__ == '__main__':
