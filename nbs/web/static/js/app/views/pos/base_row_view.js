@@ -12,34 +12,54 @@ define([
 
   var SearchDialogView = DialogView.DialogContentView.extend({
     optionNames: DialogView.DialogContentView.prototype.optionNames.concat(['firstChar', 'currentFocus']),
+    lastTerm: null,
 
     listen: {
       'show': function() {
         this.$('[name=term]').focus().val(this.firstChar || '');
       },
       'hide': function() {
-        console.log('hide event fired');
-        var selector = 'input:first';
-        if (this.selected) {
-          selector = 'input.quantity';
-        }
-        console.log('currentFocus:', this.currentFocus, 'selector:', selector);
-        this.currentFocus.find(selector).focus();
+        var cf = this.currentFocus,
+            selector = 'input:first';
+        if (this.selected) selector = 'input.quantity';
+        // _.defer here is necessary for Firefox to work properly
+        _.defer(function() {
+          cf.find(selector).focus();
+        });
       },
     },
 
     render: function() {
       SearchDialogView.__super__.render.apply(this, arguments);
+      this.$term = this.$('[name=term]');
       this.delegate('keydown', '[name=term]', this.onTermKeydown);
+      this.delegate('keyup', '[name=term]', this.onTermKeyup);
     },
 
     onTermKeydown: function(evt) {
       var k = $.keycode(evt);
-      console.log('pressed', k);
 
       switch(k) {
         case 'esc':
           this.dialog.hide();
+          return false;
+        case 'down':
+          console.log('down pressed!');
+          return false;
+        case 'up':
+          console.log('up pressed!');
+          return false;
+        case 'return':
+          console.log('return pressed!');
+          return false;
+      }
+    },
+
+    onTermKeyup: function(evt) {
+      var newTerm = this.$term.val().trim();
+      if (this.lastTerm !== newTerm) {
+        this.lastTerm = newTerm;
+        console.log('trigger search for "%s"', newTerm);
       }
     },
 
