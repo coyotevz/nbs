@@ -62,9 +62,8 @@ define([
      * Augment fetch() with all information
      */
     fetch: function(options) {
-      var attrs = [];
-      options = options ? _.clone(options) : {};
-      attrs = options.condition || {};
+      var attrs = options ? options.condition || {} : {};
+      options = _.omit(options, 'condition');
       options.data = _.extend(options.data || {}, this._makeFilters(attrs));
       return PaginatedCollection.prototype.fetch.call(this, options);
     },
