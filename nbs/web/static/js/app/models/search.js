@@ -65,6 +65,11 @@ define([
       var attrs = options ? options.condition || {} : {};
       options = _.omit(options, 'condition');
       options.data = _.extend(options.data || {}, this._makeFilters(attrs));
+
+      // encode url-data traditionally see:
+      // https://api.jquery.com/jQuery.param/#jQuery-param-obj-traditional
+      options.traditional = true;
+
       return PaginatedCollection.prototype.fetch.call(this, options);
     },
 
