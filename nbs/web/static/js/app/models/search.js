@@ -29,6 +29,7 @@ define([
   var Search = PaginatedCollection.extend({
 
     urlRoot: null,
+    xhr: null,
 
     initialize: function(model, condition, options) {
       this.model = model;
@@ -40,17 +41,23 @@ define([
       options = options ? _.clone(options) : {};
       options.condition = condition || {};
       options.async = options.async ? options.async : false;
-      this.reset();
-      this.fetch(options);
+      //this.reset();
+      this.cancel();
+      this.xhr = this.fetch(options);
       return this.at(0);
     },
 
     many: function(condition, options) {
       options = options ? _.clone(options) : {};
       options.condition = condition || {};
-      this.reset();
-      this.fetch(options);
+      //this.reset();
+      this.cancel();
+      this.xhr = this.fetch(options);
       return this.models;
+    },
+
+    cancel: function() {
+      if (this.xhr) this.xhr.abort();
     },
 
     url: function() {
