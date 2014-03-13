@@ -188,9 +188,13 @@ define([
 
     _handle_return_tab: function(evt) {
       // search and get one article based on user provided sku
-      var product, val = $(evt.target).val();
+      var product,
+          val = $(evt.target).val();
       if (/^\d/.test(val)) {
-        product = Product.search.one({sku: val.toUpperCase()});
+        product = Product.search.one(
+          {sku: val.toUpperCase()},
+          {data: { fields: ['sku', 'description', 'stock', 'price'] }}
+        );
       } else {
         return false;
       }

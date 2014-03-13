@@ -48,7 +48,7 @@ _spec = {
         'stock': get_stock
     },
     'required': ['id', 'sku'],
-    'defaults': ['id', 'sku', 'description', 'stock', 'price'],
+    'defaults': ['id', 'sku', 'description', 'price'],
     'authorized': [],
 }
 
