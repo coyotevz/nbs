@@ -72,14 +72,17 @@ define([
     },
 
     onTermKeyup: function(evt) {
-      var search,
-          terms = this.$term.val().trim();
+      var terms = this.$term.val().trim();
       if (this.lastTerm !== terms) {
         this.lastTerm = terms;
         this.collection.cancel();
-        search = _.bind(this.search, this, terms);
         if (this.timer) clearTimeout(this.timer);
-        this.timer = _.delay(search, this.delay);
+        if (terms !== '') {
+          var search = _.bind(this.search, this, terms);
+          this.timer = _.delay(search, this.delay);
+        } else {
+          this.collection.reset();
+        }
       }
     },
 
