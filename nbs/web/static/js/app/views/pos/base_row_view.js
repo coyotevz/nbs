@@ -1,18 +1,31 @@
 define([
   'underscore',
   'views/base/view',
-  'views/dialog',
+  'views/base/collection_view',
   'models/product',
   'models/document_item',
-], function(_, View, DialogView, Product, DocumentItem) {
+], function(_, View, CollectionView, Product, DocumentItem) {
   "use strict";
 
   var letter = /^[a-z]$/,
       number = /^\d$/;
 
-  var SearchDialogView = DialogView.DialogContentView.extend({
-    optionNames: DialogView.DialogContentView.prototype.optionNames.concat(['firstChar', 'currentFocus']),
+  var SearchDialogRowView = View.extend({
+    template: 'pos/search_item_row.html',
+    tagName: 'tr',
+    className: 'search-result-row',
+  });
+
+  var SearchDialogView = CollectionView.extend({
+    optionNames: CollectionView.prototype.optionNames.concat([
+      'dialog', 'template', 'firstChar', 'currentFocus'
+    ]),
     lastTerm: null,
+    timer: null,
+    delay: 300,
+    listSelector: 'tbody',
+    itemView: SearchDialogRowView,
+    animationDuration: 0,
 
     listen: {
       'show': function() {
@@ -26,10 +39,13 @@ define([
         _.defer(function() {
           cf.find(selector).focus();
         });
+        // clean up this view
+        this.dialog.close();
       },
     },
 
     render: function() {
+      this.collection.reset();
       SearchDialogView.__super__.render.apply(this, arguments);
       this.$term = this.$('[name=term]');
       this.delegate('keydown', '[name=term]', this.onTermKeydown);
@@ -56,11 +72,19 @@ define([
     },
 
     onTermKeyup: function(evt) {
-      var newTerm = this.$term.val().trim();
-      if (this.lastTerm !== newTerm) {
-        this.lastTerm = newTerm;
-        console.log('trigger search for "%s"', newTerm);
+      var search,
+          terms = this.$term.val().trim();
+      if (this.lastTerm !== terms) {
+        this.lastTerm = terms;
+        this.collection.cancel();
+        search = _.bind(this.search, this, terms);
+        if (this.timer) clearTimeout(this.timer);
+        this.timer = _.delay(search, this.delay);
       }
+    },
+
+    search: function(terms) {
+      this.collection.many({description: {contains: terms.split(' ')}});
     },
 
   });
@@ -221,12 +245,11 @@ define([
           template: 'pos/search_product.html',
           firstChar: ks,
           currentFocus: this.$el,
+          collection: Product.search,
+          delay: 150,
         });
         return false;
       }
-
-      //console.log("Unhandled input:", k);
-
     },
 
     onQuantityKeydown: function(evt) {
