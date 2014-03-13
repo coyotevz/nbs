@@ -39,8 +39,6 @@ define([
         _.defer(function() {
           cf.find(selector).focus();
         });
-        // clean up this view
-        this.dialog.close();
       },
     },
 
@@ -57,7 +55,7 @@ define([
 
       switch(k) {
         case 'esc':
-          this.dialog.hide();
+          this.dialog.close();
           return false;
         case 'down':
           console.log('down pressed!');
