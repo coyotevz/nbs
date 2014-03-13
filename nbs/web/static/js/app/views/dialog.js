@@ -41,10 +41,11 @@ define([
 
     render: function() {
       DialogView.__super__.render.apply(this, arguments);
-      this.delegate('shown.bs.modal', this.reposition);
       this.delegate('shown.bs.modal', function() {
         this.subview('modal-content').trigger('show');
       });
+      this.delegate('shown.bs.modal', this.reposition);
+
       this.delegate('hidden.bs.modal', function() {
         this.subview('modal-content').trigger('hide');
       });
@@ -54,16 +55,19 @@ define([
       });
 
       this.$d = this.$('.modal-dialog');
+      $(window).resize(_.debounce(_.bind(this.reposition, this), 200));
 
       // Grab global copy of this instance
       window._dialog = this;
     },
 
     reposition: function() {
+      this.subview('modal-content').trigger('beforeReposition');
       this.$d.css({
         'left': ($(window).width() - this.$d.width()) / 2,
         'top': ($(window).height() - this.$d.height()) / 2,
       });
+      this.subview('modal-content').trigger('afterReposition');
     },
 
     show: function() {

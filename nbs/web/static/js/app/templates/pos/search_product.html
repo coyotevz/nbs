@@ -1,19 +1,26 @@
 {% extends "dialog_content.html" %}
 
 {% block header %}
-<span class="modal-title">Buscar Productos</span>
+<input class="search" name="term"></input>
+<span class="modal-title pull-right">Buscar Productos</span>
 {% endblock %}
 
 {% block body %}
 <div class="search-container">
-  <input class="search" name="term"></input>
   <table class="search-results list">
-    <tbody>
+    <colgroup>
+      <col class="col-sku">
+      <col class="col-description">
+      <col class="col-price">
+    </colgroup>
+    <thead>
       <tr>
-        <td class="sku">código</td>
-        <td class="description">descripción</td>
-        <td class="price">precio</td>
+        <th class="header-sku"><span class="header-label">Código</span></th>
+        <th class="header-description"><span class="header-label">Descripción</span></th>
+        <th class="header-price"><span class="header-label">Precio</span></th>
       </tr>
+    </thead>
+    <tbody>
     </tbody>
   </table>
 </div>

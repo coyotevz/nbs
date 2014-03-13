@@ -18,7 +18,7 @@ define([
 
   var SearchDialogView = CollectionView.extend({
     optionNames: CollectionView.prototype.optionNames.concat([
-      'dialog', 'template', 'firstChar', 'currentFocus'
+      'dialog', 'template', 'firstChar', 'currentFocus', 'delay',
     ]),
     lastTerm: null,
     timer: null,
@@ -40,14 +40,27 @@ define([
           cf.find(selector).focus();
         });
       },
+      'beforeReposition': function() {
+        this.setupUi();
+      },
     },
 
     render: function() {
       this.collection.reset();
       SearchDialogView.__super__.render.apply(this, arguments);
-      this.$term = this.$('[name=term]');
       this.delegate('keydown', '[name=term]', this.onTermKeydown);
       this.delegate('keyup', '[name=term]', this.onTermKeyup);
+      this.$term = this.$('[name=term]');
+      // Only for debug, remove this
+      this.search(this.$term.val().trim());
+    },
+
+    setupUi: function() {
+      this.dialog.$d.addClass('search-dialog');
+      console.log('this.$el:', this.$el.height());
+      console.log('this.$(".modal-header"):', this.$('.modal-header').height());
+      console.log('this.$(".modal-body"):', this.$('.modal-body').height());
+      console.log('this.$(".modal-footer"):', this.$('.modal-footer').height());
     },
 
     onTermKeydown: function(evt) {
@@ -74,6 +87,7 @@ define([
       if (this.lastTerm !== terms) {
         this.lastTerm = terms;
         this.collection.cancel();
+        console.log('this.timer:', this.timer, 'delay:', this.delay);
         if (this.timer) clearTimeout(this.timer);
         if (terms !== '') {
           var search = _.bind(this.search, this, terms);
@@ -130,6 +144,18 @@ define([
     initialize: function() {
       BaseRowView.__super__.initialize.apply(this, arguments);
       this.initUiEvents();
+      // For stylize only
+      var $e = this.$el;
+      _.defer(function() {
+        _dialog.run({
+          view: SearchDialogView,
+          template: 'pos/search_product.html',
+          firstChar: "codo",
+          currentFocus: $e,
+          collection: Product.search,
+          delay: 50,
+        });
+      });
     },
 
     _showPrice: function($el, val, options) {
@@ -172,11 +198,11 @@ define([
 
     checkScrollFor: function(cell) {
       var content = cell.parents('#content'),
-      table = cell.parents('table'),
-      cellTop = cell.offset().top - table.offset().top,
-      cellBottom = cellTop + cell.outerHeight(),
-      scrollTop = content.scrollTop(),
-      newScroll;
+          table = cell.parents('table'),
+          cellTop = cell.offset().top - table.offset().top,
+          cellBottom = cellTop + cell.outerHeight(),
+          scrollTop = content.scrollTop(),
+          newScroll;
 
       if (cellTop < scrollTop) {
         content.scrollTop(cellTop - 3);
@@ -251,7 +277,7 @@ define([
           firstChar: ks,
           currentFocus: this.$el,
           collection: Product.search,
-          delay: 150,
+          delay: 50,
         });
         return false;
       }

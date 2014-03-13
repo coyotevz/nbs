@@ -1,0 +1,23 @@
+
+// Search dialog style
+
+.search-dialog {
+  height: 85%;
+  width: 85%;
+  position: fixed;
+
+  .modal-content {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.search-results {
+  font-size: 18px;
+
+  tr td {
+    vertical-align: inherit;
+    height: 30px;
+  }
+}
+// vim:sw=2:ft=scss
