@@ -57,10 +57,8 @@ define([
 
     setupUi: function() {
       this.dialog.$d.addClass('search-dialog');
-      console.log('this.$el:', this.$el.height());
-      console.log('this.$(".modal-header"):', this.$('.modal-header').height());
-      console.log('this.$(".modal-body"):', this.$('.modal-body').height());
-      console.log('this.$(".modal-footer"):', this.$('.modal-footer').height());
+      var availableHeight = this.$el.height() - this.$('.modal-header').outerHeight(true) - this.$('.modal-footer').outerHeight(true);
+      this.$('.search-container').height(availableHeight);
     },
 
     onTermKeydown: function(evt) {
@@ -87,7 +85,6 @@ define([
       if (this.lastTerm !== terms) {
         this.lastTerm = terms;
         this.collection.cancel();
-        console.log('this.timer:', this.timer, 'delay:', this.delay);
         if (this.timer) clearTimeout(this.timer);
         if (terms !== '') {
           var search = _.bind(this.search, this, terms);
