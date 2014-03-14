@@ -21,7 +21,20 @@ var require = {
     'chaplin':                'vendor/chaplin-1.0.0',
     'nunjucks':               'vendor/nunjucks-1.0.1',
     'nunjucks-slim':          'vendor/nunjucks-slim-1.0.1',
-    'bootstrap':              'vendor/bootstrap-3.1.0',
+
+    // Bootstap files
+    'bootstrap.affix':        'vendor/bootstrap/affix',
+    'bootstrap.alert':        'vendor/bootstrap/alert',
+    'bootstrap.button':       'vendor/bootstrap/button',
+    'bootstrap.carousel':     'vendor/bootstrap/carousel',
+    'bootstrap.collapse':     'vendor/bootstrap/collapse',
+    'bootstrap.dropdown':     'vendor/bootstrap/dropdown',
+    'bootstrap.modal':        'vendor/bootstrap/modal',
+    'bootstrap.popover':      'vendor/bootstrap/popover',
+    'bootstrap.scrollspy':    'vendor/bootstrap/scrollspy',
+    'bootstrap.tab':          'vendor/bootstrap/tab',
+    'bootstrap.tooltip':      'vendor/bootstrap/tooltip',
+    'bootstrap.transition':   'vendor/bootstrap/transition',
 
     // Custom plugins for this project
     'nbs.keycode':            'lib/nbs.keycode',
@@ -50,10 +63,6 @@ var require = {
     'nunjucks': {
       exports: 'nunjucks',
     },
-    'bootstrap': {
-      deps: ['jquery'],
-      exports: 'bootstrap'
-    },
     'jquery.number': {
       deps: ['jquery', 'underscore'],
       init: function($, _) {
@@ -63,6 +72,20 @@ var require = {
         };
       }
     },
+
+    // bootstrap dependecy matrix
+    'bootstrap.affix':      { deps: ['jquery'] },
+    'bootstrap.alert':      { deps: ['jquery'] },
+    'bootstrap.button':     { deps: ['jquery'] },
+    'bootstrap.carousel':   { deps: ['jquery'] },
+    'bootstrap.collapse':   { deps: ['jquery', 'bootstrap.transitions'] },
+    'bootstrap.dropdown':   { deps: ['jquery'] },
+    'bootstrap.modal':      { deps: ['jquery'] },
+    'bootstrap.popover':    { deps: ['jquery', 'bootstrap.tooltip'] },
+    'bootstrap.scrollspy':  { deps: ['jquery'] },
+    'bootstrap.tab':        { deps: ['jquery'] },
+    'bootstrap.tooltip':    { deps: ['jquery'] },
+    'bootstrap.transition': { deps: ['jquery'] },
   },
 
   // For easier development, disable browser caching

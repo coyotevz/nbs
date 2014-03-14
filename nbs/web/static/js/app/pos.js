@@ -3,7 +3,8 @@ require([
   'chaplin',
   'views/layout',
   'routes/pos',
-  'bootstrap',
+  'bootstrap.tooltip',
+  'bootstrap.modal',
 
   'jquery.number',
   'nbs.keycode',

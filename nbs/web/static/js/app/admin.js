@@ -3,7 +3,9 @@ require([
   'chaplin',
   'views/layout',
   'routes/admin',
-  'bootstrap',
+  'bootstrap.tooltip',
+  'bootstrap.modal',
+  'bootstrap.dropdown',
 
   'jquery.number',
   'nbs.keycode',
