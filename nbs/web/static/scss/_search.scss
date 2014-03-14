@@ -19,6 +19,10 @@
 .search-results {
   font-size: 18px;
 
+  .col-sku { width: 98px; }
+  .col-description { width: 100%; }
+  .col-price { width: 70px; }
+
   tr td {
     vertical-align: inherit;
     height: 30px;

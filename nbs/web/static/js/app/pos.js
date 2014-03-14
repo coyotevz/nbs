@@ -8,6 +8,7 @@ require([
 
   'jquery.number',
   'nbs.keycode',
+  'nbs.fixedheader',
 ], function(Chaplin, PosLayout, routes) {
   "use strict";
 

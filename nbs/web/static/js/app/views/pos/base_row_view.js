@@ -41,7 +41,7 @@ define([
         });
       },
       'beforeReposition': function() {
-        this.setupUi();
+        this.resize();
       },
     },
 
@@ -51,12 +51,13 @@ define([
       this.delegate('keydown', '[name=term]', this.onTermKeydown);
       this.delegate('keyup', '[name=term]', this.onTermKeyup);
       this.$term = this.$('[name=term]');
+      this.dialog.$d.addClass('search-dialog');
+      this.$('table').fixHeader();
       // Only for debug, remove this
       this.search(this.$term.val().trim());
     },
 
-    setupUi: function() {
-      this.dialog.$d.addClass('search-dialog');
+    resize: function() {
       var availableHeight = this.$el.height() - this.$('.modal-header').outerHeight(true) - this.$('.modal-footer').outerHeight(true);
       this.$('.search-container').height(availableHeight);
     },

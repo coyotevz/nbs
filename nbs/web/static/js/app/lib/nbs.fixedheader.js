@@ -20,7 +20,7 @@ define([
       $table.find('thead').css('visibility', 'hidden');
 
       resize = _.partial(function($f, $p) {
-        $f.width($p.width());
+        $f.css('width', $p.css('width'));
       }, $cloned, $table);
 
       resize();
