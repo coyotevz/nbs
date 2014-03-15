@@ -20,10 +20,10 @@ define([
       $table.find('thead').css('visibility', 'hidden');
 
       resize = _.partial(function($f, $p) {
-        $f.css('width', $p.css('width'));
+        $f.width($p.width());
       }, $cloned, $table);
 
-      resize();
+      _.defer(resize);
       $(window).on('resize', _.debounce(resize, 150));
     });
   };
