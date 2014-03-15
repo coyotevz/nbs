@@ -1,7 +1,8 @@
-define(function(require) {
+define(function(require, filters) {
   "use strict";
   var nunjucks;
 
+  /* Check if have precompiled templates else use HttpLoader */
   if (window.nunjucksPrecompiled) {
 
     /* we have precompiled templates, use them */
@@ -39,6 +40,11 @@ define(function(require) {
     }
   }
 
-  /* Check if have precompiled templates else use HttpLoader */
+  var filters = require('./filters');
+
+  for (var fname in filters) {
+    nunjucks.env.addFilter(fname, filters[fname]);
+  }
+
   return nunjucks.env;
 });

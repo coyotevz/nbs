@@ -49,6 +49,11 @@ table {
             font-weight: bold;
           }
 
+          &.header-price {
+            text-align: right;
+            padding-right: 6px;
+          }
+
           .header-label {
             padding: 0 0 0 6px;
             overflow: hidden;
@@ -86,6 +91,11 @@ table {
         &.cell-active, &.cell-checkbox {
           padding-left: 0;
           text-align: center;
+        }
+
+        &.cell-price {
+          text-align: right;
+          padding-right: 6px;
         }
 
         .icon-image {
@@ -158,4 +168,4 @@ table {
     }
   }
 }
-
+// vim:sw=2
