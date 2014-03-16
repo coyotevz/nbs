@@ -6,13 +6,20 @@
   width: 85%;
   position: fixed;
 
+
   .modal-content {
     width: 100%;
     height: 100%;
 
+    .modal-header {
+      margin-bottom: 0;
+      padding-bottom: 7px;
+    }
+
     .search-container {
       overflow-y: scroll;
     }
+
   }
 }
 
@@ -26,6 +33,11 @@
   tr td {
     vertical-align: inherit;
     height: 30px;
+
+    .matched {
+      font-weight: bold;
+      text-decoration: underline;
+    }
   }
 }
 // vim:sw=2:ft=scss
