@@ -27,6 +27,9 @@ define([
     itemView: SearchDialogRowView,
     animationDuration: 0,
 
+    // Internal properties
+    _selected_idx: null,
+
     listen: {
       'show': function() {
         this.$('[name=term]').focus().val(this.firstChar || '');
@@ -43,7 +46,10 @@ define([
       'beforeReposition': function() {
         this.resize();
       },
-      'visibilityChange': 'updateTerms',
+      'fetched': function(collection) {
+        this.updateTerms(collection.models);
+        this.select(0);
+      },
     },
 
     render: function() {
@@ -64,20 +70,22 @@ define([
     },
 
     onTermKeydown: function(evt) {
-      var k = $.keycode(evt);
+      var idx,
+          k = $.keycode(evt);
 
       switch(k) {
         case 'esc':
+          this.selected = null;
           this.dialog.close();
           return false;
         case 'down':
-          console.log('down pressed!');
+          this.moveSelect(+1);
           return false;
         case 'up':
-          console.log('up pressed!');
+          this.moveSelect(-1);
           return false;
         case 'return':
-          console.log('return pressed!');
+          if (this.selected) this.dialog.close();
           return false;
       }
     },
@@ -98,12 +106,16 @@ define([
     },
 
     search: function(terms) {
+      var view = this;
       terms = terms.split(' ');
-      this.collection.many({description: {contains: terms}});
+      this.collection.many({description: {contains: terms}}, {
+        success: function(collection, resp, options) {
+          view.trigger('fetched', collection);
+        }
+      });
     },
 
-    // debounce to avoid multiple calls
-    updateTerms: _.debounce(function(items) {
+    updateTerms: function(items) {
       if (this.term && this.term !== '' && items) {
         var re = RegExp(this.term.split(' ').join("|"), 'ig');
         _.each(items, function(item, index, list) {
@@ -112,7 +124,31 @@ define([
           $e.html($e.text().replace(re, '<span class="matched">$&</span>'));
         }, this);
       }
-    }, 50),
+    },
+
+    moveSelect: function(m) {
+      var idx = (this._selected_idx || 0) + m;
+      if (idx >= 0 && idx < this.collection.length) {
+        this.select(idx);
+      }
+    },
+
+    select: function(idx) {
+      var itemView, selected;
+      if (this._selected_idx !== null && this.selected) {
+        itemView = this.subview('itemView:'+this.selected.cid);
+        if (itemView) itemView.$el.removeClass('selected');
+      }
+      selected = this.collection.at(idx);
+      if (selected) {
+        itemView = this.subview('itemView:'+selected.cid);
+        if (itemView) itemView.$el.addClass('selected');
+        this._selected_idx = idx;
+      } else {
+        this._selected_idx = null;
+      }
+      this.selected = selected;
+    },
 
   });
 
