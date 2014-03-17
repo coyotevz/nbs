@@ -20,7 +20,7 @@ define([
     optionNames: CollectionView.prototype.optionNames.concat([
       'dialog', 'template', 'firstChar', 'currentFocus', 'delay',
     ]),
-    lastTerm: null,
+    term: null,
     timer: null,
     delay: 300,
     listSelector: 'tbody',
@@ -43,6 +43,7 @@ define([
       'beforeReposition': function() {
         this.resize();
       },
+      'visibilityChange': 'updateTerms',
     },
 
     render: function() {
@@ -83,8 +84,8 @@ define([
 
     onTermKeyup: function(evt) {
       var terms = this.$term.val().trim();
-      if (this.lastTerm !== terms) {
-        this.lastTerm = terms;
+      if (this.term !== terms) {
+        this.term = terms;
         this.collection.cancel();
         if (this.timer) clearTimeout(this.timer);
         if (terms !== '') {
@@ -97,8 +98,21 @@ define([
     },
 
     search: function(terms) {
-      this.collection.many({description: {contains: terms.split(' ')}});
+      terms = terms.split(' ');
+      this.collection.many({description: {contains: terms}});
     },
+
+    // debounce to avoid multiple calls
+    updateTerms: _.debounce(function(items) {
+      if (this.term && this.term !== '' && items) {
+        var re = RegExp(this.term.split(' ').join("|"), 'ig');
+        _.each(items, function(item, index, list) {
+          var view = this.subview('itemView:'+item.cid),
+              $e = view.$('.cell-description');
+          $e.html($e.text().replace(re, '<span class="matched">$&</span>'));
+        }, this);
+      }
+    }, 50),
 
   });
 
