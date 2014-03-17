@@ -35,13 +35,19 @@ define([
         this.$('[name=term]').focus().val(this.firstChar || '');
       },
       'hide': function() {
-        var cf = this.currentFocus,
-            selector = 'input:first';
-        if (this.selected) selector = 'input.quantity';
-        // _.defer here is necessary for Firefox to work properly
-        _.defer(function() {
-          cf.find(selector).focus();
-        });
+        var cf = this.currentFocus;
+        if (this.selected) {
+          this.selected.fetch({
+            data: { fields: ['sku', 'description', 'stock', 'price'] },
+            traditional: true, async: false,
+          });
+          cf._setProduct(this.selected);
+        } else {
+          _.defer(function() {
+            // _.defer here is necessary for Firefox to work properly
+            cf.$('input:first').focus();
+          });
+        }
       },
       'beforeReposition': function() {
         this.resize();
@@ -158,6 +164,10 @@ define([
     tagName: 'tr',
 
     bindings: {
+      '.sku': {
+        observe: 'sku',
+        updateModel: false,
+      },
       '.cell-total-price span': {
         observe: 'total',
         onGet: $.numeric,
@@ -193,13 +203,13 @@ define([
       BaseRowView.__super__.initialize.apply(this, arguments);
       this.initUiEvents();
       // For stylize only
-      var $e = this.$el;
+      var $this = this;
       _.defer(function() {
         _dialog.run({
           view: SearchDialogView,
           template: 'pos/search_product.html',
           firstChar: "codo",
-          currentFocus: $e,
+          currentFocus: $this,
           collection: Product.search,
           delay: 50,
         });
@@ -274,12 +284,16 @@ define([
       }
 
       if (product !== undefined) {
-        this.model.set('product', product);
-        var q = this.$('.quantity');
-        val = q.val() || 1;
-        q.val(val).focus().select();
+        this._setProduct(product);
       }
       return false;
+    },
+
+    _setProduct: function(product) {
+      this.model.set('product', product);
+      var q = this.$('.quantity'),
+          val = q.val() || 1;
+      q.val(val).focus().select();
     },
 
     onSkuKeydown: function(evt) {
@@ -323,7 +337,7 @@ define([
           view: SearchDialogView,
           template: 'pos/search_product.html',
           firstChar: ks,
-          currentFocus: this.$el,
+          currentFocus: this,
           collection: Product.search,
           delay: 50,
         });

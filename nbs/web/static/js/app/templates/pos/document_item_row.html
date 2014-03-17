@@ -1,7 +1,7 @@
 <td class="composed-field cell-sku-description">
   <div class="border">
     <div class="container-sku">
-      <input class="sku" type="text" size="14" maxlength="14" spellcheck="false" value="{{ sku }}">
+      <input class="sku" type="text" size="14" maxlength="14" spellcheck="false" value="{#{ sku }#}">
     </div>
     <div class="container-description">
       <span class="description">{#{ description }#}</span>
@@ -11,10 +11,10 @@
 </td>
 <td class="cell-quantity">
   <div class="border">
-    <input class="quantity" type="text" size="5" maxlength="5" value="{{ quantity }}">
+    <input class="quantity" type="text" size="5" maxlength="5" value="{#{ quantity }#}">
   </div>
 </td>
 <td class="cell-unit-price"><span>{#{ price }#}</span></td>
-<td class="cell-total-price"><span>{{ total }}</span></td>
+<td class="cell-total-price"><span>{#{ total }#}</span></td>
 {# vim:sw=2:ft=jinja
 #}
