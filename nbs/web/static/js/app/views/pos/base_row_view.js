@@ -150,16 +150,30 @@ define([
         itemView = this.subview('itemView:'+selected.cid);
         if (itemView) {
           itemView.$el.addClass('selected');
-          this.$('.search-container').scrollTop(itemView.$el.offset().top - this.$('.search-container').offset().top);
-          console.log('scrollTop:', this.$('.search-container').scrollTop());
-          console.log('offset.top:', this.$('.search-container').offset().top);
-          console.log('offset.top:', itemView.$el.offset().top);
+          this.checkScrollFor(itemView.$el);
         }
         this._selected_idx = idx;
       } else {
         this._selected_idx = null;
       }
       this.selected = selected;
+    },
+
+    checkScrollFor: function(el) {
+      var container = this.$('.search-container'),
+          gap = this.$('.search-results thead').height(),
+          cellTop = el.offset().top - gap,
+          cellBottom = cellTop + el.outerHeight() + gap,
+          containerTop = container.offset().top,
+          containerBottom = containerTop + container.outerHeight(),
+          scrollTop = container.scrollTop();
+
+      if (cellTop < containerTop) {
+        container.scrollTop(scrollTop - (containerTop - cellTop));
+      } else if (cellBottom > containerBottom) {
+        container.scrollTop(scrollTop + (cellBottom - containerBottom));
+      }
+
     },
 
   });
