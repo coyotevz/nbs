@@ -23,21 +23,31 @@
   }
 }
 
-.search-results {
-  font-size: 18px;
+table.search-results {
+  font-size: 16px;
 
+  .col-selected-indicator { width: 3px; }
   .col-sku { width: 14ex; }
   .col-description { width: 100%; }
   .col-price { width: 8ex; }
 
-  tr td {
-    vertical-align: inherit;
-    height: 30px;
-    color: #555;
+  tr {
+    td {
+      vertical-align: inherit;
+      height: 30px;
+      color: #555;
 
-    .matched {
-      color: #000;
-      text-decoration: underline;
+      .matched {
+        color: #000;
+        text-decoration: underline;
+      }
+    }
+
+    &.selected {
+      background-color: #e5ecf9;
+      .cell-selected-indicator {
+        background-color: #3366cc;
+      }
     }
   }
 }
