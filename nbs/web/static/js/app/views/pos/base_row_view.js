@@ -148,7 +148,13 @@ define([
       selected = this.collection.at(idx);
       if (selected) {
         itemView = this.subview('itemView:'+selected.cid);
-        if (itemView) itemView.$el.addClass('selected');
+        if (itemView) {
+          itemView.$el.addClass('selected');
+          this.$('.search-container').scrollTop(itemView.$el.offset().top - this.$('.search-container').offset().top);
+          console.log('scrollTop:', this.$('.search-container').scrollTop());
+          console.log('offset.top:', this.$('.search-container').offset().top);
+          console.log('offset.top:', itemView.$el.offset().top);
+        }
         this._selected_idx = idx;
       } else {
         this._selected_idx = null;
