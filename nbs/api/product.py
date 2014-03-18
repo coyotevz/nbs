@@ -30,27 +30,28 @@ write_cost_permission  = Permission(Need('write', 'product.cost'))
 read_price_permission  = Permission(Need('read',  'product.price'))
 write_price_permission = Permission(Need('write', 'product.price'))
 
-def get_stock(product):
+def get_stocks(product):
+    return product.get_stock_items()
+
+def get_local_stock(product):
     # FIXME: Fake warehouse id, this must be fetched from session data
     wid = 8
     warehouse = Warehouse.query.get(wid)
-    local = product.get_stock_for_warehouse(warehouse, False)
-    if not local:
-        return None
-    else:
-        return {
-            'local': local.quantity,
-            'global': product.get_consolidated_stock(),
-        }
+    return product.get_stock_for_warehouse(warehouse, False)
+
 
 _spec = {
     'map': {
-        'stock': get_stock
+        'stock': get_local_stock,
+        'stocks': get_stocks,
     },
     'required': ['id', 'sku'],
     'defaults': ['id', 'sku', 'description', 'price'],
     'authorized': [],
 }
+
+_spec_ind = _spec.copy()
+_spec_ind['defaults'] = _spec['defaults'] + ['stock']
 
 @product_api.route('', methods=['GET'])
 def list():
@@ -63,7 +64,7 @@ def list():
 @product_api.route('/<int:id>', methods=['GET'])
 def get(id):
     """Returns an individual product given an id."""
-    params = rest.get_params(_spec)
+    params = rest.get_params(_spec_ind)
     obj = Product.query.get_or_404(id)
     filtered = rest.filter_fields(obj.query, params)
     return jsonify(rest.to_dict(obj, filtered))

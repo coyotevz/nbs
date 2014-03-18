@@ -37,10 +37,7 @@ define([
       'hide': function() {
         var cf = this.currentFocus;
         if (this.selected) {
-          this.selected.fetch({
-            data: { fields: ['sku', 'description', 'stock', 'price'] },
-            traditional: true, async: false,
-          });
+          this.selected.fetch({ async: false, });
           cf._setProduct(this.selected);
         } else {
           _.defer(function() {
@@ -209,7 +206,7 @@ define([
         onGet: function(product, options) {
           if (product) {
             if (product.has('stock')) {
-              return 'Stock: ' + $.number(product.get('stock.local'), 0);
+              return 'Stock: ' + $.number(product.get('stock.quantity'), 0);
             }
             return 'Sin control de stock';
           }
