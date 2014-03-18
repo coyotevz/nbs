@@ -123,7 +123,7 @@ define([
 
     updateTerms: function(items) {
       if (this.term && this.term !== '' && items) {
-        var re = RegExp(this.term.split(' ').join("|"), 'ig');
+        var re = new RegExp(this.term.split(' ').join("|"), 'ig');
         _.each(items, function(item, index, list) {
           var view = this.subview('itemView:'+item.cid),
               $e = view.$('.cell-description');

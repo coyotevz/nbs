@@ -1,4 +1,4 @@
-define(function(require, filters) {
+define(function(require) {
   "use strict";
   var nunjucks;
 
