@@ -66,8 +66,6 @@ define([
       this.$term = this.$('[name=term]');
       this.dialog.$d.addClass('search-dialog');
       this.$('table').fixHeader();
-      // Only for debug, remove this
-      this.search(this.$term.val().trim());
     },
 
     resize: function() {
