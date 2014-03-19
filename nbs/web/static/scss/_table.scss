@@ -68,14 +68,6 @@ table {
       height: 26px;
       color: $gray-darker;
 
-      &.selected {
-        background-color: #ffc;
-      }
-
-      &:hover {
-        background-color: #ffffd6;
-      }
-
       td {
         height: 23px;
         border-bottom: 1px solid #ebebeb;
@@ -163,9 +155,12 @@ table {
     .col-date { width: 70px; }
     .col-price { width: 70px; }
 
-    .product-icon {
-      background-image: url(/static/img/product-icon.png);
+    tr {
+      &.selected { background-color: #ffc; }
+      &:hover { background-color: #ffffd6; }
     }
+
+    .product-icon { background-image: url(/static/img/product-icon.png); }
   }
 }
 // vim:sw=2
