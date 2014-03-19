@@ -43,11 +43,14 @@ define([
       DialogView.__super__.render.apply(this, arguments);
       this.delegate('shown.bs.modal', function() {
         this.subview('modal-content').trigger('show');
+        $(window).on("resize.myDialog",
+                     _.debounce(_.bind(this.reposition, this), 200));
       });
       this.delegate('shown.bs.modal', this.reposition);
 
       this.delegate('hidden.bs.modal', function() {
         this.subview('modal-content').trigger('hide');
+        $(window).off("resize.myDialog");
       });
 
       this.$el.modal({
@@ -55,7 +58,6 @@ define([
       });
 
       this.$d = this.$('.modal-dialog');
-      $(window).resize(_.debounce(_.bind(this.reposition, this), 200));
 
       // Grab global copy of this instance
       window._dialog = this;
