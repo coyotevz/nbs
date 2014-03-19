@@ -202,7 +202,9 @@ define([
         updateModel: false,
       },
       '.stock-info': {
+        // FIXME: This not always work
         observe: 'product',
+        //events: ['change'],
         onGet: function(product, options) {
           if (product) {
             if (product.has('stock')) {
@@ -211,7 +213,14 @@ define([
             return 'Sin control de stock';
           }
         },
-      }
+      },
+      /*
+      '.stock-info': {
+        observe: 'product.stock',
+        onGet: function(stock, options) {
+          return 'Stock: ' + $.number(stock.get('quantity'), 0);
+        }
+      },*/
     },
 
     initialize: function() {
