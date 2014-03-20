@@ -20,13 +20,32 @@ define([
 
     initialize: function() {
       AppenderView.__super__.initialize.apply(this, arguments);
-      this.model.clear();
+      //this.model.clear();
     },
 
     onRowDone: function(target) {
-      this.trigger('append', this.model.clone());
-      this.model.clear();
+      var model = this.model;
+      this.setModel(new DocumentItem());
+      this.trigger('append', model); //.clone());
+      //this.model.clear();
       this.$('.composed-field input').focus().val("");
+    },
+
+    setModel: function(model) {
+      //this.$el.children().removeData().unbind();
+      //this.$el.children().remove();
+      this.stopListening();
+
+      // clear model
+      if (this.model) {
+        this.model.unbind();
+        this.model.stopListening();
+      }
+
+      // set new model and call initialize
+      this.model = model;
+      this.delegateEvents(this.events);
+      this.initialize();
     },
   });
 
