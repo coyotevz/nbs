@@ -18,16 +18,10 @@ define([
       'row-done': 'onRowDone',
     },
 
-    initialize: function() {
-      AppenderView.__super__.initialize.apply(this, arguments);
-      //this.model.clear();
-    },
-
     onRowDone: function(target) {
       var model = this.model;
       this.setModel(new DocumentItem());
-      this.trigger('append', model); //.clone());
-      //this.model.clear();
+      this.trigger('append', model);
       this.$('.composed-field input').focus().val("");
     },
 
@@ -39,13 +33,17 @@ define([
       // clear model
       if (this.model) {
         this.model.unbind();
-        this.model.stopListening();
+        this.unstickit(this.model);
+        this.$('.cell-unit-price span, .cell-total-price span, .container-description').css({
+          'visibility': 'hidden'
+        });
       }
 
       // set new model and call initialize
       this.model = model;
-      this.delegateEvents(this.events);
-      this.initialize();
+      this.delegateEvents();
+      this.delegateListeners();
+      this.stickit();
     },
   });
 
@@ -106,6 +104,7 @@ define([
         collection: this.model.get('items')
       });
       this.subview('itemslist', itemsView);
+      window.items = this.model.get('items');
 
       // appender row
       appenderView = new AppenderView({

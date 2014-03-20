@@ -205,8 +205,20 @@ define([
         // FIXME: This not always work
         observe: ['product', 'product.stock'],
         onGet: function(values, options) {
-          console.log('values:', values);
-        }
+          var product = values[0],
+              stock = values[1],
+              qty;
+          if (product && product.has('stock')) {
+            qty = product.get('stock.quantity');
+          } else if (stock) {
+            qty = stock.get('quantity');
+          }
+
+          if (qty !== undefined) {
+            return 'Stock: ' + $.number(qty, 0);
+          }
+          return 'Sin control de stock';
+        },
         /*
         onGet: function(product, options) {
           console.log('product:', product);
