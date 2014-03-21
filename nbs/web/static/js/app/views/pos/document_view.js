@@ -26,17 +26,14 @@ define([
     },
 
     setModel: function(model) {
-      //this.$el.children().removeData().unbind();
-      //this.$el.children().remove();
+
       this.stopListening();
 
       // clear model
       if (this.model) {
         this.model.unbind();
+        this.model.stopListening();
         this.unstickit(this.model);
-        this.$('.cell-unit-price span, .cell-total-price span, .container-description').css({
-          'visibility': 'hidden'
-        });
       }
 
       // set new model and call initialize
@@ -44,6 +41,13 @@ define([
       this.delegateEvents();
       this.delegateListeners();
       this.stickit();
+    },
+
+
+    onRemoveModel: function() {
+      this.$('.cell-unit-price span, .cell-total-price span, .container-description').css({
+        'visibility': 'hidden'
+      });
     },
   });
 
