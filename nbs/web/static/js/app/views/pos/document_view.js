@@ -14,12 +14,15 @@ define([
 
   var AppenderView = BaseRowView.extend({
     id: 'appender',
-    listen: {
-      'row-done': 'onRowDone',
+
+    initialize: function() {
+      AppenderView.__super__.initialize.apply(this, arguments);
+      this.listenTo(this, 'row-done', this.onRowDone);
     },
 
     onRowDone: function(target) {
       var model = this.model;
+      console.log('try to detach:', this.model && this.model.get('sku'));
       this.setModel(new DocumentItem());
       this.trigger('append', model);
       this.$('.composed-field input').focus().val("");
@@ -27,22 +30,26 @@ define([
 
     setModel: function(model) {
 
-      this.stopListening();
-
       // clear model
       if (this.model) {
-        this.model.unbind();
-        this.model.stopListening();
+        //this.undelegate();          // chaplinjs specific
+        this.stopListening();
         this.unstickit(this.model);
+
+        //this.stopListening(this.model);
+        //this.model.unbind();
+        //this.model.stopListening();
+        //this.unstickit(this.model);
       }
 
       // set new model and call initialize
       this.model = model;
-      this.delegateEvents();
-      this.delegateListeners();
-      this.stickit();
+      this.delegateEvents();        // calls undelegateEvents() internally
+      this.delegateListeners();     // overriden in chaplinjs
+      this.listenTo(this.model, 'dispose', this.dispose); // from chaplinjs
+      this.listenTo(this, 'row-done', this.onRowDone);
+      this.stickit(this.model);
     },
-
 
     onRemoveModel: function() {
       this.$('.cell-unit-price span, .cell-total-price span, .container-description').css({
@@ -54,9 +61,10 @@ define([
   var ItemView = BaseRowView.extend({
     className: 'item-row',
 
-    listen: {
-      'row-done': 'onRowDone',
-      'remove': 'onRemove',
+    initialize: function() {
+      ItemView.__super__.initialize.apply(this, arguments);
+      this.listenTo(this, 'row-done', this.onRowDone);
+      this.listenTo(this, 'remove', this.onRemove);
     },
 
     onRowDone: function(target) {
@@ -114,6 +122,7 @@ define([
       appenderView = new AppenderView({
         model: new DocumentItem()
       });
+      window.appender = appenderView;
       this.listenTo(appenderView, 'append', this.onAppend);
       this.subview('appender', appenderView);
 

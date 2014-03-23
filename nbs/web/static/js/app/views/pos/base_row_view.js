@@ -219,25 +219,7 @@ define([
           }
           return 'Sin control de stock';
         },
-        /*
-        onGet: function(product, options) {
-          console.log('product:', product);
-          if (product) console.log('product.stock:', product.get('stock'));
-          if (product && product.has('stock')) {
-            return 'Disponible: ' + $.number(product.get('stock.quantity'), 0);
-          }
-          return 'Sin control de stock';
-        },*/
       },
-
-      /*
-      '.stock-info': {
-        observe: 'product.stock',
-        onGet: function(stock, options) {
-          if (stock) return 'Stock: ' + $.number(stock.get('quantity'), 0);
-          else return 'Sin control de stock';
-        }
-      },*/
     },
 
     initialize: function() {
@@ -279,12 +261,6 @@ define([
       this.delegate('focusin focusout', 'input', this.onInputFocusChange);
       this.delegate('keydown', 'input.sku', this.onSkuKeydown);
       this.delegate('keydown', 'input.quantity', this.onQuantityKeydown);
-
-      // FIXME: Special events for debug only
-      this.model.on('change', function() { console.log('change', arguments); });
-      this.model.on('change:product', function() { console.log('change:product', arguments); });
-      this.model.on('change:product.stock', function() { console.log('change:product.stock', arguments); });
-      this.model.on('change:product.stock.quantity', function() { console.log('change:product.stock.quantity', arguments); });
     },
 
     onComposedClick: function(evt) {
