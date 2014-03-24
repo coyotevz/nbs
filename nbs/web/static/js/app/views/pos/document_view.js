@@ -3,9 +3,8 @@ define([
   'views/base/view',
   'views/base/collection_view',
   'views/pos/base_row_view',
-  'models/document',
   'models/document_item',
-], function($, View, CollectionView, BaseRowView, Document, DocumentItem) {
+], function($, View, CollectionView, BaseRowView, DocumentItem) {
   "use strict";
 
   var HeaderView = View.extend({
