@@ -78,6 +78,22 @@ class DocumentItem(db.Model):
     document = db.relationship(Document, backref='items')
 
 
+class SaleDocument(Document):
+    """A sale document that is involved in sale operation, contains sale items.
+    """
+    __tablename__ = 'sale_document'
+    __mapped_args__ = {'polymorphic_identity': u'sale_document'}
+    _sale_doc_type = db.Column(db.Unicode)
+    document_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                            primary_key=True)
+
+    #customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'),
+    #                        nullable=False)
+    #customer = db.relationship(Customer, backref="documents")
+
+    __mapper_args__ = {'polymorphic_on': _sale_doc_type}
+
+
 # Factura de Venta
 class SaleInvoice(Document):
     """A sale invoice is a sale document and contains sale items"""
@@ -238,7 +254,7 @@ class StockRequest(Document):
     request_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                            primary_key=True)
 
-
+# Transferencia de insumos (interno)
 class SupplyTransfer(Document):
     __tablename__ = 'supply_transfer'
     __mapper_args__ = {'polymorphic_identity': u'supply_transfer'}
@@ -246,7 +262,7 @@ class SupplyTransfer(Document):
                             primary_key=True)
 
 
-# Transferencia Interna de Mercadería
+# Transferencia de Mercadería (interno)
 class StockTransfer(Document):
     __tablename__ = 'stock_transfer'
     __mapper_args__ = {'polymorphic_identity': u'stock_transfer'}

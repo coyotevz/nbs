@@ -31,6 +31,14 @@ def list():
     result = rest.get_result(query, params)
     return jsonify(result)
 
+@document_api.route('/<int:id>', methods=['GET'])
+def get(id):
+    """Returns an individual document given an id."""
+    params = rest.get_params(_spec)
+    obj = Document.query.get_or_404(id)
+    filtered = rest.filter_fields(obj.query, params)
+    return jsonify(rest.to_dict(obj, filtered))
+
 @document_api.route('', methods=['POST'])
 def add():
     # read parameters from body request
