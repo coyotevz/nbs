@@ -202,21 +202,14 @@ define([
         updateModel: false,
       },
       '.stock-info': {
-        // FIXME: This not always work
         observe: ['product', 'product.stock'],
         onGet: function(values, options) {
-          var product = values[0],
-              stock = values[1],
-              qty;
+          var qty, product = this.model.get("product");
           if (product && product.has('stock')) {
             qty = product.get('stock.quantity');
-          } else if (stock) {
-            qty = stock.get('quantity');
           }
 
-          if (qty !== undefined) {
-            return 'Stock: ' + $.number(qty, 0);
-          }
+          if (qty !== undefined) { return 'Stock: ' + $.number(qty, 0); }
           return 'Sin control de stock';
         },
       },
@@ -298,7 +291,10 @@ define([
       // search and get one article based on user provided sku
       var product,
           val = $(evt.target).val();
-      if (/^\d/.test(val)) {
+      if (this.model.has('product') && this.model.get('product.sku') == val) {
+        product = this.model.get('product');
+        product.fetch();
+      } else if (/^\d/.test(val)) {
         product = Product.search.one(
           {sku: val.toUpperCase()},
           {data: { fields: ['sku', 'description', 'stock', 'price'] }}
@@ -314,14 +310,10 @@ define([
     },
 
     _setProduct: function(product) {
-      //console.log('set product:', product);
-      //if (this.model.has('product')) console.log('model:', this.model.toJSON());
       this.model.set('product', product);
-      //console.log('stock:', this.model.get('product.stock'));
-      //console.log('final product.cid:', this.model.get('product').cid);
       var q = this.$('.quantity'),
           val = q.val() || 1;
-      q.val(val).focus().select();
+      q.val(val).css({'visibility': 'visible'}).focus().select();
     },
 
     onSkuKeydown: function(evt) {

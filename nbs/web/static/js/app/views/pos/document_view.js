@@ -22,7 +22,6 @@ define([
 
     onRowDone: function(target) {
       var model = this.model;
-      console.log('try to detach:', this.model && this.model.get('sku'));
       this.setModel(new DocumentItem());
       this.trigger('append', model);
       this.$('.composed-field input').focus().val("");
@@ -32,27 +31,25 @@ define([
 
       // clear model
       if (this.model) {
-        //this.undelegate();          // chaplinjs specific
         this.stopListening();
         this.unstickit(this.model);
-
-        //this.stopListening(this.model);
-        //this.model.unbind();
-        //this.model.stopListening();
-        //this.unstickit(this.model);
+        this.onRemoveModel();
       }
 
-      // set new model and call initialize
+      // set new model
       this.model = model;
       this.delegateEvents();        // calls undelegateEvents() internally
       this.delegateListeners();     // overriden in chaplinjs
       this.listenTo(this.model, 'dispose', this.dispose); // from chaplinjs
-      this.listenTo(this, 'row-done', this.onRowDone);
+      this.listenTo(this, 'row-done', this.onRowDone);    // rebind this event
       this.stickit(this.model);
     },
 
     onRemoveModel: function() {
-      this.$('.cell-unit-price span, .cell-total-price span, .container-description').css({
+      this.$('.cell-unit-price span, ' +
+             '.cell-total-price span, ' +
+             '.container-description, ' +
+             '.quantity').css({
         'visibility': 'hidden'
       });
     },
@@ -150,10 +147,6 @@ define([
 
     onAppend: function(item) {
       this.model.get('items').add(item);
-    },
-
-    onRemove: function() {
-      console.log('onRemove handler:', arguments);
     },
 
     onScroll: function(evt) {
