@@ -1,6 +1,6 @@
 define([
   'chaplin',
-  'views/dashboard/dashboard_view',
+  'views/admin/dashboard/dashboard_view',
 ], function(Chaplin, DashboardView) {
   "use strict";
 
