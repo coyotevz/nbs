@@ -27,6 +27,7 @@ class Supplier(Entity, FiscalDataMixin):
     contacts = association_proxy('supplier_contacts', 'contact')
 
     #: products_info field added by products.ProductSupplierInfo relationship
+    #: documents field added by document.PurchaseDocument
 
     @hybrid_property
     def full_name(self):

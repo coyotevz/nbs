@@ -6,6 +6,8 @@ from collections import namedtuple
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from nbs.models import db
+from nbs.models.product import Product
+from nbs.models.supplier import Supplier
 from nbs.models.misc import TimestampMixin
 from nbs.models.places import Place
 from nbs.utils import dq
@@ -73,9 +75,9 @@ class Document(db.Model, TimestampMixin):
 class DocumentItem(db.Model):
     __tablename__ = 'document_item'
     id = db.Column(db.Integer, primary_key=True)
-
-    document_id = db.Column(db.Integer, db.ForeignKey('document.id'))
-    document = db.relationship(Document, backref='items')
+    quantity = db.Column(db.Numeric(10, 2))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship(Product, backref='items')
 
 
 class SaleDocument(Document):
@@ -83,7 +85,6 @@ class SaleDocument(Document):
     """
     __tablename__ = 'sale_document'
     __mapped_args__ = {'polymorphic_identity': u'sale_document'}
-    _sale_doc_type = db.Column(db.Unicode)
     document_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             primary_key=True)
 
@@ -91,72 +92,169 @@ class SaleDocument(Document):
     #                        nullable=False)
     #customer = db.relationship(Customer, backref="documents")
 
-    __mapper_args__ = {'polymorphic_on': _sale_doc_type}
+    #: items collection field added by SaleDocumentItem
+
+    def get_items(self):
+        return self.items
+
+
+class SaleDocumentItem(DocumentItem):
+    __tablename__ = 'sale_document_item'
+    item_id = db.Column(db.Integer, db.ForeignKey('document_item.id'),
+                        primary_key=True)
+
+    document_id = db.Column(db.Integer,
+                            db.ForeignKey('sale_document.document_id'),
+                            nullable=False)
+    document = db.relationship(SaleDocument, backref='items')
 
 
 # Factura de Venta
-class SaleInvoice(Document):
+class SaleInvoice(SaleDocument):
     """A sale invoice is a sale document and contains sale items"""
     __tablename__ = 'sale_invoice'
     __mapper_args__ = {'polymorphic_identity': u'sale_invoice'}
-    invoice_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                           primary_key=True)
-
-
-# Factura de Compra
-class PurchaseInvoice(Document):
-    __tablename__ = 'purchase_invoice'
-    __mapper_args__ = {'polymorphic_identity': u'purchase_invoice'}
-    invoice_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+    invoice_id = db.Column(db.Integer,
+                           db.ForeignKey('sale_document.document_id'),
                            primary_key=True)
 
 
 # Orden de Venta
-class SaleOrder(Document):
+class SaleOrder(SaleDocument):
     __tablename__ = 'sale_order'
     __mapper_args__ = {'polymorphic_identity': u'sale_order'}
-    order_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                         primary_key=True)
-
-
-# Orden de Compra
-class PurchaseOrder(Document):
-    __tablename__ = 'purchase_order'
-    __mapper_args__ = {'polymorphic_identity': u'purchase_order'}
-    order_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+    order_id = db.Column(db.Integer,
+                         db.ForeignKey('sale_document.document_id'),
                          primary_key=True)
 
 
 # Presupuesto de Venta
-class SaleQuotation(Document):
+class SaleQuotation(SaleDocument):
     __tablename__ = 'sale_quotation'
     __mapper_args__ = {'polymorphic_identity': u'sale_quotation'}
-    quotation_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                             primary_key=True)
-
-
-# Presupuesto de Compra
-class PurchaseQuotation(Document):
-    __tablname__ = 'purchase_quotation'
-    __mapper_args__ = {'polymorphic_identity': u'purchase_quotation'}
-    quotation_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+    quotation_id = db.Column(db.Integer,
+                             db.ForeignKey('sale_document.document_id'),
                              primary_key=True)
 
 
 # Remito de Venta
-class SaleRefer(Document):
+class SaleRefer(SaleDocument):
     __tablename__ = 'sale_refer'
     __mapper_args__ = {'polymorphic_identity': u'sale_refer'}
-    refer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+    refer_id = db.Column(db.Integer,
+                         db.ForeignKey('sale_document.document_id'),
                          primary_key=True)
+
+
+# Devolución de Venta
+class SaleReturn(SaleDocument):
+    __tablename__ = 'sale_return'
+    __mapper_args__ = {'polymorphic_identity': u'sale_return'}
+    return_id = db.Column(db.Integer,
+                          db.ForeignKey('sale_document.document_id'),
+                          primary_key=True)
+
+
+# Solicitud de Mercadería (interno)
+class StockRequest(SaleDocument):
+    __tablename__ = 'stock_request'
+    __mapper_args__ = {'polymorphic_identity': u'stock_request'}
+    request_id = db.Column(db.Integer,
+                           db.ForeignKey('sale_document.document_id'),
+                           primary_key=True)
+
+
+# Transferencia de Mercadería (interno)
+class StockTransfer(SaleDocument):
+    __tablename__ = 'stock_transfer'
+    __mapper_args__ = {'polymorphic_identity': u'stock_transfer'}
+    transfer_id = db.Column(db.Integer,
+                            db.ForeignKey('sale_document.document_id'),
+                            primary_key=True)
+
+    source_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+                          nullable=False)
+    source = db.relationship('Warehouse', backref='transfers_from',
+                             foreign_keys=[source_id])
+
+    target_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+                          nullable=False)
+    target = db.relationship('Warehouse', backref='transfer_to',
+                             foreign_keys=[target_id])
+
+
+# Purchase documents
+# ~~~~~~~~~~~~~~~~~~
+
+class PurchaseDocument(Document):
+    """A purchase document that is involved on purchase process, contains
+    purchase items."""
+    __tablename__ = 'purchase_document'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_document'}
+    document_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+                            primary_key=True)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.supplier_id'),
+                            nullable=False)
+    supplier = db.relationship(Supplier, backref='documents')
+
+    #: items collection added by PurchaseDocumentItem
+
+
+class PurchaseDocumentItem(DocumentItem):
+    __tablename__ = 'purchase_document_item'
+    item_id = db.Column(db.Integer, db.ForeignKey('document_item.id'),
+                        primary_key=True)
+    document_id = db.Column(db.Integer,
+                            db.ForeignKey('purchase_document.document_id'),
+                            nullable=False)
+    document = db.relationship(PurchaseDocument, backref='items')
+
+
+# Factura de Compra
+class PurchaseInvoice(PurchaseDocument):
+    __tablename__ = 'purchase_invoice'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_invoice'}
+    invoice_id = db.Column(db.Integer,
+                           db.ForeignKey('purchase_document.document_id'),
+                           primary_key=True)
+
+
+# Orden de Compra
+class PurchaseOrder(PurchaseDocument):
+    __tablename__ = 'purchase_order'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_order'}
+    order_id = db.Column(db.Integer,
+                         db.ForeignKey('purchase_document.document_id'),
+                         primary_key=True)
+
+
+# Presupuesto de Compra
+class PurchaseQuotation(PurchaseDocument):
+    __tablname__ = 'purchase_quotation'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_quotation'}
+    quotation_id = db.Column(db.Integer,
+                             db.ForeignKey('purchase_document.document_id'),
+                             primary_key=True)
 
 
 # Remito de Compra
-class PurchaseRefer(Document):
+class PurchaseRefer(PurchaseDocument):
     __tablename__ = 'purchase_refer'
     __mapper_args__ = {'polymorphic_identity': u'purchase_refer'}
-    refer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
+    refer_id = db.Column(db.Integer, db.ForeignKey('purchase_document.document_id'),
                          primary_key=True)
+
+
+# Devolución de Compra
+class PurchaseReturn(PurchaseDocument):
+    __tablename__ = 'purchase_return'
+    __mapper_args__ = {'polymorphic_identity': u'purchase_return'}
+    return_id = db.Column(db.Integer, db.ForeignKey('purchase_document.document_id'),
+                          primary_key=True)
+
+
+# Other documents
+# ~~~~~~~~~~~~~~~
 
 
 # Nota de Crédito de Venta
@@ -207,22 +305,6 @@ class PurchaseReceipt(Document):
                            primary_key=True)
 
 
-# Devolución de Venta
-class SaleReturn(Document):
-    __tablename__ = 'sale_return'
-    __mapper_args__ = {'polymorphic_identity': u'sale_return'}
-    return_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                          primary_key=True)
-
-
-# Devolución de Compra
-class PurchaseReturn(Document):
-    __tablename__ = 'purchase_return'
-    __mapper_args__ = {'polymorphic_identity': u'purchase_return'}
-    return_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                          primary_key=True)
-
-
 # Orden de Pago
 class PaymentOrder(Document):
     __tablename__ = 'payment_order'
@@ -247,34 +329,9 @@ class SupplyRequest(Document):
                            primary_key=True)
 
 
-# Solicitud de Mercadería (interno)
-class StockRequest(Document):
-    __tablename__ = 'stock_request'
-    __mapper_args__ = {'polymorphic_identity': u'stock_request'}
-    request_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                           primary_key=True)
-
 # Transferencia de insumos (interno)
 class SupplyTransfer(Document):
     __tablename__ = 'supply_transfer'
     __mapper_args__ = {'polymorphic_identity': u'supply_transfer'}
     transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             primary_key=True)
-
-
-# Transferencia de Mercadería (interno)
-class StockTransfer(Document):
-    __tablename__ = 'stock_transfer'
-    __mapper_args__ = {'polymorphic_identity': u'stock_transfer'}
-    transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                            primary_key=True)
-
-    source_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
-                          nullable=False)
-    source = db.relationship('Warehouse', backref='transfers_from',
-                             foreign_keys=[source_id])
-
-    target_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
-                          nullable=False)
-    target = db.relationship('Warehouse', backref='transfer_to',
-                             foreign_keys=[target_id])
