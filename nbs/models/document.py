@@ -60,7 +60,7 @@ class Document(db.Model, TimestampMixin):
     issue_place = db.relationship(Place, backref="documents")
 
     issue_date = db.Column(db.DateTime, default=datetime.now)
-    expiration_date = db.Column(db.DateTime, default=datetime.now)
+    expiration_date = db.Column(db.DateTime)
     __mapper_args__ = {'polymorphic_on': _type}
 
     @hybrid_property
@@ -77,7 +77,8 @@ class DocumentItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(db.Numeric(10, 2))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product = db.relationship(Product, backref='items')
+    product = db.relationship(Product, backref=db.backref('items',
+                                                          lazy='dynamic'))
 
 
 class SaleDocument(Document):
@@ -95,7 +96,7 @@ class SaleDocument(Document):
     #: items collection field added by SaleDocumentItem
 
     def get_items(self):
-        return self.items
+        return self.items.all()
 
 
 class SaleDocumentItem(DocumentItem):
@@ -106,7 +107,12 @@ class SaleDocumentItem(DocumentItem):
     document_id = db.Column(db.Integer,
                             db.ForeignKey('sale_document.document_id'),
                             nullable=False)
-    document = db.relationship(SaleDocument, backref='items')
+    document = db.relationship(SaleDocument,
+                               backref=db.backref('items', lazy='dynamic'))
+
+    def __repr__(self):
+        return "<SaleItem #{} (quantity={}, product={})>".format(self.id,
+                self.quantity, self.product_id)
 
 
 # Factura de Venta
@@ -117,6 +123,9 @@ class SaleInvoice(SaleDocument):
     invoice_id = db.Column(db.Integer,
                            db.ForeignKey('sale_document.document_id'),
                            primary_key=True)
+
+    def __repr__(self):
+        return "<SaleInvoice #{} with {} items>".format(self.id, len(self.items))
 
 
 # Orden de Venta
