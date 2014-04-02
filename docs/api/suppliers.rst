@@ -3,7 +3,7 @@
 Proveedores
 ===========
 
-.. http:get:: /supplier
+.. http:get:: /suppliers
 
     Devuelve una lista de proveedores, acepta parametros de búsqueda.
 
@@ -20,7 +20,7 @@ Proveedores
           "objects": [{"id": 1, "fancy_name": "IPS", ...}, ...]
         }
 
-.. http:get:: /supplier/<id>
+.. http:get:: /suppliers/<id>
 
     Devuelve la información de un proveedor identificado con ``id``.
 
@@ -37,7 +37,7 @@ Proveedores
           ...
         }
 
-.. http:get:: /supplier/<id>/contacts
+.. http:get:: /suppliers/<id>/contacts
 
     Devuelve los contactos relacionados con el proveedor identificado con
     ``id``.
