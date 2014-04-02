@@ -3,7 +3,7 @@
 Usuarios
 ========
 
-.. http:get:: /user
+.. http:get:: /users
 
     Solicita una lista de usuarios.
 
@@ -35,7 +35,7 @@ Usuarios
         }
 
 
-.. http:get:: /user/<id>
+.. http:get:: /users/<id>
 
     Solicita un determinado usuario identificado con ``id``.
 
@@ -59,7 +59,7 @@ Usuarios
        }
 
 
-.. http:post:: /user
+.. http:post:: /users
 
     Crea un nuevo usuario. Solo los administradores puede crear nuevos
     usuarios.
@@ -73,7 +73,7 @@ Usuarios
     :param name: Nombre completo del usuario.
 
 
-.. http:put:: /user/<id>
+.. http:put:: /users/<id>
 
     Modifica un usuario existente. Solo los administradores pueden cambiar los
     atributos de un usuario.
@@ -82,7 +82,7 @@ Usuarios
     :type id: requerido
 
 
-.. http:delete:: /user/<id>
+.. http:delete:: /users/<id>
 
     Elimina un usuario. Disponible solo para los administradores. Esta es una
     función idenpotente, llamar esta función para un usuario no existente
