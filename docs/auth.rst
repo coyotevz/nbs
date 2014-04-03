@@ -46,8 +46,6 @@ mensaje de error con el código ``401``:
       "message": "401 Unauthorized"
     }
 
-Las peticiones a la API deben ser solicitadas con el prefijo ``api`` en la URL.
-
 Ejemplo de una petición correcta:
 
 .. sourcecode:: http
