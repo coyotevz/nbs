@@ -43,7 +43,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Nobix Application Server'
-copyright = u'2013, Augusto Roccasalva'
+copyright = u'2013-2014, Augusto Roccasalva'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

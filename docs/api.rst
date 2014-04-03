@@ -10,32 +10,8 @@ interfaz de aplicación.
 API
 ---
 
-Todos las peticiones a la API requieren autenticación por parte del usuario.  Es
-necesario el parámetro ``private_token`` en la url o en la cabecera de la
-petición.  Si se pasa en la cabecera, el nombre debe ser ``PRIVATE-TOKEN`` (en
-mayusculas y con el guión medio en lugar del guión bajo).  Ud. puede encontrar
-y reestablecer su ``private_token`` en su perfil de usuario.
-
-Si no se especifica o si el ``private_token`` es inválido se devolverá un
-mensaje de error con el código ``401``:
-
-.. sourcecode:: javascript
-
-    {
-      "message": "401 Unauthorized"
-    }
-
-Las peticiones a la API deben ser solicitadas con el prefijo ``api`` en la URL.
-
-Ejemplo de una petición correcta:
-
-.. sourcecode:: http
-
-    GET http://example.com/api/documents?private_token=QVy1PB7sTxfy4pqfZM1U
-
-Ejemplo de una petición correcta usando curl y autenticación por cabecera::
-
-    curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://example.com/api/documents"
+Todas las peticiones a la API requieren autenticación, más información en
+:ref:`auth`.
 
 La API utiliza JSON para serializar los datos de respuesta, por lo tanto no se
 debe especificar el formato esperado al final de la URL.

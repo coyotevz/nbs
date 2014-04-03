@@ -17,4 +17,5 @@ Contenidos:
 
    intro
    tutorial
+   auth
    api
