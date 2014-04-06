@@ -51,5 +51,5 @@ def add():
             return jsonify_status_code(201, **rest.to_dict(obj))
         except Exception as e:
             current_app.logger.exception(e.message)
-            return rest.rest_abort(409, message='Confilict')
+            return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
