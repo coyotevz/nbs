@@ -8,17 +8,13 @@ class Place(Entity):
     __tablename__ = 'place'
     place_id = db.Column(db.Integer, db.ForeignKey('entity.id'),
                          primary_key=True)
-    place_type = db.Column(db.Unicode)
 
     name = Entity._name_1
     responsible_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     responsible = db.relationship('User', lazy='joined',
                             primaryjoin="User.user_id==Place.responsible_id")
     
-    __mapper_args__ = {
-        'polymorphic_identity': u'place',
-        'polymorphic_on': place_type,
-    }
+    __mapper_args__ = {'polymorphic_identity': u'place'}
 
     def __repr__(self):
         return "<{0}({1})>".format(self.__class__.__name__,
