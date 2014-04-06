@@ -507,7 +507,7 @@ class PriceComponent(db.Model):
         if len(other) > 3:
             other = other[:3] + ['...']
         return u"<PriceComponent of {0}, {1}, {2} %>".format(
-                repr(other), self.name, self.value)
+                repr(other), self.name, self.value).encode('utf-8')
 
 
 # ProductCategory suggested markup component <--> PriceComponent relation
