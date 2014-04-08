@@ -37,9 +37,10 @@ STATUS_CLOSED = u'SATUS_CLOSED'
 
 DOCUMENT_STATUS = {
     STATUS_DRAFT: u'Borrador',
-    STATUS_CONFIRMED: u'Confirmada',
-    STATUS_CLOSED: u'Cerrada',
     STATUS_PENDING: u'Pendiente',
+    STATUS_CONFIRMED: u'Confirmada',
+    STATUS_ISSUED: u'Emitido',
+    STATUS_CLOSED: u'Cerrado',
 }
 
 
