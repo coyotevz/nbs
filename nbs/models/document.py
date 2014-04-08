@@ -29,9 +29,10 @@ tambien puden contener una fecha de vencimiento.
 
 # Document statuses
 STATUS_DRAFT = u'STATUS_DRAFT'
+STATUS_PENDING = u'STATUS_PENDING'
 STATUS_CONFIRMED = u'STATUS_CONFIRMED'
+STATUS_ISSUED = u'STATUS_ISSUED'
 STATUS_CLOSED = u'SATUS_CLOSED'
-STATUS_PENDING: u'STATUS_PENDING'
 
 
 DOCUMENT_STATUS = {
@@ -116,6 +117,8 @@ class SaleInvoice(SaleDocument):
                            db.ForeignKey('sale_document.document_id'),
                            primary_key=True)
 
+    issue_place_id = db.Column(db.Integer,
+                               db.ForeignKey('document.issue_place_id'))
     #: invoice type can be 'A' or 'B'
     invoice_type = db.Column(db.Unicode(1), nullable=False, default=u'B')
     number = db.Column(db.Integer) # this came from CF
@@ -125,8 +128,9 @@ class SaleInvoice(SaleDocument):
     )
 
     def __repr__(self):
-        return "<SaleInvoice #{} with {} items>".format(self.id,
-                                                        self.items.count())
+        return "<SaleInvoice '{}' {}-{} with {} items>".format(
+                self.invoice_type, self.issue_place.fiscal_pos, self.number,
+                self.items.count())
 
 
 # Orden de Venta
