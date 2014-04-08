@@ -36,6 +36,9 @@ class Branch(Place):
     branch_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
                           primary_key=True)
 
+    #: Fiscal Point of Sale
+    fiscal_pos = db.Column(db.Integer, nullable=False, unique=True)
+
     warehouse_id = db.Column(db.Integer,
                              db.ForeignKey('warehouse.warehouse_id'))
     warehouse = db.relationship(Warehouse, foreign_keys=warehouse_id)

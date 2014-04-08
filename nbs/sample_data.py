@@ -49,8 +49,8 @@ def install_fixtures():
 
     w1 = Warehouse(name=u'Depósito Central')
     w2 = Warehouse(name=u'Depósito Godoy Cruz')
-    b1 = Branch(name=u'Casa Central', warehouse=w1)
-    b2 = Branch(name=u'Sucursal Godoy Cruz', warehouse=w2)
+    b1 = Branch(name=u'Casa Central', fiscal_pos=1, warehouse=w1)
+    b2 = Branch(name=u'Sucursal Godoy Cruz', fiscal_pos=2, warehouse=w2)
     o1 = Office(name=u'Oficina Administrativa')
 
     db.session.add_all([b1, b2, o1])
