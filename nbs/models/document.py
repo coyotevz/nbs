@@ -3,6 +3,7 @@
 from datetime import datetime
 from collections import namedtuple
 
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from nbs.models import db
@@ -26,23 +27,19 @@ Generalmente los documentos tienen una fecha de emision y lugar de emision,
 tambien puden contener una fecha de vencimiento.
 """
 
-SubDoc = namedtuple('SubDoc', 'long short')
+# Document statuses
+STATUS_DRAFT = u'STATUS_DRAFT'
+STATUS_CONFIRMED = u'STATUS_CONFIRMED'
+STATUS_CLOSED = u'SATUS_CLOSED'
+STATUS_PENDING: u'STATUS_PENDING'
 
-TYPE_DOCUMENTS = {
-    'NFA': SubDoc(u'Nuestra Factura A', u'Factura A'),
-    'NFB': SubDoc(u'Nuestra Factura B', u'Factura B'),
-    'VFA': SubDoc(u'Vuestra Factura A', u'Factura A'),
-    'VFB': SubDoc(u'Vuestra Factura B', u'Factura B'),
-    'VFM': SubDoc(u'Vuestra Factura M', u'Factura M'), # Monotributista
-    'NOV': SubDoc(u'Nuestra Orden de Venta', u'Orden de Venta'),
-    'NOC': SubDoc(u'Nuestra Orden de Compra', u'Orden de Compra'),
-    'PRE': SubDoc(u'Presupuesto de Venta', u'Presupuesto'),
-    'PRC': SubDoc(u'Presupuesto de Compra', u'Presupuesto'),
-    'REV': SubDoc(u'Remito de Venta', u'Remito'),
-    'REC': SubDoc(u'Remito de Compra', u'Remito'),
+
+DOCUMENT_STATUS = {
+    STATUS_DRAFT: u'Borrador',
+    STATUS_CONFIRMED: u'Confirmada',
+    STATUS_CLOSED: u'Cerrada',
+    STATUS_PENDING: u'Pendiente',
 }
-
-_ss = SubDoc(u'Unknown Document', u'Unknown')
 
 
 class Document(db.Model, TimestampMixin):
@@ -51,25 +48,19 @@ class Document(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     _type = db.Column(db.Unicode)
 
-    document_type = db.Column(db.Enum(*TYPE_DOCUMENTS.keys(),
-                                      name='type_document_enum'),
-                              nullable=False)
-
     issue_place_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
                                nullable=False)
     issue_place = db.relationship(Place, backref="documents")
 
     issue_date = db.Column(db.DateTime, default=datetime.now)
     expiration_date = db.Column(db.DateTime)
+
+    status = db.Column(db.Enum(*DOCUMENT_STATUS.keys(),
+                       name='document_status_enum'),
+                       default=STATUS_DRAFT,
+                       nullable=False)
+
     __mapper_args__ = {'polymorphic_on': _type}
-
-    @hybrid_property
-    def document_type_str(self):
-        return TYPE_DOCUMENTS.get(self.document_type, _ss).long
-
-    @hybrid_property
-    def document_type_str_short(self):
-        return TYPE_DOCUMENTS.get(self.document_type, _ss).short
 
 
 class DocumentItem(db.Model):
@@ -120,12 +111,22 @@ class SaleInvoice(SaleDocument):
     """A sale invoice is a sale document and contains sale items"""
     __tablename__ = 'sale_invoice'
     __mapper_args__ = {'polymorphic_identity': u'sale_invoice'}
+
     invoice_id = db.Column(db.Integer,
                            db.ForeignKey('sale_document.document_id'),
                            primary_key=True)
 
+    #: invoice type can be 'A' or 'B'
+    invoice_type = db.Column(db.Unicode(1), nullable=False, default=u'B')
+    number = db.Column(db.Integer) # this came from CF
+
+    __table_args__ = (
+        UniqueConstraint('invoice_type', 'number', 'issue_place_id'),
+    )
+
     def __repr__(self):
-        return "<SaleInvoice #{} with {} items>".format(self.id, len(self.items))
+        return "<SaleInvoice #{} with {} items>".format(self.id,
+                                                        self.items.count())
 
 
 # Orden de Venta
@@ -135,6 +136,11 @@ class SaleOrder(SaleDocument):
     order_id = db.Column(db.Integer,
                          db.ForeignKey('sale_document.document_id'),
                          primary_key=True)
+    number = db.Column(db.Integer)
+
+    __table_args = (
+        UniqueConstraint('number', 'issue_place_id'),
+    )
 
 
 # Presupuesto de Venta
@@ -144,6 +150,7 @@ class SaleQuotation(SaleDocument):
     quotation_id = db.Column(db.Integer,
                              db.ForeignKey('sale_document.document_id'),
                              primary_key=True)
+    number = db.Column(db.Integer)
 
 
 # Remito de Venta
@@ -153,6 +160,7 @@ class SaleRefer(SaleDocument):
     refer_id = db.Column(db.Integer,
                          db.ForeignKey('sale_document.document_id'),
                          primary_key=True)
+    number = db.Column(db.Integer)
 
 
 # Devolución de Venta
@@ -162,6 +170,7 @@ class SaleReturn(SaleDocument):
     return_id = db.Column(db.Integer,
                           db.ForeignKey('sale_document.document_id'),
                           primary_key=True)
+    number = db.Column(db.Integer)
 
 
 # Solicitud de Mercadería (interno)
