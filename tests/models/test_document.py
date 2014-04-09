@@ -4,7 +4,7 @@ from pytest import raises
 from sqlalchemy.exc import IntegrityError
 
 from tests import DBTestCase
-from nbs.models.document import Document, STATUS_DRAFT
+from nbs.models.document import Document
 from nbs.models.places import Place, Warehouse, Branch
 
 
@@ -22,4 +22,4 @@ class TestDocument(DBTestCase):
         self.db.session.add(doc)
         self.db.session.commit()
 
-        assert doc.status == STATUS_DRAFT
+        assert doc.status == Document.STATUS_DRAFT

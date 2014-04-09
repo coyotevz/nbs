@@ -28,26 +28,37 @@ tambien puden contener una fecha de vencimiento.
 """
 
 # Document statuses
-STATUS_DRAFT = u'STATUS_DRAFT'
-STATUS_PENDING = u'STATUS_PENDING'
-STATUS_CONFIRMED = u'STATUS_CONFIRMED'
-STATUS_ISSUED = u'STATUS_ISSUED'
-STATUS_CLOSED = u'SATUS_CLOSED'
 
 
-DOCUMENT_STATUS = {
-    STATUS_DRAFT: u'Borrador',
-    STATUS_PENDING: u'Pendiente',
-    STATUS_CONFIRMED: u'Confirmada',
-    STATUS_ISSUED: u'Emitido',
-    STATUS_CLOSED: u'Cerrado',
-}
 
 
 class Document(db.Model, TimestampMixin):
     """Base document"""
     __tablename__ = 'document'
+
+    # TODO: Redesign statuses
+
+    #: the document is in draft status
+    STATUS_DRAFT = u'STATUS_DRAFT'
+
+    STATUS_PENDING = u'STATUS_PENDING'
+    STATUS_CONFIRMED = u'STATUS_CONFIRMED'
+
+    #: this document has been issued and can't be modified
+    STATUS_ISSUED = u'STATUS_ISSUED'
+    STATUS_CLOSED = u'SATUS_CLOSED'
+
+    _statuses = {
+        STATUS_DRAFT: u'Borrador',
+        STATUS_PENDING: u'Pendiente',
+        STATUS_CONFIRMED: u'Confirmada',
+        STATUS_ISSUED: u'Emitido',
+        STATUS_CLOSED: u'Cerrado',
+    }
+
     id = db.Column(db.Integer, primary_key=True)
+
+    #: holder for subclass type
     _type = db.Column(db.Unicode)
 
     issue_place_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
@@ -57,17 +68,24 @@ class Document(db.Model, TimestampMixin):
     issue_date = db.Column(db.DateTime, default=datetime.now)
     expiration_date = db.Column(db.DateTime)
 
-    status = db.Column(db.Enum(*DOCUMENT_STATUS.keys(),
-                       name='document_status_enum'),
+    status = db.Column(db.Enum(*_statuses.keys(), name='document_status_enum'),
                        default=STATUS_DRAFT,
                        nullable=False)
 
     __mapper_args__ = {'polymorphic_on': _type}
 
+    @property
+    def status_str(self):
+        return self._statuses[self.status]
+
+    # TODO: Verify that issue_date <= expiration_date
+
 
 class DocumentItem(db.Model):
+    """A line item that can be contained in document model."""
     __tablename__ = 'document_item'
     id = db.Column(db.Integer, primary_key=True)
+
     quantity = db.Column(db.Numeric(10, 2))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     product = db.relationship(Product, backref=db.backref('items',
@@ -75,7 +93,8 @@ class DocumentItem(db.Model):
 
 
 class SaleDocument(Document):
-    """A sale document that is involved in sale operation, contains sale items.
+    """A sale document that is involved in sale operation, contains sale items
+    and customer data.
     """
     __tablename__ = 'sale_document'
     __mapped_args__ = {'polymorphic_identity': u'sale_document'}
@@ -114,23 +133,45 @@ class SaleInvoice(SaleDocument):
     __tablename__ = 'sale_invoice'
     __mapper_args__ = {'polymorphic_identity': u'sale_invoice'}
 
+    #: Fiscal type 'A' for 'Responsable Inscripto' customer
+    FISCAL_TYPE_A = u'FISCAL_A'
+
+    #: Fiscal type 'B' for 'Consumidor Final' customer
+    FISCAL_TYPE_B = u'FISCAL_B'
+
+    _fiscal_type = {
+        FISCAL_TYPE_A: u'A',
+        FISCAL_TYPE_B: u'B',
+    }
+
     invoice_id = db.Column(db.Integer,
                            db.ForeignKey('sale_document.document_id'),
                            primary_key=True)
 
+    #: copy issue_place_id from parent document for UniqueConstraint
     issue_place_id = db.Column(db.Integer,
                                db.ForeignKey('document.issue_place_id'))
+
     #: invoice type can be 'A' or 'B'
-    invoice_type = db.Column(db.Unicode(1), nullable=False, default=u'B')
-    number = db.Column(db.Integer) # this came from CF
+    fiscal_type = db.Column(db.Enum(*_fiscal_type.keys(),
+                                    name='sale_invoice_fiscal_type'),
+                            default=FISCAL_TYPE_B,
+                            nullable=False)
+
+    #: Invoice number, generally this data came from Fiscal Controller
+    number = db.Column(db.Integer)
 
     __table_args__ = (
-        UniqueConstraint('invoice_type', 'number', 'issue_place_id'),
+        UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),
     )
+
+    @property
+    def fiscal_type_str(self):
+        return self._fiscal_type[self.fiscal_type]
 
     def __repr__(self):
         return "<SaleInvoice '{}' {}-{} with {} items>".format(
-                self.invoice_type, self.issue_place.fiscal_pos, self.number,
+                self.fiscal_type_str, self.issue_place.fiscal_pos, self.number,
                 self.items.count())
 
 
