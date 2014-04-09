@@ -116,7 +116,7 @@ class Product(db.Model, TimestampMixin):
     #: stock keeping unit, for internal identifying the sellable product
     sku = db.Column(db.Unicode(24), index=True, nullable=False, unique=True)
 
-    #: barcode, ussually printted and attached to the package
+    #: barcode, ussually printed and attached to the package
     barcode = db.Column(db.Unicode(48), unique=True)
 
     #: full description of sellable product
