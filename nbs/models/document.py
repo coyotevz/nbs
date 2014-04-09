@@ -65,7 +65,7 @@ class Document(db.Model, TimestampMixin):
                                nullable=False)
     issue_place = db.relationship(Place, backref="documents")
 
-    issue_date = db.Column(db.DateTime, default=datetime.now)
+    issue_date = db.Column(db.DateTime)
     expiration_date = db.Column(db.DateTime)
 
     status = db.Column(db.Enum(*_statuses.keys(), name='document_status_enum'),
@@ -80,6 +80,12 @@ class Document(db.Model, TimestampMixin):
 
     # TODO: Verify that issue_date <= expiration_date
 
+    def issue(self):
+        self.status = self.STATUS_ISSUED
+        self.issue_date = datetime.now()
+
+    def can_modify(self):
+        return self.status in (self.STATUS_DRAFT, self.STATUS_PENDING)
 
 class DocumentItem(db.Model):
     """A line item that can be contained in document model."""
@@ -166,7 +172,7 @@ class SaleInvoice(SaleDocument):
     )
 
     @property
-    def fiscal_type_str(self):
+    def fiscal_type_label(self):
         return self._fiscal_type[self.fiscal_type]
 
     def __repr__(self):
