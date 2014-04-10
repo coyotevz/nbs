@@ -85,6 +85,10 @@ class TestSaleInvoice(DBTestCase):
         assert invoice._type == u'sale_invoice'
 
     def test_unique_constraint(self):
+        """
+        Document.number is unique for a determined 'issue_place' and determined
+        'fiscal_type'.
+        """
         b1 = Branch(name=u'b1', fiscal_pos=1)
         b2 = Branch(name=u'b2', fiscal_pos=2)
 
@@ -92,3 +96,22 @@ class TestSaleInvoice(DBTestCase):
                           number=10, issue_place=b1)
         self.db.session.add(si1)
         self.db.session.commit()
+
+        si2 = SaleInvoice(fiscal_type=SaleInvoice.FISCAL_TYPE_A,
+                          number=10, issue_place=b2)
+        self.db.session.add(si2)
+        self.db.session.commit()
+
+        si3 = SaleInvoice(fiscal_type=SaleInvoice.FISCAL_TYPE_B,
+                          number=10, issue_place=b1)
+        self.db.session.add(si3)
+        self.db.session.commit()
+
+        assert si1.number == si2.number
+        assert si2.number == si3.number
+
+        bad_si = SaleInvoice(fiscal_type=SaleInvoice.FISCAL_TYPE_A,
+                             number=10, issue_place=b1)
+        self.db.session.add(bad_si)
+        with raises(IntegrityError):
+            self.db.session.commit()
