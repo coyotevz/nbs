@@ -17,10 +17,12 @@ define([
         name: 'product',
         title: 'Productos',
         url: 'products',
+        icon: 'rocket',
       }, {
         name: 'supplier',
         title: 'Proveedores',
         url: 'suppliers',
+        icon: 'users',
       },
     ],
 
