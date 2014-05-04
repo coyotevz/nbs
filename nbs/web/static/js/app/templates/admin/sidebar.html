@@ -1,0 +1,18 @@
+<div class="sidebar sidebar-left">
+  <div class="widget main-nav">
+    <ul class="menu">
+      {% for item in items %}
+      {% if item.disabled %}
+      <li disabled><a href="">{{ item.title }}</a></li>
+      {% else %}
+      <li id="menu-item-{{ item.name }}">
+        <a href="{{ item.url }}">
+          {% if item.icon %}<i class="fa fa-{{ item.icon }} fa-fw"></i>{% endif %}
+          <span class="menu-item-label">{{ item.title }}</span>
+        </a>
+      </li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>

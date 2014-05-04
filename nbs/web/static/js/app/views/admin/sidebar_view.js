@@ -3,40 +3,31 @@ define([
 ], function(View) {
   "use strict";
 
-  var SideHeaderView = View.extend({
-    template: 'admin/side_header.html',
+  var SidebarView = View.extend({
+    template: 'admin/sidebar.html',
     noWrap: true,
 
     menuItems: [
       {
+        name: 'dashboard',
+        title: 'Tablero principal',
+        url: 'dashboard',
+        icon: 'dashboard',
+    }, {
         name: 'product',
         title: 'Productos',
         url: 'products',
-      },
-      {
+      }, {
         name: 'supplier',
         title: 'Proveedores',
         url: 'suppliers',
-      },/*
-      { name: '-divider-' },
-      {
-        name: 'invoice',
-        title: 'Facturas',
-        url: null,
-        disabled: true,
       },
-      {
-        name: 'contacts',
-        title: 'Contactos',
-        url: null,
-        disabled: true,
-      },*/
     ],
 
     initialize: function() {
       this._current = null;
       this.subscribeEvent('menu:setCurrent', this.setCurrentMenu);
-      return SideHeaderView.__super__.initialize.apply(this, arguments);
+      return SidebarView.__super__.initialize.apply(this, arguments);
     },
 
     getTemplateData: function() {
@@ -46,11 +37,11 @@ define([
     setCurrentMenu: function(menu) {
       if (this._current == menu) return;
       var item = this._getMenuItem(menu);
+      console.log('setCurrentMenu', item, menu);
       if (item !== null) {
         this._current = menu;
-        this.$('.dropdown-toggle span').text(item.title);
-        this.$('.dropdown-menu li.current').removeClass('current');
-        this.$('.dropdown-menu li.'+menu).addClass('current');
+        this.$('li.active').removeClass('active');
+        this.$('li#menu-item-'+menu).addClass('active');
       }
     },
 
@@ -60,8 +51,7 @@ define([
       }
       return null;
     },
-
   });
 
-  return SideHeaderView;
+  return SidebarView;
 });

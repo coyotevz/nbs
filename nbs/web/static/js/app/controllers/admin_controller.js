@@ -4,13 +4,13 @@ define([
   'views/dialog',
   'views/admin/header_view',
   'views/admin/body_view',
-  'views/admin/side_header_view',
+  'views/admin/sidebar_view',
 ], function(Chaplin,
             StandardView,
             DialogView,
             HeaderView,
             BodyView,
-            SideHeaderView) {
+            SidebarView) {
   "use strict";
 
   var AdminController = Chaplin.Controller.extend({
@@ -21,7 +21,7 @@ define([
       this.reuse('dialog', DialogView, {region: 'main'});
       this.reuse('header', HeaderView, {region: 'header'});
       this.reuse('body', BodyView, {region: 'body'});
-      this.reuse('side_header', SideHeaderView, {region: 'sidebar_header'});
+      this.reuse('sidebar', SidebarView, {region: 'sidebar'});
     },
 
     index: function(params) {

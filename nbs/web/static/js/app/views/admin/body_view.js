@@ -7,13 +7,12 @@ define([
 
   var BodyView = View.extend({
     template: 'admin/body.html',
+    noWrap: true,
 
     regions: {
-      sidebar_header: '#sidebar_header',
-      sidebar: '#sidebar',
-      sidebar_footer: '#sidebar_footer',
-      toolbar: '.toolbar',
-      content: '.content',
+      sidebar: '#sidebar_container',
+      content: '#page_container',
+      toolbar: '.toolbar', // TODO: Remove from this place
     },
 
     attach: function() {
@@ -21,32 +20,22 @@ define([
       $(window).on('resize', _.debounce(this.resize, 150));
       $(window).on('focus', this.resize);
       this.resize();
-      this.$('.scroll-container').on('scroll', this.scrolled);
+      this.$('.scroll-wrapper').on('scroll', this.scrolled);
     },
 
     resize: function() {
-      /* This requires:
-       *    body { overflow: hidden; }
-       * in CSS and that 'aside' view exists to work properly
-       */
-      var container = this.$('.view-container'),
-          scrollContainer = this.$('.scroll-container'),
-          contentAvlWidth = $(window).width() - this.$('aside').width(),
-          contentAvlHeight = $(window).height() - container.position().top;
-
-      container.width(contentAvlWidth);
-      container.height(contentAvlHeight);
-      scrollContainer.height(contentAvlHeight);
+      var topbar_h = $('.top-bar').outerHeight();
+      var window_h = $(window).height();
+      $('.scroll-wrapper').css('max-height', window_h - topbar_h);
     },
 
     scrolled: function(evt) {
-      if ($(this).scrollTop() > 0) {
-        $('#viewpane').addClass('scrolled');
-      } else {
-        $('#viewpane').removeClass('scrolled');
-      }
+      var fixed = false;
+      $('.scroll-wrapper').each(function(i, e) {
+        fixed = fixed || $(e).scrollTop() > 0;
+      });
+      $('.top-bar').toggleClass('fixed', fixed);
     },
-
   });
 
   return BodyView;
