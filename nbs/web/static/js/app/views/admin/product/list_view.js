@@ -77,7 +77,7 @@ define([
 
     attach: function() {
       ProductListView.__super__.attach.apply(this, arguments);
-      this.$('table').fixHeader();
+      //this.$('table').fixHeader();
       this.$selectionControl = this.$('th .control-checkbox');
     },
 
