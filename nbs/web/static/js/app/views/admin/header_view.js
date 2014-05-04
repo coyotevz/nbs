@@ -5,13 +5,7 @@ define([
 
   var HeaderView = View.extend({
     template: 'admin/header.html',
-
-    /*
-    regions: {
-      ribbon: '',
-      banner: '',
-    },
-    */
+    noWrap: true,
 
     initialize: function() {
       HeaderView.__super__.initialize.apply(this, arguments);

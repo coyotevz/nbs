@@ -7,9 +7,9 @@ define([
     className: 'wrapper',
     template: 'standard_page.html',
     regions: {
-      'header': 'header',
+      'header': '#header',
       'body': '#body',
-      'footer': 'footer',
+      'footer': '#footer',
     },
 
     initialize: function() {
