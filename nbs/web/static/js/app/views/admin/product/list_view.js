@@ -61,6 +61,10 @@ define([
     itemView: ProductItemView,
     animationDuration: 0,
 
+    regions: {
+      'toolbar': '.toolbar-container',
+    },
+
     render: function() {
       ProductListView.__super__.render.apply(this, arguments);
       this.delegate('click', 'th .control-checkbox', this.onCheckboxClick);
@@ -79,6 +83,7 @@ define([
       ProductListView.__super__.attach.apply(this, arguments);
       //this.$('table').fixHeader();
       this.$selectionControl = this.$('th .control-checkbox');
+      this.subview('toolbar').render();
     },
 
     initItemView: function(model) {

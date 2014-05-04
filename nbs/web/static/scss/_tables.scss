@@ -82,6 +82,15 @@
 
     &.selected {
       background-color: #ffc;
+      //.cell-active {
+      //  border-left: 2px solid #e5e5e5;
+      //}
+    }
+
+    &.active-row {
+      .cell-active {
+        border-left: 2px solid #4d90f0;
+      }
     }
 
     & > td {
@@ -128,12 +137,6 @@
           & + span:before {
             margin-top: 6px;
           }
-        }
-      }
-
-      &.active-row {
-        .cell-active {
-          border-left: 2px solid #4d90f0;
         }
       }
     }

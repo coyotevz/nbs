@@ -12,7 +12,6 @@ define([
     regions: {
       sidebar: '#sidebar_container',
       content: '#page_container',
-      toolbar: '.toolbar', // TODO: Remove from this place
     },
 
     attach: function() {

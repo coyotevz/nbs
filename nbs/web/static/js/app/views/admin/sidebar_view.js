@@ -39,7 +39,6 @@ define([
     setCurrentMenu: function(menu) {
       if (this._current == menu) return;
       var item = this._getMenuItem(menu);
-      console.log('setCurrentMenu', item, menu);
       if (item !== null) {
         this._current = menu;
         this.$('li.active').removeClass('active');
