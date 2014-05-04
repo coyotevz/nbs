@@ -1,0 +1,202 @@
+/*
+ * Tables
+ */
+
+.widget {
+  .table {
+    margin-bottom: 0px;
+  }
+}
+
+/*
+ * Nbx Table
+ */
+
+.table-nbx {
+
+  table-layout: fixed;
+  font-size: 14px;
+
+  thead,
+  tbody,
+  tfoot {
+    & > tr {
+      & > td,
+      & > th {
+        padding: 0;
+      }
+    }
+  }
+
+  thead {
+    tr {
+      height: 28px;
+      color: #555;
+      font-size: 11px;
+      font-family: Arial,sans-serif;
+
+      th {
+        background-color: $white;
+        font-weight: normal;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e5e5e5;
+        empty-cells: show;
+        overflow: hidden;
+        text-align: left;
+        white-space: nowrap;
+        height: 28px;
+        display: table-cell;
+        vertical-align: middle;
+
+        &.header-active-indicator {
+          border-bottom: transparent;
+        }
+
+        &.header-checkbox {
+          text-align: center;
+        }
+
+        &.header-sorted {
+          color: #dd4b39;
+          font-weight: bold;
+        }
+
+        &.header-price {
+          text-align: right;
+          padding-right: 6px;
+        }
+
+        .header-label {
+          padding: 0 0 0 6px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: text-top;
+        }
+      }
+    }
+  }
+
+  & > tbody > tr {
+    height: 26px;
+    color: $gray-darker;
+
+    &.selected {
+      background-color: #ffc;
+    }
+
+    & > td {
+      height: 23px;
+      border-bottom: 1px solid #ebebeb;
+      empty-cells: show;
+      white-space: nowrap;
+      padding-left: 6px;
+      vertical-align: top;
+
+      &.cell-active {
+        border-bottom: transparent;
+      }
+
+      &.cell-active, &.cell-checkbox {
+        padding-left: 0;
+        text-align: center;
+      }
+
+      &.cell-price {
+        text-align: right;
+        padding-right: 6px;
+      }
+
+      .cell-label-container {
+        line-height: 26px;
+      }
+
+      .control-checkbox {
+        margin-top: 6px;
+      }
+
+      a {
+        color: #222;
+        text-decoration: none;
+
+        &:hover {
+          color: #1155cc;
+          text-decoration: underline;
+        }
+
+        label.inline-control input[type="checkbox"] {
+          margin-top: 8px;
+          & + span:before {
+            margin-top: 6px;
+          }
+        }
+      }
+
+      &.active-row {
+        .cell-active {
+          border-left: 2px solid #4d90f0;
+        }
+      }
+    }
+  }
+
+  &.productlist {
+    .col-active-indicator { width: 4px; }
+    .col-checkbox         { width: 23px; }
+    .col-sku              { width: 98px; }
+    .col-description      { width: 100%; }
+    .col-date             { width: 70px; }
+    .col-price            { width: 70px; }
+  }
+}
+
+.table-nbx-toolbar {
+  @include clearfix;
+
+  border-bottom: 1px solid $toolbar-border-color;
+  padding-bottom: $toolbar-padding;
+
+  .table-title {
+    font: 300 20px Roboto,Arial,sans-serif;
+    line-height: 25px;
+    white-space: normal;
+    margin-right: 8px;
+    padding-right: 8px;
+    border-right: 1px solid #e5e5e5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    display: inline-block;
+    float: left;
+  }
+
+  .btn {
+    padding: 3px 16px;
+    color: #777;
+  }
+
+  .btn-thin {
+    padding: 3px 8px;
+  }
+
+  .pages {
+    float: left;
+    vertical-align: middle;
+    display: inline-block;
+    position: relative;
+    line-height: 25px;
+    margin-right: 12px;
+
+  }
+
+  .btn-group {
+    float: left;
+
+    &.pull-right {
+      float: right;
+    }
+
+    & + .btn-group {
+      margin-left: 8px;
+    }
+  }
+}

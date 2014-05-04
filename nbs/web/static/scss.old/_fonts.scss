@@ -1,26 +1,16 @@
 /* Fonts definitions */
 
+$font-base-path: "../fonts";
+
 @mixin font-face($name, $style, $weight) {
   @font-face {
     $full-path: '#{$font-base-path}/#{$name}-#{$style}-#{$weight}';
     font-family: $name;
     font-style: $style;
     font-weight: $weight;
-    src: url($full-path+$ext) format($fmt);
+    src: url($full-path+'.woff') format('woff');
   }
 }
-
-$ext: ".ttf";
-$fmt: "truetype";
-
-@include font-face(Lato, normal, 300);
-@include font-face(Lato, italic, 300);
-@include font-face(Lato, normal, 400);
-@include font-face(Lato, italic, 400);
-@include font-face(Lato, normal, 700);
-
-$ext: ".woff";
-$fmt: "woff";
 
 @include font-face(Roboto, normal, 100);
 @include font-face(Roboto, normal, 300);
@@ -41,6 +31,7 @@ $fmt: "woff";
 @include font-face(RobotoCondensed, italic, 300);
 @include font-face(RobotoCondensed, italic, 400);
 @include font-face(RobotoCondensed, italic, 700);
+
 
 @include font-face(OpenSans, normal, 300);
 @include font-face(OpenSans, normal, 400);

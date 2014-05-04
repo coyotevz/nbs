@@ -1,10 +1,6 @@
-
-// Border Radius
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-          border-radius: $radius;
-}
+/*
+ * Custom mixins
+ */
 
 @mixin inline-block() {
   display: inline-block;

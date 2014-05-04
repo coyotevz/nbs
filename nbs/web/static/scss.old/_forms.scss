@@ -2,12 +2,17 @@
  * Nobix Forms elements
  */
 
-// Checkmark
-.control-checkbox {
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+div.control-checkbox {
   @include inline-block;
   background-color: $white;
   border: 1px solid rgba(155,155,155,0.57);
-  border-radius: 1px;
+  @include border-radius($input-border-radius);
   height: 13px;
   width: 13px;
   margin: 0 4px 0 1px;

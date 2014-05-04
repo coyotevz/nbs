@@ -1,5 +1,5 @@
 //
-// Glyphicons for Bootstrap adapted to theme-nbs
+// Glyphicons for Bootstrap
 //
 // Since icons are fonts, they can be placed anywhere text is placed and are
 // thus automatically sized to match the surrounding child. To use, create an
@@ -10,7 +10,7 @@
 // Import the fonts
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('#{$font-base-path}/#{$icon-font-name}.woff') format('woff');
+  src: url(if($bootstrap-sass-asset-helper, twbs-font-path('#{$icon-font-path}#{$icon-font-name}.woff'), '#{$icon-font-path}#{$icon-font-name}.woff')) format('woff');
 }
 
 // Catchall baseclass

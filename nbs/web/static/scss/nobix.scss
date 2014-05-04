@@ -2,17 +2,17 @@
  * Custom Bootstrap mod for Nobix
  */
 
-// Custom variables
-@import "variables";
-
-// Custom fonts
-@import "fonts";
-
 // Bootstrap v3.0.0 base (individual files)
 
 // Core variables and mixins
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
+
+// Custom variables
+@import "variables";
+
+// Custom fonts
+@import "fonts";
 
 // Custom mixins that overwrites default mixins
 @import "custom-mixins";
@@ -28,47 +28,33 @@
 @import "bootstrap/grid";
 @import "bootstrap/tables";
 @import "bootstrap/forms";
-@import "bootstrap/buttons";
+//@import "bootstrap/buttons";
 
 // Components
-//@import "bootstrap/component-animations";
-//@import "bootstrap/glyphicons";
 @import "bootstrap/dropdowns";
 @import "bootstrap/button-groups";
-//@import "bootstrap/input-groups";
-//@import "bootstrap/navs";
-//@import "bootstrap/navbar";
-//@import "bootstrap/breadcrumbs";
-//@import "bootstrap/pagination";
-//@import "bootstrap/pager";
-@import "bootstrap/labels";
-//@import "bootstrap/badges";
-//@import "bootstrap/jumbotron";
-//@import "bootstrap/thumbnails";
-//@import "bootstrap/alerts";
-//@import "bootstrap/progress-bars";
-//@import "bootstrap/media";
-//@import "bootstrap/list-group";
-//@import "bootstrap/panels";
-//@import "bootstrap/wells";
-//@import "bootstrap/close";
+@import "bootstrap/input-groups";
+@import "bootstrap/navs";
+@import "bootstrap/navbar";
+@import "bootstrap/alerts";
+@import "bootstrap/progress-bars";
+@import "bootstrap/media";
+@import "bootstrap/panels";
 
 // Components w/ JavaScript
 @import "bootstrap/modals";
 @import "bootstrap/tooltip";
-//@import "bootstrap/popovers";
-//@import "bootstrap/carousel";
+@import "bootstrap/popovers";
 
 // Utility classes
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
 
-
+// Simplified glyphicons
 @import "glyphicons";
 // End bootstrap base
 
 // FontAwesome
-
 @import "font-awesome/variables";
 @import "font-awesome/mixins";
 @import "font-awesome/path";
@@ -81,34 +67,18 @@
 @import "font-awesome/rotated-flipped";
 @import "font-awesome/stacked";
 @import "font-awesome/icons";
-
 // End FontAwesome
 
-// Mixins for Nobix
+/* Specific modules to Nobix theme */
 @import "mixins";
 
-// Common style
-@import "overwrite";
 
-// Elements
-@import "dropdown";
-@import "table";
-@import "forms";
-@import "modals";
-@import "search";
-
-// Dashboard style
-@import "dashboard";
-
-// Admin elements
-@import "header";
-@import "aside";
-@import "button-groups";
 @import "buttons";
-
-// Admin application
-@import "admin";
-@import "edit";
-
-// POS Application
-@import "pos";
+@import "widgets";
+@import "topbar";
+@import "sidebar";
+@import "page";
+@import "tables";
+@import "forms";
+@import "charts";
+@import "commons";

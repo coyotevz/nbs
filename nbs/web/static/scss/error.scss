@@ -1,0 +1,96 @@
+
+$font-base-path: "../fonts";
+$icon-font-name: "glyphicons-halflings-regular";
+
+$white:     #ffffff;
+$bg-color:  #f3f3f3;
+$color1:    #1c7ebb;
+$color2:    #1f8dd1;
+
+* { -moz-box-sizing: border-box; }
+*:before, *:after {
+  -moz-box-sizing: border-box;
+}
+
+@import "fonts";
+@import "glyphicons";
+
+body {
+  background-color: $bg-color;
+  font-size: 14px;
+  font-family: "Lato",Helvetica,Arial,sans-serif;
+  line-height: 1.42857;
+  margin: 0;
+}
+
+.error-page {
+  background-color: $color2;
+  height: 100%;
+  width: 100%;
+}
+
+.error-status {
+  background-color: $bg-color;
+  text-align: center;
+  padding-top: 100px;
+  h1 {
+    color: $color1;
+    font-size: 200px;
+    margin: 0 0 -45px;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+}
+
+.error-message {
+  background-color: $color1;
+  padding: 24px;
+  text-transform: uppercase;
+  text-align: center;
+  h2 {
+    color: $white;
+    font-size: 50px;
+    font-weight: 300;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    line-height: 1.1;
+  }
+}
+
+.error-body {
+  padding: 100px 10px 20px;
+  text-align: center;
+
+  .btn {
+    -moz-user-select: none;
+    background-image: none;
+    border: 1px solid rgba(0,0,0,0);
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+    text-decoration: none;
+
+    &:focus, &:hover {
+      text-decoration: none;
+    }
+  }
+  .btn-lg {
+    border-radius: 2px;
+    font-size: 18px;
+    line-height: 1.33;
+    padding: 10px 16px;
+  }
+  .btn-goback {
+    background-color: rgba(0,0,0,0);
+    border-color: $white;
+    color: $white;
+
+    .label { padding-left: 10px; }
+
+    &:focus, &:hover {
+      background-color: $white;
+      color: $color2;
+    }
+  }
+}

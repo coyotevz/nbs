@@ -1,0 +1,134 @@
+/*
+ * Custom buttons
+ */
+
+@mixin disabled($font, $border) {
+  &,
+  &:hover,
+  &:focus,
+  &:focus:hover,
+  &:active,
+  &:active:hover {
+    cursor: default;
+    color: lighten($font, 37);
+    border-color: $border;
+    @include opacity(0.5);
+    @include box-shadow(none);
+  }
+}
+
+button,
+[role=button],
+.btn {
+  display: inline-block;
+  padding: $button-padding-vertical $button-padding-horizontal;
+  margin-bottom: 0;
+  color: lighten($button-font-color, 37);
+  font-size: $button-font-size;
+  font-weight: $button-font-weight;
+  line-height: $button-line-height;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid $button-border-color;
+  word-wrap: normal;
+  min-width: $button-min-width;
+  @include border-radius($button-border-radius);
+  @include box-shadow(none);
+  @include gradient-vertical($button-background-color, $button-high-background-color);
+  @include transition(all 0.118s ease 0s);
+  @include user-select(none);
+  .inline-control {
+    margin-right: 10px;
+    z-index: $zindex-navbar;
+  }
+
+  /* buttons states */
+  &:hover {
+    color: $button-font-color;
+    border-color: #c6c6c6;
+    text-decoration: none;
+    @include box-shadow(0 1px 1px rgba(0,0,0,0.1));
+  }
+
+  &.focus,
+  &:focus {
+    outline: none;
+    border-color: $button-border-focused-color;
+  }
+
+  .open &,
+  .open &.dropdown-toggle,
+  &.active,
+  &:active {
+    @include gradient-vertical(#eee, #e0e0e0);
+    @include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1));
+    border-color: $button-border-color;
+  }
+
+  &.disabled,
+  &[disabled] {
+    @include disabled($button-font-color, $button-border-color);
+  }
+
+  &.btn-thin {
+    min-width: 34px;
+    padding: 0px;
+  }
+
+  &::-moz-focus-inner { border: 0; }
+}
+
+/* TODO: Include different sizes for btn (btn-large, btn-small, btn-mini) */
+
+/* Alternative buttons
+
+  color1: 1st color of normal button
+  color2: 2nd color of normal button
+  color3: 1st color of hover button
+  color4: 2nd color of hover button
+  color5: border color of hover button
+
+ */
+
+@mixin build-button($name, $color1, $color2, $color3, $color4, $color5) {
+  .btn-#{$name} {
+    @include gradient-vertical($color1, $color2);
+    border: 1px solid $color1;
+    color: $white;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.1);
+
+    &:hover {
+      color: $white;
+      @include gradient-vertical($color3, $color4);
+      border-color: $color5;
+      @include box-shadow(0 1px 1px rgba(0,0,0,0.2));
+      text-shadow: 0 1px rgba(0,0,0,0.1);
+    }
+
+    &.focus,
+    &:focus {
+      border-color: $color5;
+      @include box-shadow(inset 0 0 0 1px $white);
+    }
+
+    &.active,
+    &:active {
+      @include gradient-vertical($color3, $color5);
+      @include box-shadow(inset 0 1px 2px rgba(0,0,0,0.3));
+    }
+
+    &.disabled,
+    &[disabled] {
+      @include disabled($white, $color1);
+    }
+
+  }
+}
+
+@include build-button(primary, #4d90fe, #4787ed, #4d90fe, #357ae8, #2f5bb7);
+@include build-button(info, #5bc0de, #5bc0de, #5bc0de, #46b8da, #2ea5c9);
+@include build-button(success, #35aa47, #35aa47, #35aa47, #2f973f, #2e863e);
+@include build-button(warning, #fbb450, #faa218, #fbb450, #fa9f1e, #f9980f);
+@include build-button(danger, #dd4b36, #d14836, #dd4b39, #c53727, #b0281a);
+@include build-button(inverse, #515151, #515151, #515151, #444444, #3a3a3a);

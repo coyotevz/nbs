@@ -1,0 +1,67 @@
+/*
+ * Overwrite styles
+ */
+
+body {
+  color: $body-color;
+  background-color: $body-bg;
+  font-family: $font-family;
+  font-size: $font-size;
+  overflow-y: hidden;
+}
+
+h1, h2 {
+  font-family: "Lato";
+}
+
+a {
+  &,
+  &:active,
+  &:focus,
+  &:hover {
+    outline: 0 none;
+  }
+}
+
+.progress {
+  background-color: #e2e2e2;
+  border-radius: 2px;
+
+  .progress-bar {
+    transition-duration: 3s;
+    transition-property: width;
+    transition-timing-function: ease;
+  }
+
+  &.progress-xs {
+    height: 5px;
+  }
+
+  &.progress-md {
+    height: 10px;
+  }
+}
+
+@mixin custom-bg-variant($bg-color, $font-color) {
+  background-color: $bg-color;
+  color: $font-color;
+}
+
+.bg-primary       { @include custom-bg-variant($primary-bg, $white); }
+.bg-primary-light { @include custom-bg-variant($primary-light-bg, $white); }
+.bg-success       { @include custom-bg-variant($success-bg, $white); }
+.bg-info          { @include custom-bg-variant($info-bg, $white); }
+.bg-warning       { @include custom-bg-variant($warning-bg, $white); }
+.bg-danger        { @include custom-bg-variant($danger-bg, $white); }
+.bg-orange        { @include custom-bg-variant($orange-bg, $white); }
+.bg-violet        { @include custom-bg-variant($violet-bg, $white); }
+.bg-dark          { @include custom-bg-variant($dark-bg, $white); }
+.bg-bright        { @include custom-bg-variant($bright-bg, $body-color-2); }
+.bg-reverse       { @include custom-bg-variant($white, $body-color-2); }
+.bg-facebook      { @include custom-bg-variant($facebook-bg, $white); }
+.bg-twitter       { @include custom-bg-variant($twitter-bg, $white); }
+.bg-google-plus   { @include custom-bg-variant($google-plus-bg, $white); }
+
+.btn-group + .btn-group {
+  margin-left: 16px;
+}

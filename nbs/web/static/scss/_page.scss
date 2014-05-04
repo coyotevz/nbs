@@ -1,0 +1,36 @@
+/*
+ * Page style
+ */
+
+.scroll-container {
+  overflow-y: hidden;
+  padding-right: 0;
+
+  .scroll-wrapper {
+    overflow-y: auto;
+    padding-right: 15px;
+  }
+}
+
+.page {
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  .main-header {
+    margin-bottom: 15px;
+    h3 {
+      font-family: OpenSans;
+      font-weight: 100;
+      border-right: 1px solid #ccc;
+      display: inline-block;
+      padding-right: 10px;
+      vertical-align: middle;
+      margin: 0 10px 0;
+      text-transform: uppercase;
+    }
+    em {
+      vertical-align: middle;
+      color: #999;
+    }
+  }
+}

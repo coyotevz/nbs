@@ -1,80 +1,95 @@
-// Variables for bootstrap
+/*
+ * Variables for Nobix theme
+ */
 
-// Some colors redefinition for use previous default colors
-$gray-light:                    lighten(#000, 20%);
-$white:                         white;
+// Colors
+$white:                 #ffffff;
+$gray:                  #555555;
+$light-gray:            #dddddd;
+$gray-0:                #404040;
+$gray-1:                #f5f5f5;
+$gray-2:                #e5e5e5;
+$gray-dark:             #262626;
+$black:                 #000000;
 
-// Typography
-$font-size-base:                13px;
-$font-family-base:              arial,sans-serif !default;
-$font-family-monospace:         monospace;
-
-$dropdown-border:               rgba(0,0,0,.2) !default;
-$dropdown-link-hover-color:     $gray-light !default;
-$dropdown-link-hover-bg:        #eee !default;
-$dropdown-link-disabled-color:  rgb(204,204,204) !default;
-
-// FontAwesome variables
-$fa-font-path:                  "../fonts/" !default;
-$fa-font-name:                  "fontawesome-webfont" !default;
-
-// Core variables
-$border-radius-base:            1px;
+$link-color:            #427fed;
 
 
-@import "bootstrap/variables";
+// Fonts configuration
+$font-base-path:        "../fonts";
+$font-family:           Roboto,Arial,sans-serif;
+$font-size:             13px;
+$font-size-small:       11px;
 
-// Dashboard
-$dashboard-background-color:    #e5e5e5;
+$fa-font-path:          "../fonts/" !default;
+$fa-font-name:          "fontawesome-webfont" !default;
 
-// Custom variables for Nobix
-$appbar-background-color:       #2d2d2d;
-$appbar-border-color:           #000;
-$appbar-font-color:             #bbb;
-$appbar-height:                 24px;
+// Body style
+$body-color:            $gray;
+$body-color-2:          #767676;
+$body-bg:               $gray-2;
 
-// Banner
-$banner-background-color:       #f1f1f1;
-$banner-border-color:           #e5e5e5;
-$banner-height:                 46px;
+// Variant colors
+$primary-bg:            #1c7ebb;
+$primary-light-bg:      #449dd5;
+$success-bg:            #23ae89;
+$info-bg:               #2ec1cc;
+$warning-bg:            #ffb61c;
+$danger-bg:             #e94b3b;
+$orange-bg:             #f98e33;
+$violet-bg:             #6a55c2;
+$dark-bg:               #222533;
+$bright-bg:             #fafafa;
+$facebook-bg:           #335397;
+$twitter-bg:            #00c7f7;
+$google-plus-bg:        #df4a32;
+
+// Top Bar
+$topbar-vert-padding:   5px;
+$topbar-horiz-padding:  0;
+$topbar-height:         60px;
+$topbar-bg:             $white;
+$topbar-color:          $gray;
+$topbar-color-hover:    $black;
+$count-bg:              #e60404;
+
+// Side bar
+$menu-item-border:      #dfdfdf;
+$menu-item-bg:          $white;
+$menu-item-bg-active:   #eee;
+$menu-item-color:       $gray-dark;
 
 // Toolbar
-$toolbar-border-color:          #e5e5e5;
+$toolbar-border-color:  #e5e5e5;
+$toolbar-padding:       7px;
 
-// Sidebar
-$sidebar-width:                 180px;
-$sidebar-title-color:           #dd4b39;
-$sidebar-title-font-size:       14pt;
+// Widgets
+$widget-bg:             $white;
+$widget-border-color:   #d8d8d8;
+$widget-border-radius:  3px;
+$widget-border-style:   solid;
+$widget-padding:        20px;
+
 
 // Buttons
-$button-padding-vertical:       0;
-$button-padding-horizontal:     8px;
+$button-padding-vertical:       $padding-base-vertical;
+$button-padding-horizontal:     $padding-base-horizontal;
 $button-min-width:              72px;
 $button-font-color:             #222;
-$button-font-family:            $font-family-base;
-$button-font-size:              11px;
+$button-font-family:            $font-family;
+$button-font-size:              12px;
 $button-font-weight:            bold;
-$button-line-height:            27px;
-$button-border-color:           rgba(0,0,0,0.1);
+$button-line-height:            inherit;
+$button-border-color:           rgba(0,0,0,0.05);
+$button-border-color-hover:     #bfbfbf;
 $button-border-radius:          2px;
 $button-border-focused-color:   #4d90fe;
-$button-background-color:       #f5f5f5;
-$button-high-background-color:  #f1f1f1;
+$button-background-color:       $white;
+$button-background-active-color:$gray-2;
+$button-hihg-background-color:  #f1f1f1;
+$button-shadow-color:           rgba(0,0,0,0.05);
+$button-shadow-color-hover:     rgba(0,0,0,0.1);
 
 // Forms
-$input-border-hover:            #b2b2b2; //#a6a6a6;
-$input-border-focus:            #4d90fe;
-
-// Modals
-$modal-content-border-color:    rgba(0,0,0,.333);
-$modal-border-radius:           2px;
-$modal-border-shadow:           0 4px 16px rgba(0,0,0,0.2);
-$modal-padding:                 30px 32px;
-$modal-title-line-height:       24px;
-$modal-title-font-size:         16px;
-$modal-title-padding:           0px;
-$modal-backdrop-bg:             $white;
-$modal-backdrop-opacity:        .75;
-
-// Footer
-$footer-font-color:             #777;
+$input-border-hover:            #b2b2b2;
+$input-border-focus:            #4d90f3;
