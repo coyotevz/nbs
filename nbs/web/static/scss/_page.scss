@@ -21,16 +21,21 @@
     h3 {
       font-family: OpenSans;
       font-weight: 100;
-      border-right: 1px solid #ccc;
       display: inline-block;
-      padding-right: 10px;
       vertical-align: middle;
-      margin: 0 10px 0;
+      margin: 0;
       text-transform: uppercase;
     }
     em {
       vertical-align: middle;
       color: #999;
+    }
+    h3 + em {
+      line-height: 26px;
+      display: inline-block;
+      margin-left: 10px;
+      padding-left: 10px;
+      border-left: 1px solid #ccc;
     }
   }
 }

@@ -44,7 +44,10 @@ define([
 
   var ProductDetailView = View.extend({
     template: 'admin/product/detail.html',
-    noWrap: true,
+
+    events: {
+      'click [name=edit]': 'edit',
+    },
 
     render: function() {
       ProductDetailView.__super__.render.apply(this, arguments);
@@ -53,10 +56,18 @@ define([
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new DetailToolbar({region: 'toolbar', view: this});
-      this.subview('toolbar', toolbar);
+      //toolbar = new DetailToolbar({region: 'toolbar', view: this});
+      //this.subview('toolbar', toolbar);
       sidebar = new DetailSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
+    },
+
+    edit: function(evt) {
+      evt.preventDefault();
+      Chaplin.utils.redirectTo({
+        name: 'product_edit',
+        params: { id: this.model.id }
+      });
     },
   });
 

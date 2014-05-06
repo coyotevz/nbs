@@ -1,4 +1,34 @@
-<div id="product-detail" class="container">
-  <h1>{{ sku }}</h1>
-  <h2>{{ description }}</h2>
+{% macro inforow(label, data) %}
+<div class="info-row">
+  <span class="info-label">{{ label }}</span>
+  <span class="info-data">{{ data }}</span>
+</div>
+{% endmacro %}
+
+<div class="page page-single-product">
+  <div class="main-header">
+    <h3>Producto #{{ id }}</h3>
+    <em>{{ description }}</em>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="widget border-colored border-success">
+        <div class="widget-header">
+          <span class="widget-title">Información Básica</span>
+        </div>
+        <div class="widget-body">
+          <div class="body-section">
+            <div class="info-horizontal">
+              {{ inforow('Código', sku) }}  
+              {{ inforow('Descripción', description) }}
+              {{ inforow('Precio', '$ ' + price) }}
+            </div>
+          </div>
+        </div>
+        <div class="widget-footer">
+          <button class="btn btn-link special-link" name="edit">Modificar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

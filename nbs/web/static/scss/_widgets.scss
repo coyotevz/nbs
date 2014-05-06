@@ -46,7 +46,6 @@
       .special-link {
         margin-top: 5px;
         margin-bottom: 5px;
-        display: inline-block;
       }
 
       .progress {
@@ -146,6 +145,8 @@
 
   .special-link {
     color: #999;
+    padding: 0;
+    border-width: 0;
     &:focus { text-decoration: none; }
     &:hover { text-decoration: underline; }
   }
@@ -154,8 +155,6 @@
       color: $link-color;
     }
   }
-
-
 }
 
 .widget-box,
