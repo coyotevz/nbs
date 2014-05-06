@@ -33,6 +33,8 @@ define([
       }
 
       options.data = _.defaults(options.data ? options.data : {}, data);
+      // FIXME: For debug only
+      // options.data.per_page = 8
 
       return Collection.prototype.fetch.call(collection, options);
     },
