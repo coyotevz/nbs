@@ -1,0 +1,76 @@
+/*
+ * PACE progress indicators 
+ */
+
+/* This requires change .pace-init after first load by .pace-async
+ */
+
+// Some specific variables
+$pace-main-color:   $link-color; //#29d;
+$pace-zindex:       2000;
+$pace-bar-width:    250px;
+$pace-bar-height:   6px;
+$pace-bar-border:   $pace-main-color;
+$pace-bar-bg-color: $white;
+
+// Common directives
+.pace {
+  @include pointer-events(none);
+  @include user-select(none);
+
+  &.pace-inactive { display: none; }
+}
+
+// PACE simple theme
+.pace-init {
+  .wrapper { display: none } // Hide content until full load
+  .pace {
+    z-index: $pace-zindex;
+    @include fixed(0, 0);
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: $pace-bar-height;
+    width: $pace-bar-width;
+    background: $pace-bar-bg-color;
+    border: 1px solid $pace-bar-border;
+
+    .pace-progress {
+      @include box-sizing(border-box);
+      @include transition(width 1s ease-in-out 1s linear);
+      @include translate3d(0,0,0);
+
+      max-width: $pace-bar-width;
+      @include fixed(0, 0);
+      z-index: $pace-zindex;
+      display: block;
+      position: absolute;
+      height: 100%;
+      background: $pace-main-color;
+    }
+  }
+}
+
+// PACE flash theme
+.pace-async {
+  .pace {
+    .pace-progress {
+      background: $pace-main-color;
+      @include fixed(0, 0);
+      z-index: $pace-zindex;
+      height: 1px;
+      @include transition(width 1s);
+
+      .pace-progress-inner {
+        display: block;
+        position: absolute;
+        right: 0px;
+        width: 100px;
+        height: 100%;
+        box-shadow: 0 0 10px $pace-main-color, 0 0 5px $pace-main-color;
+        @include opacity(1);
+        @include transform(rotate(3deg) translate(0px, -4px));
+      }
+    }
+  }
+}

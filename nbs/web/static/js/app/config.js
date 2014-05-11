@@ -21,6 +21,7 @@ var require = {
     'chaplin':                'vendor/chaplin-1.0.0',
     'nunjucks':               'vendor/nunjucks-1.0.1',
     'nunjucks-slim':          'vendor/nunjucks-slim-1.0.1',
+    'pace':                   'vendor/pace-0.5.1',
 
     // Bootstap files
     'bootstrap.affix':        'vendor/bootstrap/affix',
@@ -47,6 +48,9 @@ var require = {
 
   // For non AMD-capable per default, declare dependencies.
   shim: {
+    'pace': {
+      deps: ['jquery'],
+    },
     'underscore': {
       exports: '_'
     },

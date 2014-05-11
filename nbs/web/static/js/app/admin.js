@@ -1,5 +1,7 @@
 // Admin application
 require([
+  'pace',
+  'jquery',
   'chaplin',
   'views/layout',
   'routes/admin',
@@ -11,8 +13,14 @@ require([
   'nbs.keycode',
   'nbs.autogrow',
   'nbs.fixedheader',
-], function(Chaplin, AdminLayout, routes) {
+], function(Pace, $, Chaplin, AdminLayout, routes) {
   "use strict";
+
+  Pace.start();
+  Pace.once("hide", function() {
+    $('body').removeClass('pace-init').addClass('pace-async');
+  });
+
 
   var Application = Chaplin.Application.extend({
     title: 'Nobix',
