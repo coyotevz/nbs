@@ -1,15 +1,20 @@
 define([
   'views/base/view',
-], function(View) {
+  'views/admin/search_view',
+], function(View, SearchView) {
   "use strict";
 
   var HeaderView = View.extend({
     template: 'admin/header.html',
     noWrap: true,
 
-    initialize: function() {
-      HeaderView.__super__.initialize.apply(this, arguments);
-      console.log('HeaderView#initialize(%s)', this.cid);
+    render: function() {
+      HeaderView.__super__.render.apply(this, arguments);
+
+      var search = new SearchView({
+        container: this.$('.search-box'),
+      });
+      this.subview('searchbox', search);
     },
   });
 
