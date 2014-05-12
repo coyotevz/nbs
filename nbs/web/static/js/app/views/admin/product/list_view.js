@@ -61,29 +61,22 @@ define([
     itemView: ProductItemView,
     animationDuration: 0,
 
-    regions: {
-      'toolbar': '.toolbar-container',
-    },
-
     render: function() {
       ProductListView.__super__.render.apply(this, arguments);
       this.delegate('click', 'th .control-checkbox', this.onCheckboxClick);
       this.initSubviews();
+      this.$selectionControl = this.$('th .control-checkbox');
     },
 
     initSubviews: function() {
       var toolbar, sidebar;
-      toolbar = new ListToolbar({region: 'toolbar', view: this});
+      toolbar = new ListToolbar({
+        container: this.$('.toolbar-container'),
+        view: this
+      });
       this.subview('toolbar', toolbar);
       sidebar = new ListSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
-    },
-
-    attach: function() {
-      ProductListView.__super__.attach.apply(this, arguments);
-      //this.$('table').fixHeader();
-      this.$selectionControl = this.$('th .control-checkbox');
-      this.subview('toolbar').render();
     },
 
     initItemView: function(model) {
