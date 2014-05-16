@@ -1,0 +1,19 @@
+{% from "admin/_macros.html" import inforow %}
+
+<div class="widget border-colored border-warning">
+  <div class="widget-header">
+    <span class="widget-title">Stocks</span>
+  </div>
+  <div class="widget-body">
+    <div class="body-section">
+      <div class="info-horizontal">
+        {% for stock in stocks %}
+        {{ inforow(stock.warehouse, stock.quantity + ' ' + stock.unit) }}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="widget-footer">
+    <button class="btn btn-link special-link" name="detail">Ver Más</button>
+  </div>
+</div>

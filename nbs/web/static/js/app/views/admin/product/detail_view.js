@@ -42,6 +42,18 @@ define([
     },
   });
 
+  var StockView = View.extend({
+    template: 'admin/product/stocks.html',
+
+    events: {
+      'click [name=detail]': 'detail',
+    },
+
+    detail: function() {
+      console.log('TODO: This must show stock details & statistics');
+    }
+  });
+
   var ProductDetailView = View.extend({
     template: 'admin/product/detail.html',
 
@@ -55,11 +67,16 @@ define([
     },
 
     initSubviews: function() {
-      var toolbar, sidebar;
+      var toolbar, sidebar, stock;
       //toolbar = new DetailToolbar({region: 'toolbar', view: this});
       //this.subview('toolbar', toolbar);
       sidebar = new DetailSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
+      stock = new StockView({
+        container: this.$('.stock-container'),
+        model: this.model,
+      });
+      this.subview('stock', stock);
     },
 
     edit: function(evt) {

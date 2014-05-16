@@ -31,7 +31,17 @@ read_price_permission  = Permission(Need('read',  'product.price'))
 write_price_permission = Permission(Need('write', 'product.price'))
 
 def get_stocks(product):
-    return product.get_stock_items()
+    return [{
+        'warehouse': u'Global',
+        'quantity': product.get_consolidated_stock(),
+        'modified': None,
+        'unit': product.unit.abbr,
+    }] + [{
+        'warehouse': s.warehouse.name,
+        'quantity': s.quantity,
+        'modified': s.modified,
+        'unit': product.unit.abbr,
+    } for s in product.get_stock_items()]
 
 def get_local_stock(product):
     # FIXME: Fake warehouse id, this must be fetched from session data
@@ -51,7 +61,7 @@ _spec = {
 }
 
 _spec_ind = _spec.copy()
-_spec_ind['defaults'] = _spec['defaults'] + ['stock']
+_spec_ind['defaults'] = _spec['defaults'] + ['stocks']
 
 @product_api.route('', methods=['GET'])
 def list():

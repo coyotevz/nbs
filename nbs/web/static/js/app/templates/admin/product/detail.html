@@ -1,9 +1,4 @@
-{% macro inforow(label, data) %}
-<div class="info-row">
-  <span class="info-label">{{ label }}</span>
-  <span class="info-data">{{ data }}</span>
-</div>
-{% endmacro %}
+{% from "admin/_macros.html" import inforow %}
 
 <div class="page page-single-product">
   <div class="main-header">
@@ -30,5 +25,6 @@
         </div>
       </div>
     </div>
+    <div class="col-md-4 stock-container"></div>
   </div>
 </div>
