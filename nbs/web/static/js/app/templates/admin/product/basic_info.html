@@ -1,0 +1,21 @@
+{% from "admin/_macros.html" import inforow %}
+
+<div class="widget border-colored border-success">
+  <div class="widget-header">
+    <span class="widget-title">Información Básica</span>
+  </div>
+  <div class="widget-body">
+    <div class="body-section">
+      <div class="info-horizontal">
+        {{ inforow('Código', sku) }}
+        {{ inforow('Descripción', descrtiption) }}
+        {{ inforow('Precio', '$ ' + price) }}
+      </div>
+    </div>
+  </div>
+  <div class="widget-footer">
+    <button class="btn btn-link special-link" name="edit">Modificar</button>
+  </div>
+</div>
+{# vim:sw=2:ft=jinja
+#}

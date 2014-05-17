@@ -23,7 +23,7 @@ define([
     },
 
     resize: function() {
-      var topbar_h = $('.top-bar').outerHeight();
+      var topbar_h = $('.top-bar').outerHeight() || 60;
       var window_h = $(window).height();
       $('.scroll-wrapper').css('max-height', window_h - topbar_h);
     },

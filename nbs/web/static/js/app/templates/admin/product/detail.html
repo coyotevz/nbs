@@ -1,30 +1,15 @@
-{% from "admin/_macros.html" import inforow %}
-
 <div class="page page-single-product">
   <div class="main-header">
-    <h3>Producto #{{ id }}</h3>
+    <h3>Producto</h3>
     <em>{{ description }}</em>
   </div>
   <div class="row">
-    <div class="col-md-4">
-      <div class="widget border-colored border-success">
-        <div class="widget-header">
-          <span class="widget-title">Información Básica</span>
-        </div>
-        <div class="widget-body">
-          <div class="body-section">
-            <div class="info-horizontal">
-              {{ inforow('Código', sku) }}  
-              {{ inforow('Descripción', description) }}
-              {{ inforow('Precio', '$ ' + price) }}
-            </div>
-          </div>
-        </div>
-        <div class="widget-footer">
-          <button class="btn btn-link special-link" name="edit">Modificar</button>
-        </div>
-      </div>
-    </div>
+    <div class="col-md-4 basicinfo-container"></div>
     <div class="col-md-4 stock-container"></div>
   </div>
+  <div class="row">
+    <div class="col-md-8 spi-container"></div>
+  </div>
 </div>
+{# vim:sw=2:ft=jinja
+#}

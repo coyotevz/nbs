@@ -42,6 +42,18 @@ define([
     },
   });
 
+  var BasicInfoView = View.extend({
+    template: 'admin/product/basic_info.html',
+
+    events: {
+      'click [name=edit]': 'edit',
+    },
+
+    edit: function() {
+      console.log('TODO: This must show basic info editor');
+    },
+  });
+
   var StockView = View.extend({
     template: 'admin/product/stocks.html',
 
@@ -57,21 +69,24 @@ define([
   var ProductDetailView = View.extend({
     template: 'admin/product/detail.html',
 
-    events: {
-      'click [name=edit]': 'edit',
-    },
-
     render: function() {
       ProductDetailView.__super__.render.apply(this, arguments);
       this.initSubviews();
     },
 
     initSubviews: function() {
-      var toolbar, sidebar, stock;
+      var toolbar, sidebar, basicinfo, stock;
       //toolbar = new DetailToolbar({region: 'toolbar', view: this});
       //this.subview('toolbar', toolbar);
       sidebar = new DetailSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
+
+      basicinfo = new BasicInfoView({
+        container: this.$('.basicinfo-container'),
+        model: this.model,
+      });
+      this.subview('basicinfo', basicinfo);
+
       stock = new StockView({
         container: this.$('.stock-container'),
         model: this.model,
