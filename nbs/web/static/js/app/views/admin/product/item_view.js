@@ -4,7 +4,7 @@ define([
   "use strict";
 
   var ProductItemView = View.extend({
-    template: 'admin/product/item.html',
+    template: 'admin/product/item_row.html',
     tagName: 'tr', // we can't insert <tr> element inside <div> with native code
     selected: false,
     optionNames: View.prototype.optionNames.concat(['parent']),
