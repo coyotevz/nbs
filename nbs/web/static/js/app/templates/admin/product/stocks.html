@@ -6,10 +6,11 @@
   </div>
   <div class="widget-body">
     <div class="body-section">
-      <div class="info-horizontal">
+      <div class="info-horizontal data-right">
         {% for stock in stocks %}
-        {{ inforow(stock.warehouse, stock.quantity + ' ' + stock.unit) }}
+        {{ inforow(stock.warehouse, stock.quantity|numberfmt(0) + ' ' + stock.unit) }}
         {% endfor %}
+        {{ inforow('TOTAL', stocks|map('quantity')|sum|numberfmt(0) + ' ' + stocks|first|attr('unit')) }}
       </div>
     </div>
   </div>

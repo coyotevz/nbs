@@ -124,6 +124,12 @@
           word-wrap: break-word;
           white-space: normal;
         }
+        &.last-row .info-data {
+          //border-top: 1px solid #eee;
+        }
+      }
+      &.data-right {
+        .info-data { text-align: right; }
       }
     }
 

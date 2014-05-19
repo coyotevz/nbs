@@ -32,11 +32,6 @@ write_price_permission = Permission(Need('write', 'product.price'))
 
 def get_stocks(product):
     return [{
-        'warehouse': u'Global',
-        'quantity': product.get_consolidated_stock(),
-        'modified': None,
-        'unit': product.unit.abbr,
-    }] + [{
         'warehouse': s.warehouse.name,
         'quantity': s.quantity,
         'modified': s.modified,
