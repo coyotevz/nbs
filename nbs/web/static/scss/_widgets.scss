@@ -14,14 +14,16 @@
   }
 
   .widget-header {
+    @include clearfix;
     font-size: 12px;
     color: #262626;
     position: relative;
 
     .widget-title {
+      float: left;
       font: 300 20px Roboto,Arial,sans-serif;
       white-space: normal;
-      margin: 0;
+      margin: 0 15px 0 0;
       overflow: hidden;
       text-overflow: ellipsis;
       vertical-align: middle;
@@ -46,6 +48,12 @@
       & > .btn.special-link {
         margin-top: 5px;
         margin-bottom: 5px;
+      }
+
+      .btn-icon {
+        font-size: 0.95em;
+        margin-top: 4px;
+        padding: 0 5px;
       }
 
       .progress {
@@ -117,6 +125,27 @@
           white-space: normal;
         }
       }
+    }
+
+    /* Tabs inside widgets */
+    .nav-tabs {
+      margin-top: -36px;
+      margin-left: -$widget-padding;
+      margin-right: -$widget-padding;
+      padding-right: $widget-padding;
+      padding-left: $widget-padding;
+
+      & > li > a {
+        padding: 5px 10px;
+      }
+
+      &.tabs-right > li {
+        float: right;
+      }
+    }
+
+    .tab-content {
+      margin-top: 10px;
     }
   }
 

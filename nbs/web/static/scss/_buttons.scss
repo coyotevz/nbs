@@ -59,7 +59,7 @@
   }
 
   &.btn-icon {
-    min-width: $button-min-width;
+    //min-width: $button-min-width;
   }
 }
 
@@ -176,6 +176,35 @@
 
 .btn-danger {
   @include custom-button-variant(#d73d32);
+}
+
+.btn-icon, .btn-icon:focus {
+  background: rgba(0,0,0,0);
+  color: rgba(0,0,0,0.4);
+  font-size: 2em;
+  position: relative;
+  @include box-shadow(none);
+
+  &:hover {
+    color: rgba(0,0,0,0.6);
+  }
+}
+
+.btn-tab {
+  cursor: pointer;
+  background-color: rgba(0,0,0,0);
+  color: rgba(0,0,0,0.4);
+  border-radius: 0px;
+  box-shadow: none;
+  padding: 6px;
+
+  &:hover {
+    color: rgba(0,0,0,0.6);
+  }
+
+  .icon {
+    font-size: 13px;
+  }
 }
 
 // Make a button look and behave like a link

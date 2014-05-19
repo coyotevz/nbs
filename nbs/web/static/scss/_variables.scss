@@ -29,6 +29,9 @@ $body-color:            $gray;
 $body-color-2:          #767676;
 $body-bg:               $gray-2;
 
+// Override global border radius
+$border-radius-base:    3px;
+
 // Variant colors
 $primary-bg:            #1c7ebb;
 $primary-light-bg:      #449dd5;
