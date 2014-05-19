@@ -5,9 +5,11 @@ require([
   'chaplin',
   'views/layout',
   'routes/admin',
-  'bootstrap.tooltip',
-  'bootstrap.modal',
   'bootstrap.dropdown',
+  'bootstrap.modal',
+  'bootstrap.tab',
+  'bootstrap.tooltip',
+  'bootstrap.transition',
 
   'jquery.number',
   'nbs.keycode',

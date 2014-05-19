@@ -2,9 +2,10 @@ define([
   'underscore',
   'chaplin',
   'views/base/view',
+  'views/base/collection_view',
   'views/toolbar',
   'views/sidebar',
-], function(_, Chaplin, View, Toolbar, Sidebar) {
+], function(_, Chaplin, View, CollectionView, Toolbar, Sidebar) {
   "use strict";
 
   var DetailSidebar = Sidebar.extend({
@@ -66,6 +67,18 @@ define([
     }
   });
 
+  var SupplierInfoView = View.extend({ // FIXME: This must be a collection view
+    template: 'admin/product/supplier_info.html',
+
+    events: {
+      'click [name=add-supplier]': 'add',
+    },
+
+    add: function() {
+      console.log('TODO: This must show new supplier info form');
+    },
+  });
+
   var ProductDetailView = View.extend({
     template: 'admin/product/detail.html',
 
@@ -75,7 +88,7 @@ define([
     },
 
     initSubviews: function() {
-      var toolbar, sidebar, basicinfo, stock;
+      var toolbar, sidebar, basicinfo, stock, spi;
       //toolbar = new DetailToolbar({region: 'toolbar', view: this});
       //this.subview('toolbar', toolbar);
       sidebar = new DetailSidebar({region: 'sidebar', view: this});
@@ -92,6 +105,11 @@ define([
         model: this.model,
       });
       this.subview('stock', stock);
+
+      spi = new SupplierInfoView({
+        container: this.$('.spi-container'),
+      });
+      this.subview('spi', spi);
     },
 
     edit: function(evt) {
