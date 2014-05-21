@@ -103,10 +103,20 @@ def update(id):
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
 
-
 ## ProductSupplierInfo interface ##
 
-@product_api.route('/<int:id>/supplierinfo', methods=['POST'])
+@product_api.route('/<int:id>/suppliers_info', methods=['GET'])
+def list_suppliers_info(id):
+    product = Product.query.get_or_404(id)
+    result = [
+        rest.to_dict(spi,
+            extra=['supplier', 'bonus_components'],
+            exclude=['supplier_id', 'product_id'])
+        for spi in product.suppliers_info
+    ]
+    return jsonify({'product_id': product.id, 'suppliers_info': result})
+
+@product_api.route('/<int:id>/suppliers_info', methods=['POST'])
 def add_supplier_info(id):
     product = Product.query.get_or_404(id)
     form = ProductSupplierInfoForm(product_id=product.id, csrf_enabled=False)
@@ -125,9 +135,9 @@ def add_supplier_info(id):
 
 ## PriceHistory getter ##
 
-@product_api.route('/<int:id>/pricehistory', methods=['GET'])
+@product_api.route('/<int:id>/price_history', methods=['GET'])
 def list_price_history(id):
     """Returns price history data for this product"""
     product = Product.query.get_or_404(id)
     result = [rest.to_dict(h, ['date', 'price']) for h in product.price_history]
-    return jsonify({'price_history': result})
+    return jsonify({'product_id': product.id, 'price_history': result})
