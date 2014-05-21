@@ -13,7 +13,9 @@ import decimal
 from collections import namedtuple
 
 from sqlalchemy import and_
-from sqlalchemy.orm import ColumnProperty, RelationshipProperty, object_mapper
+from sqlalchemy.orm import (
+    ColumnProperty, SynonymProperty, RelationshipProperty, object_mapper
+)
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.exceptions import default_exceptions, HTTPException
@@ -358,7 +360,8 @@ def _clean(value):
 
 def get_columns(model):
     columns = [p.key for p in class_mapper(model).iterate_properties
-               if isinstance(p, ColumnProperty) and not p.key.startswith('_')]
+               if isinstance(p, (ColumnProperty, SynonymProperty)) \
+                  and not p.key.startswith('_')]
     for parent in model.mro():
         columns += [key for key, value in parent.__dict__.iteritems()
                     if isinstance(value, hybrid_property)]
