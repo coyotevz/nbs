@@ -302,10 +302,32 @@ def _getcol(obj, column):
         return getattr(obj, "{}_str".format(column))
     return getattr(obj, column)
 
-def to_dict(obj, fields=None):
+def to_dict(obj, fields=None, extra=None, exclude=None):
 
     if fields is None:
         fields = get_columns(object_mapper(obj).class_)
+
+    fields = set(fields)
+
+    if extra is not None:
+        if isinstance(extra, (list, tuple)):
+            extra = list(extra)
+        elif isinstance(extra, basestring):
+            extra = [extra]
+        else:
+            raise TypeError("extra= argument of to_dict() must be an iterable "
+                            "or string")
+        fields = fields.union(set(extra))
+
+    if exclude is not None:
+        if isinstance(exclude, (list, tuple)):
+            exclude = list(exclude)
+        elif isinstance(exclude, basestring):
+            exclude = [exclude]
+        else:
+            raise TypeError("exclude= argument of to_dict() must be an "
+                            "iterable or string")
+        fields = fields - set(exclude)
 
     result = dict((col, _getcol(obj, col)) for col in fields\
                   if isinstance(col, basestring))
