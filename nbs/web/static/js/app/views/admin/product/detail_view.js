@@ -3,9 +3,10 @@ define([
   'chaplin',
   'views/base/view',
   'views/base/collection_view',
+  'views/base/tab_collection_view',
   'views/toolbar',
   'views/sidebar',
-], function(_, Chaplin, View, CollectionView, Toolbar, Sidebar) {
+], function(_, Chaplin, View, CollectionView, TabCollectionView, Toolbar, Sidebar) {
   "use strict";
 
   var DetailSidebar = Sidebar.extend({
@@ -67,8 +68,24 @@ define([
     }
   });
 
-  var SupplierInfoView = View.extend({ // FIXME: This must be a collection view
+  var SupplierInfoItemView = View.extend({
+    template: 'admin/product/supplier_info_item.html',
+    noWrap: true,
+  });
+
+  var SupplierInfoHeaderView = View.extend({
+    template: 'admin/product/supplier_info_header.html',
+    noWrap: true,
+  });
+
+  var SupplierInfoView = TabCollectionView.extend({
     template: 'admin/product/supplier_info.html',
+    noWrap: true,
+    listSelector: 'div.tab-content',
+    headerSelector: 'ul.nav',
+    itemView: SupplierInfoItemView,
+    headerView: SupplierInfoHeaderView,
+    animationDuration: 0,
 
     events: {
       'click [name=add-supplier]': 'add',
@@ -108,8 +125,10 @@ define([
 
       spi = new SupplierInfoView({
         container: this.$('.spi-container'),
+        collection: this.model.getSuppliersInfo(),
       });
       this.subview('spi', spi);
+      spi.collection.fetch();
     },
 
     edit: function(evt) {

@@ -111,7 +111,7 @@ def list_suppliers_info(id):
     result = [
         rest.to_dict(spi,
             extra=['supplier', 'bonus_components'],
-            exclude=['supplier_id', 'product_id'])
+            exclude=['product_id'])
         for spi in product.suppliers_info
     ]
     return jsonify({'product_id': product.id, 'suppliers_info': result})
