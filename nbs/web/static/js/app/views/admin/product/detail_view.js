@@ -71,11 +71,19 @@ define([
   var SupplierInfoItemView = View.extend({
     template: 'admin/product/supplier_info_item.html',
     noWrap: true,
+
+    activate: function() {
+      this.$el.addClass("active").addClass("in");
+    }
   });
 
   var SupplierInfoHeaderView = View.extend({
     template: 'admin/product/supplier_info_header.html',
     noWrap: true,
+
+    activate: function() {
+      this.$el.addClass("active");
+    },
   });
 
   var SupplierInfoView = TabCollectionView.extend({

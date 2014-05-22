@@ -34,6 +34,7 @@ define([
    */
 
   var TabCollectionView = CollectionView.extend({
+    activeAttribute: 'active',
     headerView: null,
     headerSelector: null,
     $header: null,
@@ -49,9 +50,34 @@ define([
       headerSelector = _.result(this, 'headerSelector');
       this.$header = headerSelector ? this.$(headerSelector) : void 0;
 
+      this.listenTo(this.collection, 'synced', this.setActiveItem);
+
       this.renderItems = _orig_renderItems;
       if (this.renderItems) {
         return this.renderAllItems();
+      }
+    },
+
+    setActiveItem: function() {
+      var item, active, $view, $header, _this = this;
+      if (this.collection.isSyncing()) {
+        return;
+      }
+      item = this.collection.find(function(i) {
+        return i[_this.activeAttribute] === true;
+      });
+      if (!item) {
+        item = this.collection.at(0);
+      }
+      $view = this.subview('itemView:' + item.cid);
+      $header = this.subview('headerView:' + item.cid);
+
+      if (typeof $view.activate === 'function') {
+        $view.activate();
+      }
+
+      if (typeof $header.activate === 'function') {
+        $header.activate();
       }
     },
 
@@ -77,8 +103,6 @@ define([
                         'defined or the initHeaderView() must be overriden.');
       }
     },
-
-
 
     insertView: function(item, view, position, enableAnimation) {
       var elem, included, length, header, hview;
