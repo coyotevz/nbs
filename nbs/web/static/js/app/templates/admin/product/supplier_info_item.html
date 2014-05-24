@@ -1,6 +1,15 @@
 <div id="supplier_{{ supplier.id }}" class="tab-pane fade">
-  <p>Name: {{ supplier.fancy_name }}</p>
+  {# keep the folowing line here, because a bug in nunjucks??? #}
+  {% from "admin/_macros.html" import inforow %}
+  <div class="row">
+    <div class="col-md-6">
+      <div class="info-horizontal">
+        {{ inforow('Razón Social', supplier.name) }}
+        {{ inforow('Código', sku) }}
+      </div>
+    </div>
+    <div class="col-md-6"></div>
+  </div>
 </div>
-
 {# vim:sw=2:ft=jinja
 #}
