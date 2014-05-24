@@ -3,12 +3,24 @@
   {% from "admin/_macros.html" import inforow %}
   <div class="row">
     <div class="col-md-6">
-      <div class="info-horizontal">
-        {{ inforow('Razón Social', supplier.name) }}
-        {{ inforow('Código', sku) }}
+      <div class="body-section">
+        <span class="body-section-title">Producto</span>
+        <div class="info-horizontal">
+          {{ inforow('Código', sku|d("&mdash;")) }}
+          {{ inforow('Descripción', description|d("&mdash;")) }}
+          {{ inforow('Precio de Lista', base_cost|numberfmt) }}
+          {{ inforow('Precio Final', cost|numberfmt) }}
+        </div>
       </div>
     </div>
-    <div class="col-md-6"></div>
+    <div class="col-md-6">
+      <div class="body-section">
+        <span class="body-section-title">Proveedor</span>
+        <div class="info-horizontal">
+          {{ inforow('Razón Social', supplier.name) }}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {# vim:sw=2:ft=jinja
