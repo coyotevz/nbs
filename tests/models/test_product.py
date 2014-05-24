@@ -355,16 +355,6 @@ class TestProductSupplierInfo(DBTestCase):
         assert psi.package_size == 1
         assert psi.lead_time is None
 
-    def test_inherit_description_from_product(self):
-        p = Product(sku=u'1', description=u'p', price=Decimal('1'))
-        s = Supplier(name=u's')
-        psi = ProductSupplierInfo(supplier=s, product=p)
-
-        self.db.session.add(psi)
-        self.db.session.commit()
-
-        assert psi.description == p.description
-
     def test_automatic_cost(self):
         p = Product(sku=u'1', description=u'p', price=Decimal('1'))
         s = Supplier(name=u's')

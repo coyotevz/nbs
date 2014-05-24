@@ -368,7 +368,7 @@ class ProductSupplierInfo(db.Model):
     #: supplier code for this product
     sku = db.Column(db.Unicode(80))
     #: supplier description for this product
-    _description = db.Column('description', db.Unicode)
+    description = db.Column('description', db.Unicode)
     #: supplier notes for this product
     notes = db.Column(db.UnicodeText)
     #: supplier base price for this product (list price)
@@ -397,15 +397,6 @@ class ProductSupplierInfo(db.Model):
     def __repr__(self):
         return "<ProductSupplierInfo({0}, {1})>".format(
                              self.product, self.supplier)
-
-    @hybrid_property
-    def description(self):
-        if not self._description:
-            return self.product.description
-
-    @description.setter
-    def description(self, value):
-        self._description = value
 
     @hybrid_property
     def base_cost(self):
