@@ -8,8 +8,8 @@
         <div class="info-horizontal">
           {{ inforow('Código', sku|d("&mdash;")) }}
           {{ inforow('Descripción', description|d("&mdash;")) }}
-          {{ inforow('Precio de Lista', base_cost|numberfmt) }}
-          {{ inforow('Precio Final', cost|numberfmt) }}
+          {{ inforow('Precio de Lista', '$ ' + base_cost|numberfmt) }}
+          {{ inforow('Precio Final', '$ ' + cost|numberfmt) }}
         </div>
       </div>
     </div>
@@ -17,7 +17,10 @@
       <div class="body-section">
         <span class="body-section-title">Proveedor</span>
         <div class="info-horizontal">
-          {{ inforow('Razón Social', supplier.name) }}
+          <div class="info-row">
+            <span class="info-label">Razón Social</span>
+            <a class="info-data link-supplier" href="#suppliers/{{ supplier.id }}">{{ supplier.name }}</a>
+          </div>
         </div>
       </div>
     </div>
