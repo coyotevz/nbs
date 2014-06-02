@@ -2,29 +2,61 @@
  * Nobix Forms elements
  */
 
-// Checkmark
-.control-checkbox {
+label {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.form-control {
+  @include box-shadow(none);
+
+  &:hover {
+    border-color: $input-border-hover;
+  }
+
+  &:focus {
+    @include box-shadow(0 1px 1px rgba(0,0,0,0.075) inset);
+    border-color: $input-border-focus;
+  }
+}
+
+.form-control-static {
+  font-size: $font-size-base;
+}
+
+.radio-element,
+.checkbox-element {
+  opacity: 0;
+}
+
+// Checkmark & Radio
+.control-checkbox,
+.control-radio {
   @include inline-block;
   background-color: $white;
   border: 1px solid rgba(155,155,155,0.57);
-  border-radius: 1px;
+  border-radius: $input-border-radius;
   height: 13px;
   width: 13px;
-  margin: 0 4px 0 1px;
+  margin: 4px 4px 0 -20px;
+  float: left;
+  line-height: normal;
   outline: 0 none;
   vertical-align: text-bottom;
   cursor: pointer;
 
-  &:hover {
-    border-color: $input-border-hover;
-    @include box-shadow(0 1px 1px rgba(0,0,0,0.1) inset);
+  &:hover,
+  &.hover {
+    @extend .form-control:hover;
   }
 
-  &:active {
-    border-color: $input-border-focus;
+  &:focus,
+  &.focus {
+    @extend .form-control:focus;
   }
 
-  .control-checkbox-checkmark {
+  .control-checkbox-checkmark,
+  .control-radio-checkmark {
     height: 15px;
     width: 15px;
     left: 0;
@@ -33,15 +65,32 @@
     position: relative;
   }
 
-  &.control-checkbox-checked {
+  &.checked {
     .control-checkbox-checkmark {
       background: url(/static/img/checkmark.png) no-repeat scroll -5px -3px rgba(0,0,0,0);
     }
+    .control-radio-checkmark {
+      background: url(/static/img/radiomark.png) no-repeat scroll -4px -1px rgba(0,0,0,0);
+    }
   }
 
-  &.control-checkbox-partial {
+  &.partial {
     .control-checkbox-checkmark {
       background: url(/static/img/checkmark-partial.png) no-repeat scroll -5px -3px rgba(0,0,0,0);
     }
+  }
+}
+
+.control-radio {
+  margin-top: 2px;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+}
+
+.cell-checkbox {
+  .control-checkbox {
+    margin: 0 4px 0 1px;
+    float: none;
   }
 }

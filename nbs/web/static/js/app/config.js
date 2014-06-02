@@ -38,9 +38,14 @@ var require = {
     'bootstrap.transition':   'vendor/bootstrap/transition',
 
     // Custom plugins for this project
-    'nbs.keycode':            'lib/nbs.keycode',
     'nbs.autogrow':           'lib/nbs.autogrow',
+    'nbs.checkbox':           'lib/nbs.checkbox',
     'nbs.fixedheader':        'lib/nbs.fixedheader',
+    'nbs.keycode':            'lib/nbs.keycode',
+    'nbs.radio':              'lib/nbs.radio',
+
+    // selectize
+    'selectize':              'vendor/selectize',
 
     // List internal paths
     // 'ClientModel': 'models/client',
@@ -90,6 +95,11 @@ var require = {
     'bootstrap.tab':        { deps: ['jquery'] },
     'bootstrap.tooltip':    { deps: ['jquery'] },
     'bootstrap.transition': { deps: ['jquery'] },
+
+    'selectize': {
+      exports: '$.selectize',
+      deps: ['jquery'],
+    },
   },
 
   // For easier development, disable browser caching

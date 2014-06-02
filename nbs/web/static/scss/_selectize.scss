@@ -1,0 +1,145 @@
+/*
+ * selectize.js - Nobix Theme
+ */
+
+$max-height-dropdown:   200px;
+$caret-margin:          0 2px 0 0;
+
+.selectize-control {
+
+  position: relative;
+  padding: 0;
+  border: none;
+
+  .selectize-dropdown,
+  .selectize-input,
+  .selectize-input input {
+    color: $input-color;
+    font-family: inherit;
+    font-size: $font-size-base;
+  }
+
+  .selectize-input {
+    border: 1px solid $input-border;
+    border-radius: $input-border-radius;
+    padding: $padding-base-vertical $padding-base-horizontal;
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+    @include box-sizing(border-box);
+    @include box-shadow(none);
+    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+
+    &:hover {
+      @extend .form-control:hover;
+    }
+
+    &:focus,
+    &.focus {
+      @extend .form-control:focus;
+    }
+
+    &.dropdown-active {
+    }
+
+    > * {
+      vertical-align: baseline;
+      display: -moz-inline-stack;
+      display: inline-block;
+    }
+
+    > input {
+      padding: 0;
+      min-height: 0;
+      max-height: none;
+      max-width: 100%;
+      margin: $caret-margin;
+      text-indent: 0;
+      border: 0 none;
+      background: none;
+      line-height: inherit;
+
+      @include user-select(auto);
+      @include box-shadow(none);
+      &:focus { outline: none; }
+    }
+
+    &::after {
+      content: ' ';
+      display: block;
+      clear: left;
+    }
+  }
+
+  &.single {
+    .selectize-input {
+      &:after {
+        @extend .fa;
+        content: $fa-var-caret-down;
+        font-size: 16px;
+        position: absolute;
+        right: 12px;
+        top: 10px;
+      }
+      &.dropdown-active:after {
+        content: $fa-var-caret-up;
+        top: 8px;
+      }
+    }
+  }
+
+  &.multi {
+    .selectize-input {
+      &.has-items { padding: 0 4px; }
+      [data-value] {
+        background: #f5f5f5;
+        border: 1px solid #d9d9d9;
+        border-radius: 3px;
+        margin: 3px;
+        margin-left: 0;
+        padding: 2px 5px;
+      }
+    }
+  }
+
+  .selectize-dropdown {
+    padding: 0;
+    height: auto;
+    position: absolute;
+    z-index: $zindex-dropdown;
+    margin: -1px 0 0 0;
+    @include border-bottom-radius($input-border-radius);
+    @include box-sizing(border-box);
+
+    &,
+    &:hover {
+      border: 1px solid $input-border-focus;
+      border-top: 0 none,
+    }
+
+    .selectize-dropdown-content {
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: $max-height-dropdown;
+
+      [data-selectable] {
+        cursor: pointer;
+        overflow: hidden;
+        padding: $padding-base-vertical/2 $padding-base-horizontal;
+        .highlight {
+          color: #222;
+          text-decoration: underline;
+        }
+      }
+
+      .optgroup-hader {
+      }
+
+      .active {
+        background-color: #f5fafd;
+        color: #495c68;
+      }
+    }
+  }
+}

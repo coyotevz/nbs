@@ -29,24 +29,11 @@
 
   .input-group {
     .form-control {
-      box-shadow: none;
       border-radius: 0;
       padding: 4px 8px;
       font-size: 16px;
-      border-color: rgba(0,0,0,0.15);
-      color: #222;
-      transition: none;
       border-right-width: 0;
       height: 30px;
-
-      &:hover {
-        border-color: rgba(0,0,0,0.3);
-      }
-
-      &:focus {
-        box-shadow: none;
-        border-color: #4285f4;
-      }
     }
 
     .input-group-btn {
