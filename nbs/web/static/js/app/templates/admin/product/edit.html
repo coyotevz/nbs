@@ -1,20 +1,48 @@
-<form class="edit-layout container">
-
+<div class="page page-edit-product">
+  <div class="main-header">
+    <h3>Editar Producto</h3>
+  </div>
   <div class="row">
-    <div class="col-md-12">
-      <input class="size-xl autogrow" type="text" placeholder="Añade un código" spellcheck="false" name="sku">
+    <div class="col-md-6">
+      <div class="widget">
+        <div class="widget-header">
+          <span class="widget-title">Infromación Básica</span>
+        </div>
+        <div class="widget-body">
+          <div class="form-horizontal product-basic-info edit-layout" role="form">
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="sku">Código</label>
+              <div class="col-sm-9">
+                <input id="sku" class="form-control" type="text" placeholder="Añade un código" spellcheck="false" name="sku">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="description">Descripción</label>
+              <div class="col-sm-9">
+                <input id="description" class="form-control" type="text" placeholder="Añade una descripción" spellcheck="false" name="description">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="price">Precio</label>
+              <div class="col-sm-9">
+                <input id="price" class="form-control" type="text" placeholder="Precio" spellcheck="false" name="price">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-9">
+                <div class="btn-group">
+                  <button class="btn btn-default" name="cancel">Cancelar</button>
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-primary" name="save" disabled>Guardar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div class="row">
-    <div class="col-md-12"><input class="size-l autogrow" type="text" placeholder="Añade una descripción" spellcheck="false" name="description"></div>
-  </div>
-
-  <div class="separator"></div>
-
-  <div class="row">
-    <div class="col-md-5">
-      <input class="autogrow" type="text" placeholder="Precio" spellcheck="false" name="price">
-    </div>
-  </div>
-</form>
+</div>
+{# vim:sw=2:ft=jinja
+#}

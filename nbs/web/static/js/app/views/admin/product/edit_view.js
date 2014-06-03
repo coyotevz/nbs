@@ -43,6 +43,8 @@ define([
     render: function(params) {
       ProductEditView.__super__.render.apply(this, arguments);
       this.initSubviews();
+      this.delegate('click', '[name=save]', this.saveChanges);
+      this.delegate('click', '[name=cancel]', this.cancelChanges);
     },
 
     attach: function() {
@@ -53,8 +55,17 @@ define([
 
     initSubviews: function() {
       var toolbar;
-      toolbar = new EditToolbar({region: 'toolbar', view: this});
-      this.subview('toolbar', toolbar);
+      //toolbar = new EditToolbar({region: 'toolbar', view: this});
+      //this.subview('toolbar', toolbar);
+    },
+
+    saveChanges: function(evt) {
+      this.model.save(this.model.getPatch(), {patch: true, validate: false});
+    },
+
+    cancelChanges: function() {
+      console.log('cancelling!');
+      window.history.back();
     },
 
     onModelChange: function(model, options) {
@@ -62,7 +73,7 @@ define([
       if (options.stickitChange) {
         var isValid = model.isValid(options.stickitChange.observe),
             enabled = isValid && model.hasStoredChange() && _.isEmpty(model.validationError || {});
-        this.subview('toolbar').$('[name=save]').attr('disabled', !enabled);
+        //this.subview('toolbar').$('[name=save]').attr('disabled', !enabled);
       }
     },
 

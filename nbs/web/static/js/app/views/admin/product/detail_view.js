@@ -52,7 +52,10 @@ define([
     },
 
     edit: function() {
-      console.log('TODO: This must show basic info editor');
+      Chaplin.utils.redirectTo({
+        name: 'product_edit',
+        params: { id: this.model.id }
+      });
     },
   });
 
