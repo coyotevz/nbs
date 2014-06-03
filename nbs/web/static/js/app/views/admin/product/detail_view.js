@@ -16,8 +16,32 @@ define([
       'click .new-product': 'newProduct',
     },
 
+    t1: function(dialog) {
+      console.log('dialog callback t1:', dialog);
+    },
+
+    t2: function(dialog) {
+      console.log('dialog callback t2:', dialog);
+      dialog.close();
+    },
+
     newProduct: function() {
-      _dialog.show();
+      //_dialog.show();
+      _dialog.run({
+        title: 'Some title',
+        text: 'Hello, we are in dialog paragraph.',
+        buttons: {
+          'success': {
+            'label': 'OK',
+            'style': 'primary',
+            'action': this.t1,
+          },
+          'cancel': {
+            'label': 'Cancel',
+            'action': this.t2,
+          }
+        },
+      });
       //Chaplin.utils.redirectTo({name: 'product_new'});
     },
   });
