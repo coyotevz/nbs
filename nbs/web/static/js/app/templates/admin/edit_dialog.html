@@ -1,0 +1,18 @@
+{% extends "dialog_content.html" %}
+
+{% block body %}
+{% if content_form %}    
+{% include content_form %}
+{% else %}
+<p>You must specify <code>content_form</code> parameter.</p>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+<div class="footer-controls">
+  <button class="btn btn-default" name="cancel">Cancelar</button>
+  <button class="btn btn-primary" name="save" disabled>Guardar</button>
+</div>
+{% endblock %}
+{# vim:ft=jinja:sw=2
+#}

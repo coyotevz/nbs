@@ -14,6 +14,7 @@ define([
 
     initialize: function() {
       DialogContentView.__super__.initialize.apply(this, arguments);
+      this.closeButton = (this.closeButton == undefined) ? true : this.closeButton;
       for (var key in this.buttons) {
         this.delegate('click', '[name='+key+']',
           _.wrap(this.buttons[key].action, this.wrapper)
@@ -117,7 +118,6 @@ define([
 
        title: null,
        text: null,
-       closeButton: true,
        buttons: {},
      };
      var ContentView = options.view || DialogContentView;

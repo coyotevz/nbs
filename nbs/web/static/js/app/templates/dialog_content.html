@@ -1,6 +1,7 @@
 <div class="modal-header">
   {% block header %}
   <span class="modal-title">{{ title }}</span>
+  {% block header_controls %}
   <div class="header-controls">
     {% if closeButton %}
     <a class="btn btn-xs btn-icon" name="modal-close" role="button" title="Close">
@@ -8,6 +9,7 @@
     </a>
     {% endif %}
   </div>
+  {% endblock %}
   {% endblock %}
 </div>
 <div class="modal-body">

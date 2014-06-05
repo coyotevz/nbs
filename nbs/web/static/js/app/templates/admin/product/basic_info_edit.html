@@ -1,0 +1,16 @@
+{% macro input_row(field, label, placeholder, type='text') %}
+<div class="form-group">
+  <label class="col-sm-3 control-label" for="{{ field }}">{{ label }}</label>
+  <div class="col-sm-9">
+    <input id="{{ field }}" class="form-control" type="{{ type }}" placeholder="{{ placeholder }}" spellcheck="false" name="{{ field }}">
+  </div>
+</div>
+{% endmacro %}
+
+<div class="form-horizontal product-basic-info edit-layout" role="form">
+  {{ input_row('sku', 'Código', 'Añade un código') }}
+  {{ input_row('description', 'Descripción', 'Añade una descripción') }}
+  {{ input_row('price', 'Precio', 'Precio') }}
+</div>
+{# vim:ft=jinja:sw=2
+#}

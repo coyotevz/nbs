@@ -1,4 +1,5 @@
 define([
+  'jquery',
   'underscore',
   'chaplin',
   'views/base/view',
@@ -6,7 +7,9 @@ define([
   'views/base/tab_collection_view',
   'views/toolbar',
   'views/sidebar',
-], function(_, Chaplin, View, CollectionView, TabCollectionView, Toolbar, Sidebar) {
+  'views/admin/edit_dialog',
+], function($, _, Chaplin, View, CollectionView, TabCollectionView, Toolbar,
+            Sidebar, EditDialogContent) {
   "use strict";
 
   var DetailSidebar = Sidebar.extend({
@@ -26,7 +29,6 @@ define([
     },
 
     newProduct: function() {
-      //_dialog.show();
       _dialog.run({
         title: 'Some title',
         text: 'Hello, we are in dialog paragraph.',
@@ -46,6 +48,7 @@ define([
     },
   });
 
+  // TODO: Remove this toolbar
   var DetailToolbar = Toolbar.extend({
     template: 'admin/product/detail_toolbar.html',
 
@@ -68,6 +71,44 @@ define([
     },
   });
 
+  var EditBasicInfoDialog = EditDialogContent.extend({
+    content_form: 'admin/product/basic_info_edit.html',
+
+    listen: {
+      'change model': 'onModelChange',
+    },
+
+    bindings: {
+      '[name=sku]': 'sku',
+      '[name=description]': 'description',
+      '[name=price]': {
+        observe: 'price',
+        onGet: $.numeric,
+        onSet: function(val) {
+          return val.replace('.', '').replace(',', '.');
+        }
+      },
+    },
+
+    save: function() {
+      console.log('this.model:', this.model);
+      console.log('save on basic info');
+      this.model.save(this.model.getPatch(), {patch: true, validate: false});
+    },
+
+    cancel: function() {
+      this.dialog.close();
+    },
+
+    onModelChange: function(model, options) {
+      if (options.stickitChange) {
+        var isValid = model.isValid(options.stickitChange.observe),
+            enabled = isValid && model.hasStoredChange() && _.isEmpty(model.validationError || {});
+        this.$('[name=save]').attr('disabled', !enabled);
+      }
+    },
+  });
+
   var BasicInfoView = View.extend({
     template: 'admin/product/basic_info.html',
 
@@ -76,9 +117,14 @@ define([
     },
 
     edit: function() {
-      Chaplin.utils.redirectTo({
-        name: 'product_edit',
-        params: { id: this.model.id }
+      //Chaplin.utils.redirectTo({
+      //  name: 'product_edit',
+      //  params: { id: this.model.id }
+      //});
+      _dialog.run({
+        title: 'Editar información basica',
+        view: EditBasicInfoDialog,
+        model: this.model,
       });
     },
   });
