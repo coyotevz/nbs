@@ -48,12 +48,8 @@
   height: auto;
   max-width: 90%;
   min-width: 25%;
-  //top: -9999px;
-  //left: -9999px;
-
-  // Remove next lines with reposition js code
-  top: 40%;
-  left: 50%;
+  top: -9999px;
+  left: -9999px;
 
   .modal-content {
     @extend %widget;

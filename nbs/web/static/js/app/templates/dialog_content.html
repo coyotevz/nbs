@@ -1,7 +1,13 @@
 <div class="modal-header">
   {% block header %}
   <span class="modal-title">{{ title }}</span>
-  <span class="modal-close">&times;</span>
+  <div class="header-controls">
+    {% if closeButton %}
+    <a class="btn btn-xs btn-icon" name="modal-close" role="button" title="Close">
+      <i class="icon ion-close-round"></i>
+    </a>
+    {% endif %}
+  </div>
   {% endblock %}
 </div>
 <div class="modal-body">
@@ -11,9 +17,11 @@
 </div>
 <div class="modal-footer">
   {% block footer %}
-  {% for name, button in buttons %}
-  <button class="btn{% if button.style %} btn-{{ button.style }}{% endif %}" name="{{ name }}">{{ button.label }}</button>
-  {% endfor %}
+  <div class="footer-controls">
+    {% for name, button in buttons %}
+    <button class="btn btn-{{ button.style|d('default') }}" name="{{ name }}">{{ button.label }}</button>
+    {% endfor %}
+  </div>
   {% endblock %}
 </div>
 {# vim:ft=jinja:sw=2

@@ -9,7 +9,7 @@ define([
   var DialogContentView = View.extend({
     template: 'dialog_content.html',
     optionNames: View.prototype.optionNames.concat([
-      'dialog', 'title', 'text', 'buttons', 'template'
+      'dialog', 'title', 'text', 'closeButton', 'buttons', 'template'
     ]),
 
     initialize: function() {
@@ -36,7 +36,7 @@ define([
     noWrap: true,
 
     events: {
-      'click .modal-close': 'close',
+      'click [name=modal-close]': 'close',
     },
 
     render: function() {
@@ -103,7 +103,7 @@ define([
     *     },
     *     'cancel': {
     *       'label': 'Cancel',
-    *       <style=default> as default,
+    *       <style=btn-default> as default,
     *       'action': <some callback>(dialog,),
     *     }
     *   }
@@ -117,6 +117,7 @@ define([
 
        title: null,
        text: null,
+       closeButton: true,
        buttons: {},
      };
      var ContentView = options.view || DialogContentView;
