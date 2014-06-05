@@ -98,3 +98,9 @@ $input-border-radius:           1px;
 $input-border:                  rgba(0,0,0,0.15);
 $input-border-hover:            rgba(0,0,0,0.3); //#b2b2b2;
 $input-border-focus:            #4285f4; //#4d90f3;
+
+// Modals
+$modal-border-width:            1px;
+$modal-border-shadow:           0 4px 16px rgba(0,0,0,0.2);
+$modal-backdrop-bg:             $white;
+$modal-backdrop-opacity:        .75;

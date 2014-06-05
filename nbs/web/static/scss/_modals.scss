@@ -1,0 +1,82 @@
+/*
+ * Rewrite modal style
+ */
+
+// .modal-open      - body class for killing the scroll
+// .modal           - container to scroll within
+// .modal-dialog    - positioning shell for the actual modal
+// .modal-content   - actual modal w/ bg and corners and shit
+
+// Kill scroll on the body
+.modal-open {
+  overflow: hidden;
+
+  // Modal background
+  .modal-backdrop {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: $zindex-modal-background;
+    background-color: $modal-backdrop-bg;
+    // Fade for backdrop
+    &.fade { @include opacity(0); }
+    &.in { @include opacity($modal-backdrop-opacity); }
+  }
+}
+
+.modal {
+  display: none;
+  overflow: auto;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: $zindex-modal;
+  -webkit-overflow-scrolling: touch;
+
+  // Prevent Chrome on Windows from adding a focus ouline.
+  outline: 0;
+
+  &.fade .modal-dialog {
+    @include translate(0, -25%);
+    @include transition-transform(0.3s ease-out);
+  }
+
+  &.in .modal-dialog { @include translate(0, 0); }
+}
+
+.modal-dialog {
+  position: absolute;
+  width: auto;
+  height: auto;
+  max-width: 90%;
+  min-width: 25%;
+  //top: -9999px;
+  //left: -9999px;
+
+  // Remove next lines with reposition js code
+  top: 40%;
+  left: 50%;
+
+  .modal-content {
+    @extend %widget;
+
+    border-width: $modal-border-width;
+    @include box-shadow($modal-border-shadow);
+
+    .modal-header {
+      @extend %widget-header;
+      border-bottom: none;
+
+      .modal-title {
+        @extend %widget-title;
+      }
+    }
+
+    .modal-body {
+      @extend %widget-body;
+      position: relative;
+    }
+
+    .modal-footer {
+      @extend %widget-footer;
+    }
+  }
+}
