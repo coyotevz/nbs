@@ -1,6 +1,6 @@
-{% macro inforow(label, data, extraclass=None) %}
+{% macro inforow(label, data, extraclass=None, name=None) %}
 <div class="info-row{% if extraclass %} {{ extraclass }}{% endif %}">
   <span class="info-label">{{ label }}</span>
-  <span class="info-data">{{ data }}</span>
+  <span class="info-data" {% if name %}name="{{ name }}"{% endif %}>{{ data }}</span>
 </div>
 {% endmacro %}

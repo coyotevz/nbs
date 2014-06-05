@@ -76,6 +76,8 @@ define([
 
     listen: {
       'change model': 'onModelChange',
+      'show': 'onShow',
+      'hide': 'onHide',
     },
 
     bindings: {
@@ -90,20 +92,31 @@ define([
       },
     },
 
+    onShow: function() {
+      this.model.startTracking();
+    },
+
+    onHide: function() {
+      this.model.stopTracking();
+    },
+
     save: function() {
-      console.log('this.model:', this.model);
-      console.log('save on basic info');
-      this.model.save(this.model.getPatch(), {patch: true, validate: false});
+      //this.model.save(this.model.getPatch(), {patch: true, validate: false});
+      this.dialog.close();
     },
 
     cancel: function() {
+      //this.model.revertToStored();
+      this.model.resetAttributes();
       this.dialog.close();
     },
 
     onModelChange: function(model, options) {
       if (options.stickitChange) {
         var isValid = model.isValid(options.stickitChange.observe),
-            enabled = isValid && model.hasStoredChange() && _.isEmpty(model.validationError || {});
+            //enabled = isValid && model.hasStoredChange() && _.isEmpty(model.validationError || {});
+            enabled = isValid && !model.unsavedAttributes() && _.isEmpty(model.validationError || {});
+        console.log('isValid:', isValid, 'change:', !model.unsavedAttributes(), 'validationError empty:', _.isEmpty(model.validationError || {}));
         this.$('[name=save]').attr('disabled', !enabled);
       }
     },
@@ -114,6 +127,22 @@ define([
 
     events: {
       'click [name=edit]': 'edit',
+    },
+
+    bindings: {
+      '[name=sku]': 'sku',
+      '[name=description]': 'description',
+      '[name=price]': {
+        observe: 'price',
+        onGet: function(val) {
+          return '$ ' + $.number(val, 2, ',', '.');
+        },
+        updateView: 'hasChanges',
+      },
+    },
+
+    hasChanges: function(val, options) {
+      return !this.model._trackingChanges;
     },
 
     edit: function() {
@@ -197,6 +226,7 @@ define([
         model: this.model,
       });
       this.subview('basicinfo', basicinfo);
+      window.basicinfo = basicinfo;
 
       stock = new StockView({
         container: this.$('.stock-container'),

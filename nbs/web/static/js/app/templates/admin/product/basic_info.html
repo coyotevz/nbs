@@ -7,9 +7,9 @@
   <div class="widget-body">
     <div class="body-section">
       <div class="info-horizontal">
-        {{ inforow('Código', sku) }}
-        {{ inforow('Descripción', description) }}
-        {{ inforow('Precio', '$ ' + price|numberfmt) }}
+        {{ inforow('Código', sku, name='sku') }}
+        {{ inforow('Descripción', description, name='description') }}
+        {{ inforow('Precio', '$ ' + price|numberfmt, name='price') }}
       </div>
     </div>
   </div>
