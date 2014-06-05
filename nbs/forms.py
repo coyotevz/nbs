@@ -46,10 +46,6 @@ class ProductForm(ModelForm):
     class Meta:
         model = Product
 
-    @classmethod
-    def get_session():
-        return db.session
-
 
 class ProductSupplierInfoForm(ModelForm):
 

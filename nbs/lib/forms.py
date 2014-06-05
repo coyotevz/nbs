@@ -4,6 +4,7 @@ from flask import request
 from wtforms.compat import iteritems
 from wtforms.fields import StringField
 from wtforms.validators import DataRequired
+from nbs.models import db
 
 def string_field_process_formdata(self, valuelist):
     if valuelist:
@@ -15,7 +16,6 @@ def string_field_process_formdata(self, valuelist):
 StringField.process_formdata = string_field_process_formdata
 
 from wtforms_alchemy import model_form_factory
-from wtforms_alchemy.utils import ClassMap
 from flask.ext.wtf import Form as _Form
 
 class Form(_Form):
@@ -52,4 +52,10 @@ options = {
     'not_null_validator_type_map': {},
 }
 
-ModelForm = model_form_factory(Form, **options)
+BaseModelForm = model_form_factory(Form, **options)
+
+class ModelForm(BaseModelForm):
+
+    @classmethod
+    def get_session(self):
+        return db.session
