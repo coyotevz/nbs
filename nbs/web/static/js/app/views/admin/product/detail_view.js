@@ -101,12 +101,11 @@ define([
     },
 
     save: function() {
-      //this.model.save(this.model.getPatch(), {patch: true, validate: false});
+      this.model.save(this.model.unsavedAttributes(), {patch: true, validate: false});
       this.dialog.close();
     },
 
     cancel: function() {
-      //this.model.revertToStored();
       this.model.resetAttributes();
       this.dialog.close();
     },
@@ -114,9 +113,7 @@ define([
     onModelChange: function(model, options) {
       if (options.stickitChange) {
         var isValid = model.isValid(options.stickitChange.observe),
-            //enabled = isValid && model.hasStoredChange() && _.isEmpty(model.validationError || {});
-            enabled = isValid && !model.unsavedAttributes() && _.isEmpty(model.validationError || {});
-        console.log('isValid:', isValid, 'change:', !model.unsavedAttributes(), 'validationError empty:', _.isEmpty(model.validationError || {}));
+            enabled = isValid && model.isChanged() && _.isEmpty(model.validationError || {});
         this.$('[name=save]').attr('disabled', !enabled);
       }
     },
@@ -130,19 +127,25 @@ define([
     },
 
     bindings: {
-      '[name=sku]': 'sku',
-      '[name=description]': 'description',
+      '[name=sku]': {
+        observe: 'sku',
+        updateView: 'mustUpdate',
+      },
+      '[name=description]': {
+        observe: 'description',
+        updateView: 'mustUpdate',
+      },
       '[name=price]': {
         observe: 'price',
         onGet: function(val) {
           return '$ ' + $.number(val, 2, ',', '.');
         },
-        updateView: 'hasChanges',
+        updateView: 'mustUpdate',
       },
     },
 
-    hasChanges: function(val, options) {
-      return !this.model._trackingChanges;
+    mustUpdate: function(val, options) {
+      return !this.model.isTracked();
     },
 
     edit: function() {

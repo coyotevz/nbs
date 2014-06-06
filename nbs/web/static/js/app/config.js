@@ -16,7 +16,6 @@ var require = {
     'underscore':             'vendor/lodash-2.4.1',
     'backbone':               'vendor/backbone-1.1.2',
     'backbone.stickit':       'vendor/backbone-stickit-0.8.0',
-    'backbone.trackit':       'vendor/backbone-trackit-0.1.0',
     'backbone.associations':  'vendor/backbone-associations-0.6.1',
     'backbone.validation':    'vendor/backbone.validation/dist/backbone-validation-amd',
     'chaplin':                'vendor/chaplin-1.0.0',
@@ -44,6 +43,7 @@ var require = {
     'nbs.fixedheader':        'lib/nbs.fixedheader',
     'nbs.keycode':            'lib/nbs.keycode',
     'nbs.radio':              'lib/nbs.radio',
+    'backbone.trackit':       'lib/backbone-trackit',
 
     // selectize
     'selectize':              'vendor/selectize',
@@ -65,9 +65,6 @@ var require = {
       exports: 'Backbone'
     },
     'backbone.stickit': {
-      deps: ['jquery', 'backbone'],
-    },
-    'backbone.trackit': {
       deps: ['jquery', 'backbone'],
     },
     'backbone.associations': {

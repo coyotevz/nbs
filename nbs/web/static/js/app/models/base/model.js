@@ -2,57 +2,12 @@ define([
   'backbone',
   'underscore',
   'chaplin',
-  //'backbone.associations',
   'backbone.trackit',
   'backbone.validation',
 ], function(Backbone, _, Chaplin) {
   "use strict";
 
-  //var Model = Backbone.AssociatedModel.extend({
   var Model = Chaplin.Model.extend({
-
-    // Methods & properties inherited from Chaplin.Model
-    /*
-    getAttributes:  Chaplin.Model.prototype.getAttributes,
-    serialize:      Chaplin.Model.prototype.serialize,
-    disposed:       Chaplin.Model.prototype.disposed,
-    dispose:        Chaplin.Model.prototype.dispose,
-    */
-
-    /*
-    fetch: function(options) {
-      options = options ? _.clone(options) : {};
-      var success = options.success;
-      options.success = function(model, resp, options) {
-        // save a copy of recently fetched attributes
-        model._serverAttributes = _.clone(model.attributes);
-        if (success) success(model, resp, options);
-      };
-      return Backbone.AssociatedModel.prototype.fetch.call(this, options);
-    },
-
-    hasStoredChange: function() {
-      return _.isObject(this.getPatch()) ? true : false;
-    },
-
-    revertToStored: function(silent) {
-      if (this.hasStoredChange()) {
-        this.set(this._serverAttributes, {silent: (silent) ? silent : false });
-      }
-    },
-
-    getPatch: function() {
-      if (!this._serverAttributes) return false;
-      var attrs = this._serverAttributes,
-          diff = {};
-
-      _.each(this.attributes, function(val, key) {
-        if (!_.isEqual(val, attrs[key])) diff[key] = val;
-      });
-
-      if (!_.isEmpty(diff)) return diff;
-      return false;
-    },*/
 
     isAttributeValid: function(attr) {
       var errors = _.extend({}, this.validationError),

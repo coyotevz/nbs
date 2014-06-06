@@ -116,7 +116,7 @@ define([
   Backbone.sync = _.wrap(Backbone.sync, function(oldSync, method, model, options) {
     options = options || {};
 
-    if (method == 'update') {
+    if (method === 'update' || method == 'patch' || method == 'create') {
       options.success = _.wrap(options.success, _.bind(function(oldSuccess, data, textStatus, jqXHR) {
         var ret;
         if (oldSuccess) ret = oldSuccess.call(this, data, textStatus, jqXHR);
