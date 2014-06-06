@@ -8,7 +8,7 @@ define([
   return {
 
     'numberfmt': function(n, digits, dsep, gsep) {
-      return $.number(n, digits == null ? 2 : digits, dsep || ',', gsep || '.' );
+      return $.number(n, digits === null ? 2 : digits, dsep || ',', gsep || '.' );
     },
 
     'map': function(objs, attribute) {

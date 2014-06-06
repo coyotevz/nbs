@@ -87,7 +87,7 @@ define([
   Backbone.Model.prototype.set = _.wrap(Backbone.Model.prototype.set, function(oldSet, key, val, options) {
     var attrs, ret;
 
-    if (key == null) return this;
+    if (key === null) return this;
     // Handle both `"key", "value"` and `{key: value}` -style arguments.
     if (typeof key === 'object') {
       attrs = key;
@@ -95,7 +95,7 @@ define([
     } else {
       (attrs = {})[key] = val;
     }
-    options || (options = {});
+    options = options || {};
 
     // Delegate to Backbone's set.
     ret = oldSet.call(this, attrs, options);
@@ -114,7 +114,7 @@ define([
   // Intercept `model.save()` and reset tracking/unsaved changes if it was
   // successfull.
   Backbone.sync = _.wrap(Backbone.sync, function(oldSync, method, model, options) {
-    options || (options = {});
+    options = options || {};
 
     if (method == 'update') {
       options.success = _.wrap(options.success, _.bind(function(oldSuccess, data, textStatus, jqXHR) {
