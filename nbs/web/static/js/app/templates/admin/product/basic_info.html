@@ -7,9 +7,10 @@
   <div class="widget-body">
     <div class="body-section">
       <div class="info-horizontal">
-        {{ inforow('Código', sku, name='sku') }}
-        {{ inforow('Descripción', description, name='description') }}
-        {{ inforow('Precio', '$ ' + price|numberfmt, name='price') }}
+        {# values are setted by backbone.stickit #}
+        {{ inforow('Código', name='sku') }}
+        {{ inforow('Descripción', name='description') }}
+        {{ inforow('Precio', name='price') }}
       </div>
     </div>
   </div>

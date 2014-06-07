@@ -8,8 +8,8 @@
         <div class="info-horizontal">
           {{ inforow('Código', sku|d("&mdash;")) }}
           {{ inforow('Descripción', description|d("&mdash;")) }}
-          {{ inforow('Precio de Lista', '$ ' + base_cost|numberfmt) }}
-          {{ inforow('Precio Final', '$ ' + cost|numberfmt) }}
+          {{ inforow('Precio de Lista', '$ ' + base_cost|numberfmt(2)) }}
+          {{ inforow('Precio Final', '$ ' + cost|numberfmt(2)) }}
         </div>
       </div>
     </div>
