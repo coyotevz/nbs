@@ -73,6 +73,7 @@ define([
 
   var EditBasicInfoDialog = EditDialogContent.extend({
     content_form: 'admin/product/basic_info_edit.html',
+    _changedKeys: [],
 
     listen: {
       'change model': 'onModelChange',
@@ -98,10 +99,16 @@ define([
 
     onHide: function() {
       this.model.stopTracking();
+      _.each(this._changedKeys, function(element, index, list) {
+        this.model.trigger('change:' + element, this.model, this.model.get(element));
+      }, this);
+      this._changedKeys = [];
     },
 
     save: function() {
-      this.model.save(this.model.unsavedAttributes(), {patch: true, validate: false});
+      var changedAttrs = this.model.unsavedAttributes();
+      this._changedKeys = _.keys(changedAttrs);
+      this.model.save(changedAttrs, {patch: true, validate: false});
       this.dialog.close();
     },
 
@@ -149,10 +156,6 @@ define([
     },
 
     edit: function() {
-      //Chaplin.utils.redirectTo({
-      //  name: 'product_edit',
-      //  params: { id: this.model.id }
-      //});
       _dialog.run({
         title: 'Editar información basica',
         view: EditBasicInfoDialog,
