@@ -300,6 +300,8 @@ def get_result(query, params):
     }
 
 def _getcol(obj, column):
+    if hasattr(obj, 'get') and callable(obj.get):
+        return obj.get(column)
     if hasattr(obj, "{}_str".format(column)):
         return getattr(obj, "{}_str".format(column))
     return getattr(obj, column)

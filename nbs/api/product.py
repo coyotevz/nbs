@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime as dt
+
 from flask import Blueprint, request, jsonify, json, current_app
 from werkzeug.datastructures import MultiDict
 from nbs.models import db, Product, ProductSupplierInfo, Warehouse
@@ -139,5 +141,5 @@ def add_supplier_info(id):
 def list_price_history(id):
     """Returns price history data for this product"""
     product = Product.query.get_or_404(id)
-    result = [rest.to_dict(h, ['date', 'price']) for h in product.price_history]
+    result = [rest.to_dict(h, ['date', 'price']) for h in product.price_history + [{'price': product.price, 'date': dt.now()}]]
     return jsonify({'product_id': product.id, 'price_history': result})
