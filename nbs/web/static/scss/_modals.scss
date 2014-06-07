@@ -71,6 +71,10 @@
       position: relative;
     }
 
+    .modal-header + .modal-body {
+      margin-top: 10px;
+    }
+
     .modal-footer {
       @extend %widget-footer;
     }
