@@ -48,29 +48,6 @@ define([
     },
   });
 
-  // TODO: Remove this toolbar
-  var DetailToolbar = Toolbar.extend({
-    template: 'admin/product/detail_toolbar.html',
-
-    events: {
-      'click [name=edit]': 'edit',
-      'click [name=delete]': 'delete',
-    },
-
-    edit: function() {
-      this.$('[rel=tooltip]').tooltip('hide');
-      Chaplin.utils.redirectTo({
-        name: 'product_edit',
-        params: { id: this.view.model.id }
-      });
-    },
-
-    delete: function() {
-      this.$('[rel=tooltip]').tooltip('hide');
-      console.log('delete');
-    },
-  });
-
   var EditBasicInfoDialog = EditDialogContent.extend({
     content_form: 'admin/product/basic_info_edit.html',
     _changedKeys: [],
