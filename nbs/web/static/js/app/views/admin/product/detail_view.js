@@ -70,18 +70,6 @@ define([
       },
     },
 
-    onShow: function() {
-      this.model.startTracking();
-    },
-
-    onHide: function() {
-      this.model.stopTracking();
-      _.each(this._changedKeys, function(element, index, list) {
-        this.model.trigger('change:' + element, this.model, this.model.get(element));
-      }, this);
-      this._changedKeys = [];
-    },
-
     save: function() {
       var changedAttrs = this.model.unsavedAttributes();
       this._changedKeys = _.keys(changedAttrs);
@@ -94,6 +82,15 @@ define([
       this.dialog.close();
     },
 
+    onShow: function() {
+      this.model.startTracking();
+    },
+
+    onHide: function() {
+      this.model.stopTracking();
+      this._triggerChanges();
+    },
+
     onModelChange: function(model, options) {
       if (options.stickitChange) {
         var isValid = model.isValid(options.stickitChange.observe),
@@ -101,6 +98,14 @@ define([
         this.$('[name=save]').attr('disabled', !enabled);
       }
     },
+
+    _triggerChanges: function() {
+      _.each(this._changedKeys, function(attr, index, list) {
+        this.model.trigger('change:' + attr, this.model, this.model.get(attr));
+      }, this);
+      this._changedKeys = [];
+    },
+
   });
 
   var BasicInfoView = View.extend({
