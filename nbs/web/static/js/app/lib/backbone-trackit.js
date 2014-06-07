@@ -85,7 +85,7 @@ define([
 
   // Wrap `model.set()` and update the internal unsaved changes record keeping.
   Backbone.Model.prototype.set = _.wrap(Backbone.Model.prototype.set, function(oldSet, key, val, options) {
-    var attrs, ret;
+    var attrs;
 
     if (key === null) return this;
     // Handle both `"key", "value"` and `{key: value}` -style arguments.
@@ -97,9 +97,6 @@ define([
     }
     options = options || {};
 
-    // Delegate to Backbone's set.
-    ret = oldSet.call(this, attrs, options);
-
     if (this._trackingChanges && !options.silent) {
       _.each(attrs, _.bind(function(val, key) {
         if (_.isEqual(this._originalAttrs[key], val))
@@ -108,7 +105,9 @@ define([
           this._unsavedChanges[key] = val;
       }, this));
     }
-    return ret;
+
+    // Delegate to Backbone's set.
+    return oldSet.call(this, attrs, options);
   });
 
   // Intercept `model.save()` and reset tracking/unsaved changes if it was
