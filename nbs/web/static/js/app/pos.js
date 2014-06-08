@@ -1,5 +1,6 @@
 // Pos application
 require([
+  'pace',
   'chaplin',
   'views/layout',
   'routes/pos',
@@ -9,11 +10,16 @@ require([
   'jquery.number',
   'nbs.keycode',
   'nbs.fixedheader',
-], function(Chaplin, PosLayout, routes) {
+], function(Pace, Chaplin, PosLayout, routes) {
   "use strict";
 
+  Pace.start();
+  Pace.once("hide", function() {
+    $('body').removeClass('pace-init').addClass('pace-async');
+  });
+
   var Application = Chaplin.Application.extend({
-    title: 'Nobix',
+    title: 'Nobix POS',
 
     initLayout: function(options) {
       options = options || {};

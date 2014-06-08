@@ -20,6 +20,8 @@ require([
 
   Pace.start();
   Pace.once("hide", function() {
+    $('#header').addClass('top-bar');
+    $('#body').addClass('main');
     $('body').removeClass('pace-init').addClass('pace-async');
   });
 
