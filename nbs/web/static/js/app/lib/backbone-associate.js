@@ -13,6 +13,14 @@ define([
 ], function(_, Backbone) {
   "use strict";
 
+  var deepExtend = function() {
+    var merged = {};
+    for (var i = 0; i < arguments.length; i++) {
+      _.merge(merged, arguments[i]);
+    };
+    return merged;
+  };
+
   Backbone.One = "One";
   Backbone.Many = "Many";
   Backbone.Self = "Self";
@@ -25,11 +33,27 @@ define([
   //  ModelProto.<method> = _.wrap(ModelProto.<method>, function(<method>, [args]) {};
   //  else implement that in _.extend() style
 
-  var ModelProto = Backbone.Model.prototype;
+  var Model = Backbone.Model;
 
-  _.extend(ModelProto, {
+  _.extend(Model.prototype, {
 
     relations: undefined,
+
+    // Override constructor
+    // Suport having nested defaults by using _.deepExtend instead of _.extend
+    constructor: function(attributes, options) {
+      var defaults;
+      var attrs = attributes || {};
+      this.cid = _.uniqueId('c');
+      this.attributes = {};
+      if (options && options.collection) this.collection = options.collection;
+      if (options && options.parse) attrs = this.parse(attrs, options) || {};
+      if (defaults = _.result(this, 'defaults'))
+        attrs = deepExtend(defaults, attrs);
+      this.set(attrs, options);
+      this.changed = {}
+      this.initialize.apply(this, arguments);
+    },
 
     activateRelations: function() {
       console.log('activating relations...');
@@ -37,12 +61,11 @@ define([
 
   });
 
-  ModelProto.initialize = _.wrap(ModelProto.initialize, function(origInitialize) {
-    origInitialize.apply(this, arguments);
+  Model.prototype.initialize = _.wrap(Model.prototype.initialize, function(init) {
+    init.apply(this, arguments);
     if (this.relations)
       this.activateRelations();
   });
-
 
   // Don't return anything
 });
