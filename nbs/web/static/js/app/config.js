@@ -17,6 +17,7 @@ var require = {
     'backbone':               'vendor/backbone-1.1.2',
     'backbone.stickit':       'vendor/backbone-stickit-0.8.0',
     'backbone.associations':  'vendor/backbone-associations-0.6.1',
+    'backbone.associate':     'lib/backbone-associate',
     'backbone.validation':    'vendor/backbone.validation/dist/backbone-validation-amd',
     'chaplin':                'vendor/chaplin-1.0.0',
     'nunjucks':               'vendor/nunjucks-1.0.1',

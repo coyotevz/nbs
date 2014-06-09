@@ -4,6 +4,7 @@ define([
   'chaplin',
   'backbone.trackit',
   'backbone.validation',
+  'backbone.associate',
 ], function(Backbone, _, Chaplin) {
   "use strict";
 

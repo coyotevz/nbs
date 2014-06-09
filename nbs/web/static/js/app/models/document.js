@@ -1,9 +1,28 @@
 define([
-  'backbone',
   'models/base/model',
-  'models/document_items',
-], function(Backbone, Model, DocumentItems) {
+  'models/base/collection',
+  'models/document_item',
+], function(Model, Collection, DocumentItem) {
   "use strict";
+
+  var DocumentItemsCollection = Collection.extend({
+    model: DocumentItem,
+    url: function() {
+      return this.document.url() + '/items';
+    },
+
+    initialize: function(document) {
+      DocumentItemsCollection.__super__.initialize.apply(this, arguments);
+      this.document = document;
+    },
+
+    parse: function(data) {
+      var objects = data.document_items || data;
+
+      this.document_id = data.document_id || null;
+      return objects;
+    },
+  });
 
   var Document = Model.extend({
     urlRoot: '/api/documents',
@@ -12,29 +31,40 @@ define([
       type: 'FAC',
       total: 0,
       customer: null,
-      items: [],
+      //items: [],
     },
 
-    relations: [
-      {
-        type: Backbone.Many,
-        key: 'items',
-        collectionType: DocumentItems,
-      },
-      // TODO: Add relations to: customer, salesman
-    ],
+    //relations: [
+    //  {
+    //    type: Backbone.Many,
+    //    key: 'items',
+    //    collectionType: DocumentItems,
+    //  },
+    //  // TODO: Add relations to: customer, salesman
+    //],
 
     initialize: function() {
       Model.prototype.initialize.apply(this, arguments);
-      this.on('add:items remove:items', this.updateTotal);
-      this.on('change:items[*].total', this.updateTotal);
-      if (this.has('items')) {
-        this.updateTotal();
+      //this.on('add:items remove:items', this.updateTotal);
+      //this.on('change:items[*].total', this.updateTotal);
+      //if (this.has('items')) {
+      this.updateTotal();
+    },
+
+    getItems: function() {
+      if (!this._items) {
+        var items = new DocumentItemsCollection(this);
+        // bind some events
+        items.on('add remove', this.updateTotal, this);
+        items.on('change:total', this.updateTotal, this); // FIXME:?? test if work
+        this._items = items;
       }
+      return this._items;
     },
 
     updateTotal: function() {
-      var total = this.get('items').reduce(function(tot, item) {
+      //var total = this.get('items').reduce(function(tot, item) {
+      var total = this.getItems().reduce(function(tot, item) {
         return tot + item.get('total');
       }, 0);
       this.set('total', total);
