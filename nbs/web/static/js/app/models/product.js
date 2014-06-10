@@ -65,9 +65,9 @@ define([
     initialize: function() {
       Product.__super__.initialize.apply(this, arguments);
       var prod = this;
-      this.get('suppliers_info').url = function() {
-        return prod.urlRoot + '/' + prod.id + '/suppliers_info';
-      };
+      //this.get('suppliers_info').url = function() {
+      //  return prod.urlRoot + '/' + prod.id + '/suppliers_info';
+      //};
     },
 
     getSuppliersInfo: function() {
