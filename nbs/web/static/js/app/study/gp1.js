@@ -34,8 +34,8 @@ var Cart = Model.extend({
 var Account = Model.extend({
   initialize: function() {
     Account.__super__.initialize.apply(this, arguments);
-    this.on('change', function() { console.log('change') });
-    this.on('change:cart', function() { console.log('change:cart') });
+    this.on('change', function() { console.log('change'); });
+    this.on('change:cart', function() { console.log('change:cart'); });
     this.on('change:cart.items', function() { console.log('change:cart.items'); });
     this.on('change:cart.items[*]', function() { console.log('change:cart.items[*]'); });
     this.on('add:cart.items', function() { console.log('add:cart.items'); });

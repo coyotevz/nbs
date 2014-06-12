@@ -7,6 +7,8 @@
  * Copyright(c) 2014 Augusto Roccasalva
  */
 
+// jshint -W084
+
 define([
   'underscore',
   'backbone',
@@ -17,7 +19,7 @@ define([
     var merged = {};
     for (var i = 0; i < arguments.length; i++) {
       _.merge(merged, arguments[i]);
-    };
+    }
     return merged;
   };
 
@@ -91,7 +93,7 @@ define([
       if (defaults = _.result(this, 'defaults'))
         attrs = deepExtend({}, defaults, attrs);
       this.set(attrs, options);
-      this.changed = {}
+      this.changed = {};
       this.initialize.apply(this, arguments);
     },
 
@@ -130,7 +132,7 @@ define([
       var attributes, result;
 
       // Handle both `"key", value` and `{key: value}` -style arguments.
-      if (_.isObject(key) || key == null) {
+      if (_.isObject(key) || key === null) {
         attributes = key;
         options = value;
       } else {
@@ -164,7 +166,7 @@ define([
         // Traverse down the object graph to call process pending events on sub-trees
         _.each(this.relations, function(relation) {
           var val = this.attributes[relation.key];
-          val && val._processPendingEvents();
+          if (val) val._processPendingEvents();
         }, this);
 
         delete this._processedEvents;
