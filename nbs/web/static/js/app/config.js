@@ -16,8 +16,6 @@ var require = {
     'underscore':             'vendor/lodash-2.4.1',
     'backbone':               'vendor/backbone-1.1.2',
     'backbone.stickit':       'vendor/backbone-stickit-0.8.0',
-    'backbone.associations':  'vendor/backbone-associations-0.6.1',
-    'backbone.associate':     'lib/backbone-associate',
     'backbone.validation':    'vendor/backbone.validation/dist/backbone-validation-amd',
     'chaplin':                'vendor/chaplin-1.0.0',
     'nunjucks':               'vendor/nunjucks-1.0.1',
@@ -44,6 +42,7 @@ var require = {
     'nbs.fixedheader':        'lib/nbs.fixedheader',
     'nbs.keycode':            'lib/nbs.keycode',
     'nbs.radio':              'lib/nbs.radio',
+    'backbone.associations':  'lib/backbone-associations',
     'backbone.trackit':       'lib/backbone-trackit',
 
     // selectize
@@ -62,14 +61,9 @@ var require = {
       exports: '_'
     },
     'backbone': {
+      // inject json as a dependency
       deps: ['json', 'jquery', 'underscore'],
       exports: 'Backbone'
-    },
-    'backbone.stickit': {
-      deps: ['jquery', 'backbone'],
-    },
-    'backbone.associations': {
-      deps: ['backbone']
     },
     'nunjucks': {
       exports: 'nunjucks',

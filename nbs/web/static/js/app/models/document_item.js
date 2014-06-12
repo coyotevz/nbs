@@ -18,11 +18,11 @@ define([
      * line_order
      */
 
-    //relations: [{
-    //  type: Backbone.One,
-    //  key: 'product',
-    //  relatedModel: Product,
-    //}],
+    relations: [{
+      type: Backbone.One,
+      key: 'product',
+      relatedModel: Product,
+    }],
 
     defaults: {
       quantity: 1,

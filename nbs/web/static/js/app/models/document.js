@@ -34,14 +34,14 @@ define([
       //items: [],
     },
 
-    //relations: [
-    //  {
-    //    type: Backbone.Many,
-    //    key: 'items',
-    //    collectionType: DocumentItems,
-    //  },
-    //  // TODO: Add relations to: customer, salesman
-    //],
+    relations: [
+      {
+        type: Backbone.Many,
+        key: 'items',
+        collectionType: DocumentItems,
+      },
+      // TODO: Add relations to: customer, salesman
+    ],
 
     initialize: function() {
       Model.prototype.initialize.apply(this, arguments);

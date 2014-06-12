@@ -36,17 +36,17 @@ define([
 
     urlRoot: '/api/products',
 
-    //relations: [{
-    //  type: Backbone.One,
-    //  key: 'stock',
-    //  relatedModel: StockInfo,
-    //},
-    //{
-    //  type: Backbone.Many,
-    //  key: 'suppliers_info',
-    //  collectionType: SupplierInfoCollection,
-    //  relatedModel: SupplierInfo,
-    //}],
+    relations: [{
+      type: Backbone.One,
+      key: 'stock',
+      relatedModel: StockInfo,
+    },
+    {
+      type: Backbone.Many,
+      key: 'suppliers_info',
+      collectionType: SupplierInfoCollection,
+      relatedModel: SupplierInfo,
+    }],
 
     defaults: {
       suppliers_info: [],

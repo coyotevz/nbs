@@ -3,7 +3,7 @@ define(function(require) {
   var nunjucks;
 
   /* Check if have precompiled templates else use HttpLoader */
-  if (window.nunjucksPrecompiled) {
+  if (window.nunjucksPrecompiled !== undefined) {
 
     /* we have precompiled templates, use them */
     nunjucks = require('nunjucks-slim');

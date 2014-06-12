@@ -5,7 +5,8 @@ module.exports = function(grunt) {
 
     /* define tasks */
     jshint: {
-      files: ['Gruntfile.js', 'app/**/*.js', '!app/vendor/**/*.js'],
+      files: ['Gruntfile.js', 'app/**/*.js', '!app/vendor/**/*.js',
+              '!app/study/**/*.js'],
       options: {
         globals: {
           jQuery: true,
