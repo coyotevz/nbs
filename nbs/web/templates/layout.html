@@ -10,6 +10,9 @@
     {%- block module_css %}{% endblock %}
     <script type="text/javascript" charset="utf-8">
       var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      var config = {
+        urlRoot: '/api',
+      };
     </script>
     {%- block module_js %}{% endblock %}
   </head>
