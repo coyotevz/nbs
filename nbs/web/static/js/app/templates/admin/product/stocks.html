@@ -8,9 +8,9 @@
     <div class="body-section">
       <div class="info-horizontal data-right">
         {% for stock in stocks %}
-        {{ inforow(stock.warehouse, stock.quantity|numberfmt(0) + ' ' + stock.unit) }}
+        {{ inforow(stock.warehouse, stock.quantity|numberfmt + ' ' + stock.unit) }}
         {% endfor %}
-        {{ inforow('TOTAL', stocks|map('quantity')|sum|numberfmt(0) + ' ' + stocks|first|attr('unit')) }}
+        {{ inforow('TOTAL', stocks|map('quantity')|sum|numberfmt + ' ' + stocks|first|attr('unit')) }}
       </div>
     </div>
   </div>

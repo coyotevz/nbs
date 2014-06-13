@@ -9,11 +9,6 @@ define([
     model: DocumentItem,
     urlRoot: '/items',
 
-    initialize: function(document) {
-      DocumentItemsCollection.__super__.initialize.apply(this, arguments);
-      this.document = document;
-    },
-
     parse: function(data) {
       var objects = data.document_items || data;
 
@@ -29,14 +24,14 @@ define([
       type: 'FAC',
       total: 0,
       customer: null,
-      //items: [],
+      items: [],
     },
 
     relations: [
       {
         type: Backbone.Many,
         key: 'items',
-        collectionType: DocumentItems,
+        collectionType: DocumentItemsCollection,
       },
       // TODO: Add relations to: customer, salesman
     ],
@@ -48,20 +43,8 @@ define([
       if (this.has('items')) this.updateTotal();
     },
 
-    getItems: function() {
-      if (!this._items) {
-        var items = new DocumentItemsCollection(this);
-        // bind some events
-        items.on('add remove', this.updateTotal, this);
-        items.on('change:total', this.updateTotal, this); // FIXME:?? test if work
-        this._items = items;
-      }
-      return this._items;
-    },
-
     updateTotal: function() {
-      //var total = this.get('items').reduce(function(tot, item) {
-      var total = this.getItems().reduce(function(tot, item) {
+      var total = this.get('items').reduce(function(tot, item) {
         return tot + item.get('total');
       }, 0);
       this.set('total', total);

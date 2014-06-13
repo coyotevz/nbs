@@ -11,6 +11,6 @@
   <a class="link-product-description" href="#products/{{ id }}"><div class="icon-image product-icon"></div><span class="product-description cell-label-container">{{ description }}</span></a>
 </td>
 <td class="cell-date"></td>
-<td class="cell-price"><span class="product-price cell-label-container">{{ price|numberfmt }}</span></td>
+<td class="cell-price"><span class="product-price cell-label-container">{{ price|numberfmt(2) }}</span></td>
 {# vim:ft=jinja:sw=2
 #}

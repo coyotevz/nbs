@@ -107,13 +107,11 @@ define([
       var itemsView, appenderView, header, footer;
 
       // items list
-      console.log('items:', this.model.getItems());
       itemsView = new ItemsView({
         region: 'body',
-        collection: this.model.getItems()
+        collection: this.model.get('items')
       });
       this.subview('itemslist', itemsView);
-      window.items = this.model.getItems();
 
       // appender row
       appenderView = new AppenderView({
@@ -146,7 +144,7 @@ define([
     },
 
     onAppend: function(item) {
-      this.model.getItems().add(item);
+      this.model.get('items').add(item);
     },
 
     onScroll: function(evt) {
