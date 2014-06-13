@@ -29,6 +29,8 @@ $header-height: 60px;
 $footer-height: 60px;
 
 #pos {
+  background-color: $white;
+
   .container-sku,
   .cell-quantity,
   .cell-unit-price,
@@ -39,7 +41,7 @@ $footer-height: 60px;
 
   font-family: arial,sans-serif;
 
-  header, footer {
+  #header, #footer {
     width: 100%;
     position: fixed;
     z-index: $zindex-navbar-fixed;
@@ -48,13 +50,13 @@ $footer-height: 60px;
     }
   }
 
-  header {
+  #header {
     border-bottom: 1px solid #a5a5a5;
     height: $header-height;
     top: 0;
   }
 
-  footer {
+  #footer {
     border-top: 1px solid #a5a5a5;
     height: $footer-height;
     bottom: 0;
