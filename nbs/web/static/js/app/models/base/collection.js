@@ -29,7 +29,7 @@ define([
       } else {
         base = config.urlRoot || '';
       }
-      return base.replace(/([^\/])$/, '$1/') + encodeURIComponent(this.urlRoot);
+      return base.replace(/([^\/])$/, '$1') + this.urlRoot;
     },
   });
 

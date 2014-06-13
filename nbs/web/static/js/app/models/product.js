@@ -15,7 +15,7 @@ define([
 
   var SupplierInfoCollection = Collection.extend({
     model: SupplierInfo,
-    urlRoot: 'suppliers_info',
+    urlRoot: '/suppliers_info',
 
     initialize: function(product) {
       SupplierInfoCollection.__super__.initialize.apply(this, arguments);
@@ -32,7 +32,7 @@ define([
 
   var Product = Model.extend({
 
-    urlRoot: 'products',
+    urlRoot: '/products',
 
     relations: [{
       type: Backbone.One,
