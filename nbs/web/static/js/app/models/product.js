@@ -17,11 +17,6 @@ define([
     model: SupplierInfo,
     urlRoot: '/suppliers_info',
 
-    initialize: function(product) {
-      SupplierInfoCollection.__super__.initialize.apply(this, arguments);
-      this.product = product;
-    },
-
     parse: function(data) {
       var objects = data.suppliers_info || data;
 
@@ -43,7 +38,6 @@ define([
       type: Backbone.Many,
       key: 'suppliers_info',
       collectionType: SupplierInfoCollection,
-      relatedModel: SupplierInfo,
     }],
 
     defaults: {
@@ -58,21 +52,6 @@ define([
       'price': {
         required: true,
       },
-    },
-
-    initialize: function() {
-      Product.__super__.initialize.apply(this, arguments);
-      var prod = this;
-      //this.get('suppliers_info').url = function() {
-      //  return prod.urlRoot + '/' + prod.id + '/suppliers_info';
-      //};
-    },
-
-    getSuppliersInfo: function() {
-      if (!this._spi) {
-        this._spi = new SupplierInfoCollection(this);
-      }
-      return this._spi;
     },
 
     validateSku: function(val, attr, model) {
@@ -90,10 +69,7 @@ define([
       }
       if (!error) {
         // Validate sku uniqueness
-        // merge = false is important in options because Backbone.Relations
-        // update the current model fields and Backbone.stickit updates current
-        // view with server data.
-        var product = Product.search.one({sku: val.toUpperCase()}, {merge: false});
+        var product = Product.search.one({sku: val.toUpperCase()});
         if (product && product.id !== this.id) {
           error = "El código ya es utilizado por otro producto";
         }

@@ -5,11 +5,10 @@ define([
   'views/base/view',
   'views/base/collection_view',
   'views/base/tab_collection_view',
-  'views/toolbar',
   'views/sidebar',
   'views/admin/edit_dialog',
-], function($, _, Chaplin, View, CollectionView, TabCollectionView, Toolbar,
-            Sidebar, EditDialogContent) {
+], function($, _, Chaplin, View, CollectionView, TabCollectionView, Sidebar,
+            EditDialogContent) {
   "use strict";
 
   var DetailSidebar = Sidebar.extend({
@@ -203,9 +202,7 @@ define([
     },
 
     initSubviews: function() {
-      var toolbar, sidebar, basicinfo, stock, spi;
-      //toolbar = new DetailToolbar({region: 'toolbar', view: this});
-      //this.subview('toolbar', toolbar);
+      var sidebar, basicinfo, stock, spi;
       sidebar = new DetailSidebar({region: 'sidebar', view: this});
       this.subview('sidebar', sidebar);
 
@@ -224,7 +221,7 @@ define([
 
       spi = new SupplierInfoView({
         container: this.$('.spi-container'),
-        collection: this.model.getSuppliersInfo(),
+        collection: this.model.get('suppliers_info'),
       });
       this.subview('spi', spi);
       spi.collection.fetch();

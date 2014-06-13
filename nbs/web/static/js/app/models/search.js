@@ -5,9 +5,6 @@ define([
 ], function(_, Backbone, PaginatedCollection) {
   "use strict";
 
-  var urlError = function() {
-    throw new Error('A "url" property or function must be specified');
-  };
   /*
    * Strongly based on https://github.com/tornado-utils/tornado-backbone
    * project
@@ -28,11 +25,11 @@ define([
 
   var Search = PaginatedCollection.extend({
 
-    urlRoot: null,
     xhr: null,
 
     initialize: function(model, condition, options) {
       this.model = model;
+      this.urlRoot = model.prototype.urlRoot;
       this.condition = condition || {};
       this.options = options || {};
     },
@@ -58,11 +55,6 @@ define([
 
     cancel: function() {
       if (this.xhr) this.xhr.abort();
-    },
-
-    url: function() {
-      var base = _.result(this.model.prototype, 'urlRoot') || _.result(this, 'urlRoot') || urlError();
-      return base;
     },
 
     /**
