@@ -7,7 +7,7 @@ define([
   var ProductsCollection = PaginatedCollection.extend({
 
     model: Product,
-    url: '/api/products',
+    urlRoot: 'products',
 
     initialize: function() {
       PaginatedCollection.prototype.initialize.apply(this, arguments);

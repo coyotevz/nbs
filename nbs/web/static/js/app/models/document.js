@@ -7,9 +7,7 @@ define([
 
   var DocumentItemsCollection = Collection.extend({
     model: DocumentItem,
-    url: function() {
-      return this.document.url() + '/items';
-    },
+    urlRoot: '/items',
 
     initialize: function(document) {
       DocumentItemsCollection.__super__.initialize.apply(this, arguments);
@@ -25,7 +23,7 @@ define([
   });
 
   var Document = Model.extend({
-    urlRoot: '/api/documents',
+    urlRoot: '/documents',
 
     defaults: {
       type: 'FAC',
@@ -45,10 +43,9 @@ define([
 
     initialize: function() {
       Model.prototype.initialize.apply(this, arguments);
-      //this.on('add:items remove:items', this.updateTotal);
-      //this.on('change:items[*].total', this.updateTotal);
-      //if (this.has('items')) {
-      this.updateTotal();
+      this.on('add:items remove:items', this.updateTotal);
+      this.on('change:items[*].total', this.updateTotal);
+      if (this.has('items')) this.updateTotal();
     },
 
     getItems: function() {
@@ -74,7 +71,7 @@ define([
   /*
   var Document = Model.extend({
 
-    urlRoot: '/api/documents',
+    urlRoot: '/documents',
 
     defaults: {
       type: 'FAC',
