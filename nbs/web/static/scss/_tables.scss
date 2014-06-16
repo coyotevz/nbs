@@ -15,6 +15,7 @@
 .table-nbx {
 
   table-layout: fixed;
+  width: 100%;
   font-size: 14px;
 
   thead,
@@ -142,6 +143,15 @@
     }
   }
 
+  /* fix table header plugin */
+  &.fixed {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+  }
+
+  /* Product list */
   &.productlist {
     .col-active-indicator { width: 4px; }
     .col-checkbox         { width: 23px; }

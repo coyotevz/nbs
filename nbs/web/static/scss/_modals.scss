@@ -54,6 +54,7 @@
   .modal-content {
     @extend %widget;
 
+    border-color: rgba(0,0,0,0.33);
     border-width: $modal-border-width;
     @include box-shadow($modal-border-shadow);
 
@@ -63,6 +64,7 @@
 
       .modal-title {
         @extend %widget-title;
+        &.pull-right { margin-right: 0px; }
       }
     }
 
