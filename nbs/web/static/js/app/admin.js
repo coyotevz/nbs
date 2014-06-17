@@ -19,7 +19,14 @@ require([
   "use strict";
 
   Pace.start();
-  Pace.once("hide", function() {
+  Pace.on('hide', function() {
+    Chaplin.mediator.publish('pace:hide');
+  });
+  Pace.on('done', function() {
+    Chaplin.mediator.publish('pace:done');
+  });
+
+  Pace.once('hide', function() {
     $('#header').addClass('top-bar');
     $('#body').addClass('main');
     $('body').removeClass('pace-init').addClass('pace-async');

@@ -117,7 +117,6 @@ define([
       appenderView = new AppenderView({
         model: new DocumentItem()
       });
-      window.appender = appenderView;
       this.listenTo(appenderView, 'append', this.onAppend);
       this.subview('appender', appenderView);
 
@@ -136,11 +135,14 @@ define([
       this.subview('footer', footer);
 
       this.$el.css({
-        'top': header.$el.outerHeight(),
-        'bottom': footer.$el.outerHeight() + 3,
+        'top': header.container.outerHeight(),
+        'bottom': footer.container.outerHeight(),
         'visibility': 'visible',
       });
-      appenderView.$('input:first').focus();
+
+      this.subscribeEvent('pace:hide', function() {
+        appenderView.$('input:first').focus();
+      });
     },
 
     onAppend: function(item) {
