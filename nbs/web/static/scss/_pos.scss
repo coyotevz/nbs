@@ -65,6 +65,7 @@ $footer-height: 60px;
       float: right;
       font-size: 40px;
       padding-right: 15px;
+      color: #222;
 
       .sign: {
         color: #aaa;
@@ -91,6 +92,7 @@ $footer-height: 60px;
 
       tr {
         font-size: 28px;
+        color: #222;
 
         td {
           height: 40px;
@@ -108,6 +110,8 @@ $footer-height: 60px;
             outline: none;
             height: 40px;
             border-width: 0px;
+            padding: 1px 2px;
+            margin: 1px;
 
             &, &:hover {
               @include box-shadow(none);
