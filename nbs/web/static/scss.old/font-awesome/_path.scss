@@ -1,9 +1,0 @@
-/* FONT PATH
- * -------------------------- */
-
-@font-face {
-  font-family: 'FontAwesome';
-  src: url('#{$fa-font-path}#{$fa-font-name}.woff?v=#{$fa-version}') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
