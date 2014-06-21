@@ -46,16 +46,6 @@ def configure_app(app, config=None):
     else:
         app.config.from_object('nbs.config.DevelopmentConfig')
 
-    @app.route('/urls')
-    def show_urls():
-        from flask import escape
-        return '<pre>'+str(escape(str(app.url_map)))+'</pre>'
-
-    @app.route('/params')
-    def test_params():
-        print request.args.keys()
-        return repr(request.args)
-
     @app.before_request
     def set_page_params():
         max_per_page = app.config.get('MAX_ITEMS_PER_PAGE', 100)

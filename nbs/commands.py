@@ -10,6 +10,7 @@ import sys
 from flask import current_app
 from flask.ext.script import Manager, Shell, prompt_bool
 from flask.ext.script import Command, Option
+from flask.ext.script.commands import Clean, ShowUrls
 
 from nbs import create_app
 from nbs.models import db
@@ -46,10 +47,11 @@ def shell_make_context():
     )
 
 manager.add_command("shell", Shell(make_context=shell_make_context))
+manager.add_command("clean", Clean())
+manager.add_command("show-urls", ShowUrls())
 
 class GunicornServer(Command):
-
-    description = u'Run the app within Gunicorn'
+    "Run the app within Gunicorn"
 
     def __init__(self, host='127.0.0.1', port=8000, workers=4):
         self.port = port
@@ -63,8 +65,12 @@ class GunicornServer(Command):
             Option('-w', '--workers', dest='workers', default=self.workers),
         )
 
-    def handle(self, app, host, port, workers):
-        from gunicorn import version_info
+    def run(self, host, port, workers):
+        from flask import current_app
+        try:
+            from gunicorn import version_info
+        except ImportError:
+            sys.exit("You must have installed gunicorn to run this command")
 
         if version_info < (0, 9, 0):
             print "We can't run this yet"
@@ -79,7 +85,7 @@ class GunicornServer(Command):
                     }
 
                 def load(self):
-                    return app
+                    return current_app
 
             FlaskApplication().run()
 
@@ -87,11 +93,13 @@ manager.add_command("gunicorn", GunicornServer())
 
 
 class PyTest(Command):
+    "Run py.text over the entire project"
 
-    description = u'Run py.test over the entire project'
-
-    def handle(self, app):
-        import pytest
+    def run(self):
+        try:
+            import pytest
+        except ImportError:
+            sys.exit("You must have installed py.test to run this command")
         errno = pytest.main(sys.argv[2:])
         sys.exit(errno)
 
