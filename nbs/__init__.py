@@ -35,16 +35,16 @@ class Request(_Request):
     """Redefine Request that uses ImmutableOrderedMultiDict for .args"""
     parameter_storage_class = ImmutableOrderedMultiDict
 
-def run_scss():
+def run_scss(app):
     import subprocess, atexit
 
-    infile = 'nbs/web/static/scss/nobix.scss'
-    outfile = 'nbs/web/static/css/nobix.css'
+    infile = '%s/web/static/scss/nobix.scss' % app.root_path
+    outfile = '%s/web/static/css/nobix.css' % app.root_path
 
     proc = subprocess.Popen(['/usr/bin/scss', '--watch', '%s:%s' % (infile, outfile)])
     atexit.register(proc.kill)
 
-def running_main():
+def is_running_main():
     import os
     return os.environ.get('WERKZEUG_RUN_MAIN', False)
 
@@ -58,8 +58,8 @@ def configure_app(app, config=None):
     else:
         app.config.from_object('nbs.config.DevelopmentConfig')
 
-    if app.debug and not running_main():
-        run_scss()
+    if app.debug and not is_running_main():
+        run_scss(app)
 
     @app.before_request
     def set_page_params():
