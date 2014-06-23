@@ -172,7 +172,7 @@ class SaleInvoice(SaleDocument):
     )
 
     @property
-    def fiscal_type_label(self):
+    def fiscal_type_str(self):
         return self._fiscal_type[self.fiscal_type]
 
     def __repr__(self):
