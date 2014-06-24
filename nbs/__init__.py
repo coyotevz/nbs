@@ -49,6 +49,7 @@ def is_running_main():
     return os.environ.get('WERKZEUG_RUN_MAIN', False)
 
 def configure_app(app, config=None):
+    import sys
 
     # Set custom Request class
     app.request_class = Request
@@ -58,7 +59,7 @@ def configure_app(app, config=None):
     else:
         app.config.from_object('nbs.config.DevelopmentConfig')
 
-    if app.debug and not is_running_main():
+    if app.debug and 'runserver' in sys.argv and not is_running_main():
         run_scss(app)
 
     @app.before_request
