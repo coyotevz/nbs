@@ -13,9 +13,9 @@ class NumberedDocumentMixin(object):
     def issue_place_id(cls):
         return db.Column(db.Integer, db.ForeignKey('document.issue_place_id'))
 
-    __table_args__ = (
-        UniqueConstraint('number', 'issue_place_id'),
-    )
+    @declared_attr
+    def __table_args__(cls):
+        return (UniqueConstraint('number', 'issue_place_id'),)
 
 
 class FiscalDocumentMixin(object):
