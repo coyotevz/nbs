@@ -30,8 +30,6 @@ tambien puden contener una fecha de vencimiento.
 # Document statuses
 
 
-
-
 class Document(db.Model, TimestampMixin):
     """Base document"""
     __tablename__ = 'document'
@@ -86,6 +84,21 @@ class Document(db.Model, TimestampMixin):
 
     def can_modify(self):
         return self.status in (self.STATUS_DRAFT, self.STATUS_PENDING)
+
+
+class FiscalDocument(Document):
+
+    #: Fiscal type 'A' for 'Responsable Inscripto' customer
+    FISCAL_TYPE_A = u'FISCAL_A'
+
+    #: Fiscal type 'B' for 'Consumidor Final' customer
+    FISCAL_TYPE_B = u'FISCAL_B'
+
+    _fiscal_type = {
+        FISCAL_TYPE_A: u'A',
+        FISCAL_TYPE_B: u'B',
+    }
+
 
 class DocumentItem(db.Model):
     """A line item that can be contained in document model."""
