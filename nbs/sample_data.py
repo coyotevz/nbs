@@ -10,6 +10,7 @@ from nbs.models.product import ProductCategory, Product, PriceComponent
 from nbs.models.product import ProductSupplierInfo, ProductUnit
 from nbs.models.supplier import Supplier, SupplierContact
 from nbs.models.places import Warehouse, Branch, Office
+from nbs.models.document import DocumentItem, SaleInvoice
 
 def install_fixtures():
     accesorios = ProductCategory(name=u'Accesorios')
@@ -102,4 +103,26 @@ def install_fixtures():
 
         db.session.add(pro)
 
+    db.session.commit()
+
+    def p(sku):
+        return Product.query.filter(Product.sku==sku).first()
+
+    inv1 = SaleInvoice(issue_place=b1, number=12)
+    inv1.items = [
+        DocumentItem(product=p(u'20120'), quantity=5),
+        DocumentItem(product=p(u'20125'), quantity=1),
+        DocumentItem(product=p(u'20132'), quantity=7),
+    ]
+
+    db.session.add(inv1)
+
+    inv2 = SaleInvoice(issue_place=b2, number=12, items=[
+        DocumentItem(product=p(u'20350'), quantity=1),
+        DocumentItem(product=p(u'20132'), quantity=3)
+    ])
+    inv2.fiscal_type = SaleInvoice.FISCAL_TYPE_A
+    inv2.issue()
+
+    db.session.add(inv2)
     db.session.commit()

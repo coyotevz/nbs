@@ -55,6 +55,9 @@ class Document(db.Model, TimestampMixin):
         STATUS_CLOSED: u'Cerrado',
     }
 
+    doc_name = u'Unknown'
+    full_doc_name = u'Unknown'
+
     id = db.Column(db.Integer, primary_key=True)
 
     #: holder for subclass type
@@ -93,6 +96,7 @@ class DocumentItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     document_id = db.Column(db.Integer, db.ForeignKey('document.id'))
+    document = db.relationship(Document)
     quantity = db.Column(db.Numeric(10, 2))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     product = db.relationship(Product, backref=db.backref('items',
@@ -141,13 +145,21 @@ class FiscalDocumentMixin(object):
     def issue_place_id(cls):
         return db.Column(db.Integer, db.ForeignKey('document.issue_place_id'))
 
-    __table_args__ = (
-        UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),
-    )
+    @declared_attr
+    def __table_args__(cls):
+        return (UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),)
 
     @property
     def fiscal_type_str(self):
         return self._fiscal_type[self.fiscal_type]
+
+    @property
+    def doc_name(self):
+        return self._name + ' %s' % self.fiscal_type_str
+
+    @property
+    def full_doc_name(self):
+        return self._full_name + ' %s' % self.fiscal_type_str
 
 
 class ItemizedDocumentMixin(object):
@@ -170,7 +182,7 @@ class RefCustomerMixin(object):
 
     @declared_attr
     def customer(cls):
-        return db.relationship(Customer, backref=db.backref('document'))
+        return db.relationship(Customer)
 
 
 class RefSupplierMixin(object):
@@ -183,7 +195,7 @@ class RefSupplierMixin(object):
 
     @declared_attr
     def supplier(cls):
-        return db.relationship(Supplier, backref=db.backref('document'))
+        return db.relationship(Supplier)
 
 
 class RefBranchesMixin(object):
@@ -210,6 +222,8 @@ class RefBranchesMixin(object):
 class SaleInvoice(FiscalDocumentMixin, ItemizedDocumentMixin, Document):
     """A sale invoice is a sale document and contains sale items"""
     __tablename__ = 'sale_invoice'
+    _full_name = u'Factura de Venta'
+    _name = u'Factura'
 
     invoice_id = db.Column(db.Integer,
                            db.ForeignKey('document.id'),
@@ -229,6 +243,9 @@ class SaleInvoice(FiscalDocumentMixin, ItemizedDocumentMixin, Document):
 # Orden de Venta
 class SaleOrder(NumberedDocumentMixin, ItemizedDocumentMixin, Document):
     __tablename__ = 'sale_order'
+    full_doc_name = u'Orden de Venta'
+    doc_name = u'Ordern de Venta'
+
     order_id = db.Column(db.Integer,
                          db.ForeignKey('document.id'),
                          primary_key=True)
@@ -243,6 +260,9 @@ class SaleOrder(NumberedDocumentMixin, ItemizedDocumentMixin, Document):
 # Presupuesto de Venta
 class SaleQuotation(Document):
     __tablename__ = 'sale_quotation'
+    full_doc_name = u'Presupuesto de Venta'
+    doc_name = u'Presupuesto'
+
     quotation_id = db.Column(db.Integer,
                              db.ForeignKey('document.id'),
                              primary_key=True)
@@ -255,6 +275,9 @@ class SaleQuotation(Document):
 # Remito de Venta
 class SaleRefer(Document):
     __tablename__ = 'sale_refer'
+    full_doc_name = u'Remito de Venta'
+    doc_name = u'Remito'
+
     refer_id = db.Column(db.Integer,
                          db.ForeignKey('document.id'),
                          primary_key=True)
@@ -267,6 +290,9 @@ class SaleRefer(Document):
 # Devolución de Venta
 class SaleReturn(Document):
     __tablename__ = 'sale_return'
+    full_doc_name = u'Devolución de Venta'
+    doc_name = u'Devolución'
+
     return_id = db.Column(db.Integer,
                           db.ForeignKey('document.id'),
                           primary_key=True)
@@ -279,6 +305,9 @@ class SaleReturn(Document):
 # Solicitud de Mercadería (interno)
 class StockRequest(Document):
     __tablename__ = 'stock_request'
+    full_doc_name = u'Solicitud de Mercadería'
+    doc_name = u'Solicitud de Mercadería'
+
     request_id = db.Column(db.Integer,
                            db.ForeignKey('document.id'),
                            primary_key=True)
@@ -291,6 +320,7 @@ class StockRequest(Document):
 # Transferencia de Mercadería (interno)
 class StockTransfer(Document):
     __tablename__ = 'stock_transfer'
+
     transfer_id = db.Column(db.Integer,
                             db.ForeignKey('document.id'),
                             primary_key=True)
@@ -329,12 +359,16 @@ class PurchaseDocument(Document):
 
 
 # Factura de Compra
-class PurchaseInvoice(PurchaseDocument):
+class PurchaseInvoice(FiscalDocumentMixin, ItemizedDocumentMixin,
+                      Document):
     __tablename__ = 'purchase_invoice'
-    __mapper_args__ = {'polymorphic_identity': u'purchase_invoice'}
     invoice_id = db.Column(db.Integer,
-                           db.ForeignKey('purchase_document.document_id'),
+                           db.ForeignKey('document.id'),
                            primary_key=True)
+    __mapper_args__ = {
+        'polymorphic_identity': u'purchase_invoice',
+        'inherit_condition': invoice_id == Document.id,
+    }
 
 
 # Orden de Compra
