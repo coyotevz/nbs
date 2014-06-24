@@ -90,8 +90,10 @@ class Document(db.Model, TimestampMixin):
 class NumberedDocumentMixin(object):
 
     number = db.Column(db.Integer)
-    issue_place_id = db.Column(db.Integer,
-                               db.ForeignKey('document.issue_place_id'))
+
+    @declared_attr
+    def issue_place_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('document.issue_place_id'))
 
     __table_args__ = (
         UniqueConstraint('number', 'issue_place_id'),
@@ -136,94 +138,87 @@ class FiscalDocumentMixin(object):
         return self._fiscal_type[self.fiscal_type]
 
 
+class ItemizedDocumentMixin(object):
+
+    @declared_attr
+    def items(cls):
+        return db.relationship('DocumentItem', lazy='dynamic')
+
+    def get_items(self):
+        return self.items.all()
+
+
+class RefCustomerMixin(object):
+    "Mixin to use in documents against customers"
+
+    @declared_attr
+    def customer_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('customer.id'),
+                         nullable=False)
+
+    @declared_attr
+    def customer(cls):
+        return db.relationship(Customer, backref=db.backref('document'))
+
+
+class RefSupplierMixin(object):
+    "Mixin to use in documents against suppliers"
+
+    @declared_attr
+    def supplier_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('supplier.id'),
+                         nullable=False)
+
+    @declared_attr
+    def supplier(cls):
+        return db.relationship(Supplier, backref=db.backref('document'))
+
+
+class RefBranchesMixin(object):
+    "Mixin to use in documents between branches"
+
+    @declared_attr
+    def source_branch_id(cls):
+        pass
+
+    @declared_attr
+    def source(cls):
+        pass
+
+    @declared_attr
+    def target_branch_id(cls):
+        pass
+
+    @declared_attr
+    def target(cls):
+        pass
+
+
 class DocumentItem(db.Model):
     """A line item that can be contained in document model."""
     __tablename__ = 'document_item'
     id = db.Column(db.Integer, primary_key=True)
 
+    document_id = db.Column(db.Integer, db.ForeignKey('document.id'))
     quantity = db.Column(db.Numeric(10, 2))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     product = db.relationship(Product, backref=db.backref('items',
                                                           lazy='dynamic'))
 
 
-class SaleDocument(Document):
-    """A sale document that is involved in sale operation, contains sale items
-    and customer data.
-    """
-    __tablename__ = 'sale_document'
-    __mapped_args__ = {'polymorphic_identity': u'sale_document'}
-    document_id = db.Column(db.Integer, db.ForeignKey('document.id'),
-                            primary_key=True)
-
-    #customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'),
-    #                        nullable=False)
-    #customer = db.relationship(Customer, backref="documents")
-
-    #: items collection field added by SaleDocumentItem
-
-    def get_items(self):
-        return self.items.all()
-
-
-class SaleDocumentItem(DocumentItem):
-    __tablename__ = 'sale_document_item'
-    item_id = db.Column(db.Integer, db.ForeignKey('document_item.id'),
-                        primary_key=True)
-
-    document_id = db.Column(db.Integer,
-                            db.ForeignKey('sale_document.document_id'),
-                            nullable=False)
-    document = db.relationship(SaleDocument,
-                               backref=db.backref('items', lazy='dynamic'))
-
-    def __repr__(self):
-        return "<SaleItem #{} (quantity={}, product={})>".format(self.id,
-                self.quantity, self.product_id)
-
-
 # Factura de Venta
-class SaleInvoice(FiscalDocumentMixin, SaleDocument):
+class SaleInvoice(FiscalDocumentMixin, ItemizedDocumentMixin, Document):
     """A sale invoice is a sale document and contains sale items"""
     __tablename__ = 'sale_invoice'
-    __mapper_args__ = {'polymorphic_identity': u'sale_invoice'}
 
     invoice_id = db.Column(db.Integer,
-                           db.ForeignKey('sale_document.document_id'),
+                           db.ForeignKey('document.id'),
                            primary_key=True)
 
-
-    ##: Fiscal type 'A' for 'Responsable Inscripto' customer
-    #FISCAL_TYPE_A = u'FISCAL_A'
-
-    ##: Fiscal type 'B' for 'Consumidor Final' customer
-    #FISCAL_TYPE_B = u'FISCAL_B'
-
-    #_fiscal_type = {
-    #    FISCAL_TYPE_A: u'A',
-    #    FISCAL_TYPE_B: u'B',
-    #}
-
-    ##: copy issue_place_id from parent document for UniqueConstraint
-    #issue_place_id = db.Column(db.Integer,
-    #                           db.ForeignKey('document.issue_place_id'))
-
-    ##: invoice type can be 'A' or 'B'
-    #fiscal_type = db.Column(db.Enum(*_fiscal_type.keys(),
-    #                                name='sale_invoice_fiscal_type'),
-    #                        default=FISCAL_TYPE_B,
-    #                        nullable=False)
-
-    ##: Invoice number, generally this data came from Fiscal Controller
-    #number = db.Column(db.Integer)
-
-    #__table_args__ = (
-    #    UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),
-    #)
-
-    #@property
-    #def fiscal_type_str(self):
-    #    return self._fiscal_type[self.fiscal_type]
+    __mapper_args__ = {
+        'polymorphic_identity': u'sale_invoice',
+        'inherit_condition': invoice_id == Document.id
+    }
 
     def __repr__(self):
         return "<SaleInvoice '{}' {}-{} with {} items>".format(
@@ -232,65 +227,77 @@ class SaleInvoice(FiscalDocumentMixin, SaleDocument):
 
 
 # Orden de Venta
-class SaleOrder(SaleDocument):
+class SaleOrder(NumberedDocumentMixin, ItemizedDocumentMixin, Document):
     __tablename__ = 'sale_order'
-    __mapper_args__ = {'polymorphic_identity': u'sale_order'}
     order_id = db.Column(db.Integer,
-                         db.ForeignKey('sale_document.document_id'),
+                         db.ForeignKey('document.id'),
                          primary_key=True)
     number = db.Column(db.Integer)
 
-    __table_args = (
-        UniqueConstraint('number', 'issue_place_id'),
-    )
+    __mapper_args__ = {
+        'polymorphic_identity': u'sale_order',
+        'inherit_condition': order_id == Document.id
+    }
 
 
 # Presupuesto de Venta
-class SaleQuotation(SaleDocument):
+class SaleQuotation(Document):
     __tablename__ = 'sale_quotation'
-    __mapper_args__ = {'polymorphic_identity': u'sale_quotation'}
     quotation_id = db.Column(db.Integer,
-                             db.ForeignKey('sale_document.document_id'),
+                             db.ForeignKey('document.id'),
                              primary_key=True)
-    number = db.Column(db.Integer)
+    __mapper_args__ = {
+        'polymorphic_identity': u'sale_quotation',
+        'inherit_condition': quotation_id == Document.id
+    }
 
 
 # Remito de Venta
-class SaleRefer(SaleDocument):
+class SaleRefer(Document):
     __tablename__ = 'sale_refer'
-    __mapper_args__ = {'polymorphic_identity': u'sale_refer'}
     refer_id = db.Column(db.Integer,
-                         db.ForeignKey('sale_document.document_id'),
+                         db.ForeignKey('document.id'),
                          primary_key=True)
-    number = db.Column(db.Integer)
+    __mapper_args__ = {
+        'polymorphic_identity': u'sale_refer',
+        'inherit_condition': refer_id == Document.id
+    }
 
 
 # Devolución de Venta
-class SaleReturn(SaleDocument):
+class SaleReturn(Document):
     __tablename__ = 'sale_return'
-    __mapper_args__ = {'polymorphic_identity': u'sale_return'}
     return_id = db.Column(db.Integer,
-                          db.ForeignKey('sale_document.document_id'),
+                          db.ForeignKey('document.id'),
                           primary_key=True)
-    number = db.Column(db.Integer)
+    __mapper_args__ = {
+        'polymorphic_identity': u'sale_return',
+        'inherit_condition': return_id == Document.id
+    }
 
 
 # Solicitud de Mercadería (interno)
-class StockRequest(SaleDocument):
+class StockRequest(Document):
     __tablename__ = 'stock_request'
-    __mapper_args__ = {'polymorphic_identity': u'stock_request'}
     request_id = db.Column(db.Integer,
-                           db.ForeignKey('sale_document.document_id'),
+                           db.ForeignKey('document.id'),
                            primary_key=True)
+    __mapper_args__ = {
+        'polymorphic_identity': u'stock_request',
+        'inherit_condition': request_id == Document.id
+    }
 
 
 # Transferencia de Mercadería (interno)
-class StockTransfer(SaleDocument):
+class StockTransfer(Document):
     __tablename__ = 'stock_transfer'
-    __mapper_args__ = {'polymorphic_identity': u'stock_transfer'}
     transfer_id = db.Column(db.Integer,
-                            db.ForeignKey('sale_document.document_id'),
+                            db.ForeignKey('document.id'),
                             primary_key=True)
+    __mapper_args__ = {
+        'polymorphic_identity': u'stock_transfer',
+        'inherit_condition': transfer_id == Document.id
+    }
 
     source_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
                           nullable=False)
@@ -305,6 +312,7 @@ class StockTransfer(SaleDocument):
 
 # Purchase documents
 # ~~~~~~~~~~~~~~~~~~
+# TODO: clean purchase documents structure
 
 class PurchaseDocument(Document):
     """A purchase document that is involved on purchase process, contains
@@ -320,14 +328,14 @@ class PurchaseDocument(Document):
     #: items collection added by PurchaseDocumentItem
 
 
-class PurchaseDocumentItem(DocumentItem):
-    __tablename__ = 'purchase_document_item'
-    item_id = db.Column(db.Integer, db.ForeignKey('document_item.id'),
-                        primary_key=True)
-    document_id = db.Column(db.Integer,
-                            db.ForeignKey('purchase_document.document_id'),
-                            nullable=False)
-    document = db.relationship(PurchaseDocument, backref='items')
+#class PurchaseDocumentItem(DocumentItem):
+#    __tablename__ = 'purchase_document_item'
+#    item_id = db.Column(db.Integer, db.ForeignKey('document_item.id'),
+#                        primary_key=True)
+#    document_id = db.Column(db.Integer,
+#                            db.ForeignKey('purchase_document.document_id'),
+#                            nullable=False)
+#    document = db.relationship(PurchaseDocument, backref='items')
 
 
 # Factura de Compra
