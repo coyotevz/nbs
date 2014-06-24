@@ -5,6 +5,7 @@ from collections import namedtuple
 
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.declarative import declared_attr
 
 from nbs.models import db
 from nbs.models.product import Product
@@ -86,7 +87,21 @@ class Document(db.Model, TimestampMixin):
         return self.status in (self.STATUS_DRAFT, self.STATUS_PENDING)
 
 
-class FiscalDocument(Document):
+class NumberedDocumentMixin(object):
+
+    number = db.Column(db.Integer)
+    issue_place_id = db.Column(db.Integer,
+                               db.ForeignKey('document.issue_place_id'))
+
+    __table_args__ = (
+        UniqueConstraint('number', 'issue_place_id'),
+    )
+
+
+class FiscalDocumentMixin(object):
+
+    # TODO: fiscal_type_label -> Single letter 'A' or 'B'
+    #       fiscal_type_str   -> Complete 'Factura A', 'Nota de Crédito B', etc
 
     #: Fiscal type 'A' for 'Responsable Inscripto' customer
     FISCAL_TYPE_A = u'FISCAL_A'
@@ -98,6 +113,27 @@ class FiscalDocument(Document):
         FISCAL_TYPE_A: u'A',
         FISCAL_TYPE_B: u'B',
     }
+
+    fiscal_type = db.Column(db.Enum(*_fiscal_type.keys(),
+                                    name='document_fiscal_type'),
+                            default=FISCAL_TYPE_B,
+                            nullable=False)
+
+    #: Document number, can came from Fiscal Controller, must be unique
+    number = db.Column(db.Integer)
+
+    #: copy issue_place_id from parent document for UniqueConstraint
+    @declared_attr
+    def issue_place_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('document.issue_place_id'))
+
+    __table_args__ = (
+        UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),
+    )
+
+    @property
+    def fiscal_type_str(self):
+        return self._fiscal_type[self.fiscal_type]
 
 
 class DocumentItem(db.Model):
@@ -147,46 +183,47 @@ class SaleDocumentItem(DocumentItem):
 
 
 # Factura de Venta
-class SaleInvoice(SaleDocument):
+class SaleInvoice(FiscalDocumentMixin, SaleDocument):
     """A sale invoice is a sale document and contains sale items"""
     __tablename__ = 'sale_invoice'
     __mapper_args__ = {'polymorphic_identity': u'sale_invoice'}
-
-    #: Fiscal type 'A' for 'Responsable Inscripto' customer
-    FISCAL_TYPE_A = u'FISCAL_A'
-
-    #: Fiscal type 'B' for 'Consumidor Final' customer
-    FISCAL_TYPE_B = u'FISCAL_B'
-
-    _fiscal_type = {
-        FISCAL_TYPE_A: u'A',
-        FISCAL_TYPE_B: u'B',
-    }
 
     invoice_id = db.Column(db.Integer,
                            db.ForeignKey('sale_document.document_id'),
                            primary_key=True)
 
-    #: copy issue_place_id from parent document for UniqueConstraint
-    issue_place_id = db.Column(db.Integer,
-                               db.ForeignKey('document.issue_place_id'))
 
-    #: invoice type can be 'A' or 'B'
-    fiscal_type = db.Column(db.Enum(*_fiscal_type.keys(),
-                                    name='sale_invoice_fiscal_type'),
-                            default=FISCAL_TYPE_B,
-                            nullable=False)
+    ##: Fiscal type 'A' for 'Responsable Inscripto' customer
+    #FISCAL_TYPE_A = u'FISCAL_A'
 
-    #: Invoice number, generally this data came from Fiscal Controller
-    number = db.Column(db.Integer)
+    ##: Fiscal type 'B' for 'Consumidor Final' customer
+    #FISCAL_TYPE_B = u'FISCAL_B'
 
-    __table_args__ = (
-        UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),
-    )
+    #_fiscal_type = {
+    #    FISCAL_TYPE_A: u'A',
+    #    FISCAL_TYPE_B: u'B',
+    #}
 
-    @property
-    def fiscal_type_str(self):
-        return self._fiscal_type[self.fiscal_type]
+    ##: copy issue_place_id from parent document for UniqueConstraint
+    #issue_place_id = db.Column(db.Integer,
+    #                           db.ForeignKey('document.issue_place_id'))
+
+    ##: invoice type can be 'A' or 'B'
+    #fiscal_type = db.Column(db.Enum(*_fiscal_type.keys(),
+    #                                name='sale_invoice_fiscal_type'),
+    #                        default=FISCAL_TYPE_B,
+    #                        nullable=False)
+
+    ##: Invoice number, generally this data came from Fiscal Controller
+    #number = db.Column(db.Integer)
+
+    #__table_args__ = (
+    #    UniqueConstraint('fiscal_type', 'number', 'issue_place_id'),
+    #)
+
+    #@property
+    #def fiscal_type_str(self):
+    #    return self._fiscal_type[self.fiscal_type]
 
     def __repr__(self):
         return "<SaleInvoice '{}' {}-{} with {} items>".format(

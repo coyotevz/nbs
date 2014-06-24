@@ -58,7 +58,7 @@ class TestSaleInvoice(DBTestCase):
         self.db.session.commit()
 
         assert invoice.fiscal_type == SaleInvoice.FISCAL_TYPE_B
-        assert invoice.fiscal_type_label == u'B'
+        assert invoice.fiscal_type_str == u'B'
 
     def test_enum_fiscal_types(self):
         b = Branch(name=u'b', fiscal_pos=1)
