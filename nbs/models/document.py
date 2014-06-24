@@ -87,6 +87,18 @@ class Document(db.Model, TimestampMixin):
         return self.status in (self.STATUS_DRAFT, self.STATUS_PENDING)
 
 
+class DocumentItem(db.Model):
+    """A line item that can be contained in document model."""
+    __tablename__ = 'document_item'
+    id = db.Column(db.Integer, primary_key=True)
+
+    document_id = db.Column(db.Integer, db.ForeignKey('document.id'))
+    quantity = db.Column(db.Numeric(10, 2))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship(Product, backref=db.backref('items',
+                                                          lazy='dynamic'))
+
+
 class NumberedDocumentMixin(object):
 
     number = db.Column(db.Integer)
@@ -142,7 +154,7 @@ class ItemizedDocumentMixin(object):
 
     @declared_attr
     def items(cls):
-        return db.relationship('DocumentItem', lazy='dynamic')
+        return db.relationship(DocumentItem, lazy='dynamic')
 
     def get_items(self):
         return self.items.all()
@@ -192,18 +204,6 @@ class RefBranchesMixin(object):
     @declared_attr
     def target(cls):
         pass
-
-
-class DocumentItem(db.Model):
-    """A line item that can be contained in document model."""
-    __tablename__ = 'document_item'
-    id = db.Column(db.Integer, primary_key=True)
-
-    document_id = db.Column(db.Integer, db.ForeignKey('document.id'))
-    quantity = db.Column(db.Numeric(10, 2))
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product = db.relationship(Product, backref=db.backref('items',
-                                                          lazy='dynamic'))
 
 
 # Factura de Venta
@@ -326,16 +326,6 @@ class PurchaseDocument(Document):
     supplier = db.relationship(Supplier, backref='documents')
 
     #: items collection added by PurchaseDocumentItem
-
-
-#class PurchaseDocumentItem(DocumentItem):
-#    __tablename__ = 'purchase_document_item'
-#    item_id = db.Column(db.Integer, db.ForeignKey('document_item.id'),
-#                        primary_key=True)
-#    document_id = db.Column(db.Integer,
-#                            db.ForeignKey('purchase_document.document_id'),
-#                            nullable=False)
-#    document = db.relationship(PurchaseDocument, backref='items')
 
 
 # Factura de Compra

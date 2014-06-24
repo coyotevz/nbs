@@ -13,9 +13,9 @@ __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
     'TaxConstant',
 
     # Documents
-    'Document', 'SaleInvoice', 'PurchaseInvoice', 'SaleOrder', 'PurchaseOrder',
-    'SaleQuotation', 'PurchaseQuotation', 'SaleRefer', 'PurchaseRefer',
-    'SaleCreditNote', 'PurchaseCreditNote', 'SaleDebitNote',
+    'Document', 'DocumentItem', 'SaleInvoice', 'PurchaseInvoice', 'SaleOrder',
+    'PurchaseOrder', 'SaleQuotation', 'PurchaseQuotation', 'SaleRefer',
+    'PurchaseRefer', 'SaleCreditNote', 'PurchaseCreditNote', 'SaleDebitNote',
     'PurchaseDebitNote','SaleReceipt', 'PurchaseReceipt', 'SaleReturn',
     'PurchaseReturn', 'PaymentOrder', 'CreditCupon', 'SupplyRequest',
     'StockRequest', 'SupplyTransfer', 'StockTransfer',
