@@ -4,6 +4,7 @@ from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.declarative import declared_attr
 
 from nbs.models import db
+from nbs.models.places import Warehouse
 
 class NumberedMixin(object):
 
@@ -130,17 +131,21 @@ class RefBranchesMixin(object):
     "Mixin to use in documents between branches"
 
     @declared_attr
-    def source_branch_id(cls):
-        pass
+    def source_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+                         nullable=False)
 
     @declared_attr
     def source(cls):
-        pass
+        return db.relationship(Warehouse,
+                primaryjoin=lambda: Warehouse.warehouse_id==cls.source_id)
 
     @declared_attr
-    def target_branch_id(cls):
-        pass
+    def target_id(cls):
+        return db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
+                         nullable=False)
 
     @declared_attr
     def target(cls):
-        pass
+        return db.relationship(Warehouse,
+                primaryjoin=lambda: Warehouse.warehouse_id==cls.target_id)

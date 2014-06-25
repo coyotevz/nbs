@@ -183,7 +183,7 @@ class SaleReturn(NumberedItemizedMixin, Document):
 
 
 # Solicitud de Mercadería (interno)
-class StockRequest(NumberedItemizedMixin, Document):
+class StockRequest(NumberedItemizedMixin, RefBranchesMixin, Document):
     __tablename__ = 'stock_request'
     full_doc_name = u'Solicitud de Mercadería'
     doc_name = u'Solicitud de Mercadería'
@@ -198,7 +198,7 @@ class StockRequest(NumberedItemizedMixin, Document):
 
 
 # Transferencia de Mercadería (interno)
-class StockTransfer(Document):
+class StockTransfer(NumberedItemizedMixin, RefBranchesMixin, Document):
     __tablename__ = 'stock_transfer'
 
     transfer_id = db.Column(db.Integer,
@@ -208,16 +208,6 @@ class StockTransfer(Document):
         'polymorphic_identity': u'stock_transfer',
         'inherit_condition': transfer_id == Document.id
     }
-
-    source_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
-                          nullable=False)
-    source = db.relationship('Warehouse', backref='transfers_from',
-                             foreign_keys=[source_id])
-
-    target_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'),
-                          nullable=False)
-    target = db.relationship('Warehouse', backref='transfer_to',
-                             foreign_keys=[target_id])
 
 
 # Purchase documents
@@ -376,7 +366,7 @@ class CreditCupon(NumberedMixin, Document):
 
 
 # Solicitud de Suministro (interno)
-class SupplyRequest(NumberedMixin, Document):
+class SupplyRequest(NumberedMixin, RefBranchesMixin, Document):
     __tablename__ = 'supply_request'
     request_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                            primary_key=True)
@@ -387,7 +377,7 @@ class SupplyRequest(NumberedMixin, Document):
 
 
 # Transferencia de insumos (interno)
-class SupplyTransfer(NumberedMixin, Document):
+class SupplyTransfer(NumberedMixin, RefBranchesMixin, Document):
     __tablename__ = 'supply_transfer'
     transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             primary_key=True)
@@ -395,3 +385,20 @@ class SupplyTransfer(NumberedMixin, Document):
         'polymorphic_identity': u'supply_transfer',
         'inherit_condition': transfer_id == Document.id,
     }
+
+
+doc_map_code = {
+    u'FAA': (SaleInvoice, ({'fiscal_type': u'A'})),
+    u'FAB': (SaleInvoice, ({'fiscal_type': u'B'})),
+    u'PRE': (SaleQuotation, ()),
+    u'OV':  (SaleOrder, ()),
+    u'REM': (SaleRefer, ()),
+    u'DEV': (SaleReturn, ()),
+    u'FCA': (PurchaseInvoice, ({'fiscal_type': u'A'})),
+    u'FCB': (PurchaseInvoice, ({'fiscal_type': u'B'})), # not used
+    u'FCC': (PurchaseInvoice, ({'fiscal_type': u'C'})), # monotributista
+    u'FCM': (PurchaseInvoice, ({'fiscal_type': u'M'})), # resp.inscr. nuevo
+    u'OC':  (PurchaseOrder, ()),
+    u'PRC': (PurchaseQuotation, ()),
+    u'REC': (PurchaseRefer, ()),
+}
