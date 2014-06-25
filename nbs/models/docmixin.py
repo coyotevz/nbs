@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declared_attr
 
 from nbs.models import db
 
-class NumberedDocumentMixin(object):
+class NumberedMixin(object):
 
     number = db.Column(db.Integer)
 
@@ -17,8 +17,12 @@ class NumberedDocumentMixin(object):
     def __table_args__(cls):
         return (UniqueConstraint('number', 'issue_place_id'),)
 
+    def __repr__(self):
+        return "<{} {}-{}>".format(obj.full_doc_name,
+                obj.issue_place.fiscal_pos, obj.number)
 
-class FiscalDocumentMixin(object):
+
+class FiscalMixin(object):
 
     # TODO: fiscal_type_label -> Single letter 'A' or 'B'
     #       fiscal_type_str   -> Complete 'Factura A', 'Nota de Crédito B', etc
@@ -63,8 +67,12 @@ class FiscalDocumentMixin(object):
     def full_doc_name(self):
         return self._full_name + ' %s' % self.fiscal_type_str
 
+    def __repr__(self):
+        return "<{} {}-{}>".format(obj.full_doc_name,
+                obj.issue_place.fiscal_pos, obj.number)
 
-class ItemizedDocumentMixin(object):
+
+class ItemizedMixin(object):
 
     @declared_attr
     def items(cls):
@@ -72,6 +80,24 @@ class ItemizedDocumentMixin(object):
 
     def get_items(self):
         return self.items.all()
+
+    def __repr__(self):
+        return "<{} width {} items>".format(obj.full_doc_name,
+                obj.items.count())
+
+
+class FiscalItemizedMixin(FiscalMixin, ItemizedMixin):
+
+    def __repr__(self):
+        return "<{} {}-{} width {} items>".format(self.full_doc_name,
+                self.issue_place.fiscal_pos, self.number, self.items.count())
+
+
+class NumberedItemizedMixin(NumberedMixin, ItemizedMixin):
+
+    def __repr__(self):
+        return "<{} {}-{} width {} items>".format(self.full_doc_name,
+                self.issue_place.fiscal_pos, self.number, self.items.count())
 
 
 class RefCustomerMixin(object):
@@ -118,5 +144,3 @@ class RefBranchesMixin(object):
     @declared_attr
     def target(cls):
         pass
-
-
