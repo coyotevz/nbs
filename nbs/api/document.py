@@ -28,7 +28,7 @@ def list():
     """Returns a paginated list of documents."""
     params = rest.get_params(_spec)
     query = rest.get_query(Document, params)
-    result = rest.get_result(query, params)
+    result = rest.get_inherited_result(query, params)
     return jsonify(result)
 
 @document_api.route('/<int:id>', methods=['GET'])
@@ -37,7 +37,7 @@ def get(id):
     params = rest.get_params(_spec)
     obj = Document.query.get_or_404(id)
     filtered = rest.filter_fields(obj.query, params)
-    return jsonify(rest.to_dict(obj, filtered))
+    return jsonify(rest.to_dict(obj, extra=['doc_name', 'full_doc_name']))
 
 @document_api.route('', methods=['POST'])
 def add():

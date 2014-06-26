@@ -299,6 +299,15 @@ def get_result(query, params):
         'objects': [to_dict(i, filtered) for i in result.items],
     }
 
+def get_inherited_result(query, params):
+    result = query.paginate(params.page, params.per_page)
+    return {
+        'num_results': result.total,
+        'page': result.page,
+        'num_pages': result.pages,
+        'objects': [to_dict(i) for i in result.items],
+    }
+
 def _getcol(obj, column):
     if hasattr(obj, 'get') and callable(obj.get):
         return obj.get(column)
