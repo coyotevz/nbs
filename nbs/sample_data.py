@@ -122,7 +122,9 @@ def install_fixtures():
         DocumentItem(product=p(u'20132'), quantity=3)
     ])
     inv2.fiscal_type = SaleInvoice.FISCAL_TYPE_A
-    inv2.issue()
 
     db.session.add(inv2)
+    db.session.commit()
+
+    inv2.issue()
     db.session.commit()

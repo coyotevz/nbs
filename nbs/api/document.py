@@ -2,6 +2,7 @@
 
 from flask import Blueprint, jsonify, current_app
 from nbs.models import db, Document, SaleInvoice
+from nbs.models.document import doc_map_code
 from nbs.lib import rest
 from nbs.utils import jsonify_form, jsonify_status_code
 from nbs.forms import DocumentForm
@@ -11,7 +12,7 @@ document_api = Blueprint('api.document', __name__, url_prefix='/api/documents')
 _spec = {
     'map': {},
     'required': ['id'],
-    'defaults': ['id', 'issue_date'],
+    'defaults': ['id', 'created', 'modified', 'issue_date', 'expiration_date', 'issue_place', 'number'],
     'authorized': [],
 }
 
