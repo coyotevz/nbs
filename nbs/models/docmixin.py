@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.orm import column_property
 from sqlalchemy.ext.declarative import declared_attr
 
 from nbs.models import db
@@ -12,15 +13,16 @@ class NumberedMixin(object):
 
     @declared_attr
     def issue_place_id(cls):
-        return db.Column(db.Integer, db.ForeignKey('document.issue_place_id'))
+        from nbs.models.document import Document
+        return column_property(db.Column(db.Integer, db.ForeignKey('document.issue_place_id')), Document.issue_place_id)
 
     @declared_attr
     def __table_args__(cls):
         return (UniqueConstraint('number', 'issue_place_id'),)
 
     def __repr__(self):
-        return "<{} {}-{}>".format(obj.full_doc_name,
-                obj.issue_place.fiscal_pos, obj.number)
+        return "<{} {}-{}>".format(self.full_doc_name,
+                self.issue_place.fiscal_pos, self.number)
 
 
 class FiscalMixin(object):
@@ -50,7 +52,8 @@ class FiscalMixin(object):
     #: copy issue_place_id from parent document for UniqueConstraint
     @declared_attr
     def issue_place_id(cls):
-        return db.Column(db.Integer, db.ForeignKey('document.issue_place_id'))
+        from nbs.models.document import Document
+        return column_property(db.Column(db.Integer, db.ForeignKey('document.issue_place_id')), Document.issue_place_id)
 
     @declared_attr
     def __table_args__(cls):
@@ -69,8 +72,8 @@ class FiscalMixin(object):
         return self._full_name + ' %s' % self.fiscal_type_str
 
     def __repr__(self):
-        return "<{} {}-{}>".format(obj.full_doc_name,
-                obj.issue_place.fiscal_pos, obj.number)
+        return "<{} {}-{}>".format(self.full_doc_name,
+                self.issue_place.fiscal_pos, self.number)
 
 
 class ItemizedMixin(object):
@@ -83,8 +86,8 @@ class ItemizedMixin(object):
         return self.items.all()
 
     def __repr__(self):
-        return "<{} width {} items>".format(obj.full_doc_name,
-                obj.items.count())
+        return "<{} width {} items>".format(self.full_doc_name,
+                self.items.count())
 
 
 class FiscalItemizedMixin(FiscalMixin, ItemizedMixin):
