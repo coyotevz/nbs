@@ -67,8 +67,10 @@ class ProductStock(db.Model, TimestampMixin):
     #: Product that this stock belong
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'),
                            primary_key=True)
-    product = db.relationship('Product', backref=db.backref('stock',
-                                                            lazy='dynamic'))
+    product = db.relationship('Product', backref='stock')
+    product_query = db.relationship('Product',
+                                    backref=db.backref('stock_query',
+                                                       lazy="dynamic"))
 
     #: warehouse which the stock is stored
     warehouse_id = db.Column(db.Integer,

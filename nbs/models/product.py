@@ -176,6 +176,7 @@ class Product(db.Model, TimestampMixin):
     #: 'suppliers_info' field is added by ProductSupplierInfo class
     #: 'images' field is added by ProductImage class
     #: 'stock' field is added by ProductStock class
+    #: 'stock_query' field is added by ProductStock class
 
     #: When calculate the product cost and we have multiple suppliers for the
     #: same product, this field indicate that we need to use this info for
