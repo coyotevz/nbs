@@ -6,6 +6,7 @@ locale.setlocale(locale.LC_ALL, '')
 from flask import Flask, request
 from flask import Request as _Request
 from werkzeug.datastructures import ImmutableOrderedMultiDict
+from werkzeug.routing import BaseConverter
 
 from nbs.models import configure_db
 from nbs.auth import configure_auth
@@ -30,6 +31,29 @@ def create_app(config=None, app_name=None):
 
     return app
 
+class ListConverter(BaseConverter):
+
+    _subtypes = {
+        'int': int,
+        'str': str,
+        'u': unicode,
+    }
+
+    def __init__(self, url_map, subtype=None, mutable=False):
+        super(ListConverter, self).__init__(url_map)
+        self.subtype = subtype
+        self.mutable = mutable
+
+    def to_python(self, value):
+        retval = filter(None, value.split(','))
+        if self.subtype in self._subtypes:
+            retval = map(self._subtypes[self.subtype], retval)
+        if not self.mutable:
+            retval = tuple(retval)
+        return retval
+
+    def to_url(self, values):
+        return ','.join(BaseConverter.to_url(value) for value in values)
 
 class Request(_Request):
     """Redefine Request that uses ImmutableOrderedMultiDict for .args"""
@@ -50,6 +74,9 @@ def is_running_main():
 
 def configure_app(app, config=None):
     import sys
+
+    # Add additional converters
+    app.url_map.converters['list'] = ListConverter
 
     # Set custom Request class
     app.request_class = Request

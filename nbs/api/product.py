@@ -39,9 +39,8 @@ def get(pk):
         return jsonify({"message": "Product could not be found."}), 400
     return jsonify(ProductSerializer(product).data)
 
-@product_api.route('/<string:pks>', methods=['GET'])
+@product_api.route('/<list(int):pks>', methods=['GET'])
 def get_many(pks):
-    pks = map(int, filter(None, pks.split(',')))
     products = Product.query.filter(Product.id.in_(pks))
     return jsonify({"products": ProductSerializer(products, many=True).data})
 
