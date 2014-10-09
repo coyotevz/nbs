@@ -37,6 +37,20 @@ class ProductWithStockSerializer(Serializer):
     class Meta:
         fields = ("id", "stock")
 
+
+class SupplierSerializer(Serializer):
+
+    class Meta:
+        fields = ("id", "name", "fancy_name")
+
+
+class SupplierInfoSerializer(Serializer):
+    supplier = fields.Nested(SupplierSerializer)
+    cost = fields.Price()
+
+    class Meta:
+        fields = ("supplier", "sku", "description", "cost", "last_update")
+
 ## API ##
 
 product_api = Blueprint('api.product', __name__, url_prefix='/api/products')
@@ -53,17 +67,21 @@ def get(pk):
         return jsonify({"message": "Product could not be found."}), 404
     return jsonify(ProductSerializer(product).data)
 
+@product_api.route('/<list(int):pks>', methods=['GET'])
+def get_many(pks):
+    products = Product.query.filter(Product.id.in_(pks))
+    return jsonify({"products": ProductSerializer(products, many=True).data})
+
 @product_api.route('/<int:pk>/stocks', methods=['GET'])
 def get_stock(pk):
     product = Product.query.get(pk)
     if not product:
         return jsonify({"message": "Product could not be found."}), 404
-    return jsonify(ProductWithStockSerializer(product).data)
-
-@product_api.route('/<list(int):pks>', methods=['GET'])
-def get_many(pks):
-    products = Product.query.filter(Product.id.in_(pks))
-    return jsonify({"products": ProductSerializer(products, many=True).data})
+    return jsonify({
+        "id": product.id,
+        "stocks": StockSerializer(product.stock, many=True).data,
+    })
+    #return jsonify(ProductWithStockSerializer(product).data)
 
 @product_api.route('/<list(int):pks>/stocks', methods=['GET'])
 def get_many_stocks(pks):
@@ -71,3 +89,13 @@ def get_many_stocks(pks):
         joinedload(Product.stock).joinedload(ProductStock.warehouse)
     )
     return jsonify({"products": ProductWithStockSerializer(products, many=True).data})
+
+@product_api.route('/<int:pk>/suppliers', methods=['GET'])
+def get_suppliers_info(pk):
+    product = Product.query.get(pk)
+    if not product:
+        return jsonify({"message": "Product could not be found."}), 404
+    return jsonify({
+        "id": product.id,
+        "suppliers_info": SupplierInfoSerializer(product.suppliers_info, many=True).data
+    })
