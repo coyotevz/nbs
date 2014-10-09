@@ -11,7 +11,7 @@ from nbs.models import db, Product, ProductStock
 ## SERIALIZERS ##
 
 class ProductSerializer(Serializer):
-    price = fields.Number()
+    price = fields.Price()
 
     class Meta:
         fields = ("id", "sku", "description", "price")
@@ -43,23 +43,21 @@ product_api = Blueprint('api.product', __name__, url_prefix='/api/products')
 
 @product_api.route('', methods=['GET'])
 def list():
-    products = Product.query.all()
+    products = Product.query
     return jsonify({"products": ProductSerializer(products, many=True).data})
 
 @product_api.route('/<int:pk>', methods=['GET'])
 def get(pk):
-    try:
-        product = Product.query.get(pk)
-    except IntegrityError:
-        return jsonify({"message": "Product could not be found."}), 400
+    product = Product.query.get(pk)
+    if not product:
+        return jsonify({"message": "Product could not be found."}), 404
     return jsonify(ProductSerializer(product).data)
 
 @product_api.route('/<int:pk>/stocks', methods=['GET'])
 def get_stock(pk):
-    try:
-        product = Product.query.get(pk)
-    except IntegrityError:
-        return jsonify({"message", "Product could not be found."}), 400
+    product = Product.query.get(pk)
+    if not product:
+        return jsonify({"message": "Product could not be found."}), 404
     return jsonify(ProductWithStockSerializer(product).data)
 
 @product_api.route('/<list(int):pks>', methods=['GET'])

@@ -43,6 +43,11 @@ class ListConverter(BaseConverter):
         super(ListConverter, self).__init__(url_map)
         self.subtype = subtype
         self.mutable = mutable
+        if subtype:
+            rearg = {'int': '\d', 'str': '\w', 'u': '\w'}[subtype]
+        else:
+            rearg = '[\d\w]'
+        self.regex = '{0}+(?:,{0}*)+'.format(rearg)
 
     def to_python(self, value):
         retval = filter(None, value.split(','))
