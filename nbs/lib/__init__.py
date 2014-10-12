@@ -9,7 +9,7 @@ class MarshallingException(Exception):
     def __init__(self, underlying_exception):
         super(MarshallingException, self).__init__(six.text_type(underlying_exception))
 
-def marshal(data, fields):
+def marshal(data, fields, many=False):
     """
     Takes a raw data (in the form of a dict, list, object) and a dict of fields
     to output and filters the data based on thouse fields.
@@ -23,7 +23,7 @@ def marshal(data, fields):
             return cls()
         return cls
 
-    if isinstance(data, (list, tuple)):
+    if isinstance(data, (list, tuple)) or many:
         return [marshal(d, fields) for d in data]
 
     items = ((k, marshal(data, v) if isinstance(v, dict)

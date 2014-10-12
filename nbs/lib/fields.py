@@ -2,6 +2,7 @@
 
 from email.utils import formatdate
 from calendar import timegm
+from decimal import Decimal as MyDecimal, ROUND_HALF_EVEN
 import six
 
 from nbs.lib import marshal, MarshallingException
@@ -203,3 +204,19 @@ class DateTime(Field):
                     return value.strftime(dateformat)
             except AttributeError as ae:
                 raise MarshallingException(ae)
+
+ZERO = MyDecimal()
+
+class Fixed(Field):
+
+    def __init__(self, decimals=2, **kwargs):
+        super(Fixed, self).__init__(**kwargs)
+        self.precision = MyDecimal('0.' + '0'*(decimals-1) + '1')
+
+    def format(self, value):
+        dvalue = MyDecimal(value)
+        if not dvalue.is_normal() and dvalue != ZERO:
+            raise MarshallingException("Invalid Fixed precision number.")
+        return six.text_type(dvalue.quantize(self.precision, rounding=ROUND_HALF_EVEN))
+
+Price = Number = Fixed
