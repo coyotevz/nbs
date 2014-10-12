@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from email.utils import formatdate
+from calendar import timegm
 import six
-from nbs.lib import marshal
+
+from nbs.lib import marshal, MarshallingException
 
 
 def is_indexable_but_not_string(obj):
@@ -70,9 +73,12 @@ class Field(object):
         value = get_value(key if self.attribute is None else self.attribute, obj)
 
         if value is None:
-            return self.defult
+            return self.default
 
         return self.format(value)
+
+    def __repr__(self):
+        return '<{0} Field>'.format(self.__class__.__name__)
 
 
 class Nested(Field):
@@ -164,11 +170,18 @@ class FormattedString(Field):
             raise MarshallingException(error)
 
 
+def isoformat(dt):
+    return dt.isoformat()
+
+def rfcformat(dt):
+    return formatdate(timegm(dt.utctimetuple()))
+
+
 DATEFORMAT_SERIALIZATION_FUNCS = {
-    'iso': utils.isoformat,
-    'iso8601': utisl.isoformat,
-    'rfc': utils.rfcformat,
-    'rfc822': utils.rfcformat,
+    'iso': isoformat,
+    'iso8601': isoformat,
+    'rfc': rfcformat,
+    'rfc822': rfcformat,
 }
 
 class DateTime(Field):
@@ -183,7 +196,10 @@ class DateTime(Field):
         if value:
             dateformat = self.dateformat or self.DEFAULT_FORMAT
             format_func = DATEFORMAT_SERIALIZATION_FUNCS.get(dateformat, None)
-            if format_func:
-                return format_func(value)
-            else:
-                return value.strftime(dateformat)
+            try:
+                if format_func:
+                    return format_func(value)
+                else:
+                    return value.strftime(dateformat)
+            except AttributeError as ae:
+                raise MarshallingException(ae)

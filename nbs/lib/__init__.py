@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
+import six
+
+class MarshallingException(Exception):
+    """This is an ancapsulating Exception in case of marshalling error."""
+
+    def __init__(self, underlying_exception):
+        super(MarshallingException, self).__init__(six.text_type(underlying_exception))
 
 def marshal(data, fields):
     """
