@@ -63,11 +63,9 @@ product_list_args = {
 product_api = Blueprint('api.product', __name__, url_prefix='/api/products')
 
 @product_api.route('', methods=['GET'])
-def list():
-    args = parser.parse(product_list_args, request)
-    print "args:",args
-    products = Product.query
-    products = args.get('fields').apply_query(products)
+@parser.use_kwargs(product_list_args)
+def list(filters, fields):
+    products = fields.apply_query(Product.query)
     return jsonify({"products": marshal(products, product_fields, many=True)})
 
 @product_api.route('/<int:pk>', methods=['GET'])

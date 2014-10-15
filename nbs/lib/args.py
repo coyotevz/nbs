@@ -74,11 +74,19 @@ class Fields(object):
                 entities.append(get_entity(query, f))
             except InvalidRequestError:
                 pass
-        return query.with_entities(*entities)
+        if len(entities):
+            return query.with_entities(*entities)
+        return query
+
+    def __repr__(self):
+        return "<Fields (%s)>" % ", ".join(self._fields)
 
 
 def FieldsArg(default=None):
-    return Arg(default=default, use=convert_fields)
+    fields = []
+    if isinstance(default, (list, tuple)):
+        fields = default
+    return Arg(default=Fields(fields), use=convert_fields)
 
 def QueryArg():
     return Arg(use=convert_query)
@@ -94,4 +102,4 @@ def convert_query(l):
 
 def convert_fields(l):
     fields = convert_list(l)
-    return Fields(l)
+    return Fields(fields)

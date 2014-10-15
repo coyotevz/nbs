@@ -23,6 +23,9 @@ def marshal(data, fields, many=False):
             return cls()
         return cls
 
+    if hasattr(data, '_asdict'):
+        data = data._asdict()
+
     if isinstance(data, (list, tuple)) or many:
         return [marshal(d, fields) for d in data]
 
