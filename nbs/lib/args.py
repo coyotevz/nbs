@@ -158,7 +158,17 @@ class Parser(object):
         value cannot be found."""
         return Missing
 
+    def parse_querystring(self, req, name, arg):
+        """Pull a value from query string of a request object or return
+        `Missing` if the value cannot be found."""
+        return Missing
+
     def parse_form(self, req, name, arg):
         """Pull a value from the form data of a request object or return
         `Missing` if the value cannot be found."""
+        return Missing
+
+    def parse_headers(self, req, name, arg):
+        """Pull a value from the headers or return `Missing` if the value
+        cannot be found."""
         return Missing
