@@ -3,11 +3,10 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload, subqueryload
-from webargs import Arg
 from webargs.flaskparser import FlaskParser
 
 from nbs.models import db, Product, ProductStock
-from nbs.lib import fields, marshal
+from nbs.lib import fields, marshal, args
 
 
 ## MARSHAL FIELDS ##
@@ -54,16 +53,9 @@ supplier_info_fields = {
 
 parser = FlaskParser()
 
-def convert_list(l):
-    return filter(None, l.split(";"))
-
-def convert_filters(l):
-    filters = convert_list(l)
-    return [tuple(f.split(":")) for f in filters]
-
 product_list_args = {
-    'fields': Arg(default=['id', 'sku'], use=convert_list),
-    'filters': Arg(use=convert_filters),
+    'fields': args.FieldsArg(default=['id', 'sku', 'description', 'price']),
+    'filters': args.QueryArg(),
 }
 
 ## API ##
@@ -75,6 +67,7 @@ def list():
     args = parser.parse(product_list_args, request)
     print "args:",args
     products = Product.query
+    products = args.get('fields').apply_query(products)
     return jsonify({"products": marshal(products, product_fields, many=True)})
 
 @product_api.route('/<int:pk>', methods=['GET'])
