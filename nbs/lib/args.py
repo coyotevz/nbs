@@ -46,19 +46,7 @@ class Filter(namedtuple('Filter', 'field, operator, argument')):
             entity = get_entity(query, self.field)
         except InvalidRequestError:
             return query
-        return query.filter(opfunc(entity, argument))
-
-class Filters(object):
-
-    def __init__(self, filters):
-        if not isinstance(filters, (list, tuple)):
-            filters = [filters]
-        self._filters = [Filter(f.split(":")) for f in filters]
-
-    def apply_query(self, query):
-        for f in self._filters:
-            query = f.apply_query(query)
-        return query
+        return query.filter(opfunc(entity, self.argument))
 
 class Fields(object):
     
@@ -98,7 +86,7 @@ def convert_list(l):
 
 def convert_query(l):
     filters = convert_list(l)
-    return Filters(filters)
+    return [Filter(*f.split(":")) for f in filters]
 
 def convert_fields(l):
     fields = convert_list(l)
