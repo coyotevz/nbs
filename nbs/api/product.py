@@ -68,7 +68,6 @@ def list(filters, fields):
     products = fields.apply_query(Product.query)
     for f in filters:
         products = f.apply_query(products)
-    print products
     return jsonify({"products": marshal(products, product_fields, many=True)})
 
 @product_api.route('/<int:pk>', methods=['GET'])
