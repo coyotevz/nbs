@@ -589,7 +589,7 @@ class ProductUnit(db.Model):
     plural = db.Column(db.Unicode)
     abbr = db.Column(db.Unicode, nullable=False)
     allow_fraction = db.Column(db.Boolean, default=False)
-    
+
     unit_type = db.Column(db.Enum(*_unit_types.keys(), name='unit_type_enum'),
                           default=UNIT_TYPE_CUSTOM)
 
