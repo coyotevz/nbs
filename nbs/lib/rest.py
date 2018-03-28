@@ -19,6 +19,7 @@ from sqlalchemy.orm import (
 from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.exceptions import default_exceptions, HTTPException
+from werkzeug.datastructures import iterlists
 from flask import request, make_response, abort, json, current_app
 from flask_sqlalchemy import Pagination
 
@@ -187,7 +188,7 @@ def get_params(spec=None):
     Returns a QueryParameters instance for query string received.
     """
     params = {}
-    for key, value in request.args.iterlists():
+    for key, value in iterlists(request.args):
         k, v = parse_param(key, value)
         params.setdefault(k, []).extend(v)
     unroll_params(params)
