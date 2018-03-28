@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('WebKit2', '4.0')
+
 from gi.repository import Gtk, Gdk, WebKit2 as WebKit
 
 
