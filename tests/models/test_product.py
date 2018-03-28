@@ -129,15 +129,17 @@ class TestProductCategory(DBTestCase):
         self.db.session.add(pc_parent)
         self.db.session.commit()
 
+        s = lambda p: p.id
+
         assert list(pc_child_211.get_children_recursively()) == []
         assert list(pc_child_21.get_children_recursively()) == [pc_child_211]
-        assert sorted(list(pc_child_1.get_children_recursively())) == \
-                sorted([pc_child_12, pc_child_11])
-        assert sorted(list(pc_child_2.get_children_recursively())) == \
-                sorted([pc_child_211, pc_child_21, pc_child_22])
-        assert sorted(list(pc_parent.get_children_recursively())) == \
+        assert sorted(list(pc_child_1.get_children_recursively()), key=s) == \
+                sorted([pc_child_12, pc_child_11], key=s)
+        assert sorted(list(pc_child_2.get_children_recursively()), key=s) == \
+                sorted([pc_child_211, pc_child_21, pc_child_22], key=s)
+        assert sorted(list(pc_parent.get_children_recursively()), key=s) == \
                 sorted([pc_child_1, pc_child_2, pc_child_11, pc_child_12,
-                        pc_child_21, pc_child_22, pc_child_211])
+                        pc_child_21, pc_child_22, pc_child_211], key=s)
 
 
 class TestProduct(DBTestCase):
