@@ -16,7 +16,7 @@ def string_field_process_formdata(self, valuelist):
 StringField.process_formdata = string_field_process_formdata
 
 from wtforms_alchemy import model_form_factory
-from flask.ext.wtf import Form as _Form
+from flask_wtf import Form as _Form
 
 class Form(_Form):
 

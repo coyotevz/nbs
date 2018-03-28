@@ -20,7 +20,7 @@ from sqlalchemy.orm.util import class_mapper
 from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.exceptions import default_exceptions, HTTPException
 from flask import request, make_response, abort, json, current_app
-from flask.ext.sqlalchemy import Pagination
+from flask_sqlalchemy import Pagination
 
 from nbs.utils import is_json
 

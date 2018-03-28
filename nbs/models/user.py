@@ -4,7 +4,7 @@ from datetime import datetime
 
 from werkzeug import generate_password_hash, check_password_hash
 from sqlalchemy.ext.hybrid import hybrid_property
-from flask.ext.sqlalchemy import BaseQuery
+from flask_sqlalchemy import BaseQuery
 
 from nbs.models import db
 from nbs.models.entity import Entity

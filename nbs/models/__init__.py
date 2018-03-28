@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from nbs.models._sqlite_numeric import Numeric
 
 db = SQLAlchemy()
@@ -22,6 +22,7 @@ __all__ = ['db', 'User', 'Role', 'Permission', 'ProductCategory', 'Product',
 ]
 
 def configure_db(app):
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
 from nbs.models.user import User, Role, Permission

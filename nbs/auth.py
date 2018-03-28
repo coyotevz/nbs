@@ -5,9 +5,9 @@ from collections import namedtuple
 
 from flask import current_app, request, url_for, render_template, redirect, g
 
-from flask.ext.principal import Principal, Permission, PermissionDenied, Need
-from flask.ext.principal import RoleNeed, UserNeed, AnonymousIdentity
-from flask.ext.principal import identity_changed, identity_loaded
+from flask_principal import Principal, Permission, PermissionDenied, Need
+from flask_principal import RoleNeed, UserNeed, AnonymousIdentity
+from flask_principal import identity_changed, identity_loaded
 
 from nbs.lib import auth
 from nbs.models import User

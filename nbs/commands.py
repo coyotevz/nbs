@@ -8,9 +8,9 @@
 
 import sys
 from flask import current_app
-from flask.ext.script import Manager, Shell, prompt_bool
-from flask.ext.script import Command, Option
-from flask.ext.script.commands import Clean, ShowUrls
+from flask_script import Manager, Shell, prompt_bool
+from flask_script import Command, Option
+from flask_script.commands import Clean, ShowUrls
 
 from nbs import create_app
 from nbs.models import db
