@@ -26,8 +26,8 @@ class Entity(db.Model, TimestampMixin):
 
     @hybrid_property
     def full_name(self):
-        ln = u" {0}".format(self._name_2) if self._name_2 else u""
-        return u"{0}{1}".format(self._name_1, ln)
+        ln = " {0}".format(self._name_2) if self._name_2 else ""
+        return "{0}{1}".format(self._name_1, ln)
 
     def __repr__(self):
         return "<{0} '{1}'>".format(self.__class__.__name__,

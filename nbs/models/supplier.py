@@ -13,7 +13,7 @@ from nbs.models.product import (
 
 class Supplier(Entity, FiscalDataMixin):
     __tablename__ = 'supplier'
-    __mapper_args__ = {'polymorphic_identity': u'supplier'}
+    __mapper_args__ = {'polymorphic_identity': 'supplier'}
 
     supplier_id = db.Column(db.Integer, db.ForeignKey('entity.id'),
                             primary_key=True)
@@ -31,8 +31,8 @@ class Supplier(Entity, FiscalDataMixin):
 
     @hybrid_property
     def full_name(self):
-        fn = u" ({0})".format(self.fancy_name) if self.fancy_name else u""
-        return u"{0}{1}".format(self.name, fn)
+        fn = " ({0})".format(self.fancy_name) if self.fancy_name else ""
+        return "{0}{1}".format(self.name, fn)
 
     def add_contact(self, contact, role):
         self.supplier_contacts.append(SupplierContact(contact, role))

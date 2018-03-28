@@ -156,58 +156,58 @@ class StockTransaction(db.Model):
 
     #: the transaction is an initial stock adjustment. Note that with whis
     #: transaction, there is no related object.
-    TYPE_INITIAL = u'TYPE_INITIAL'
+    TYPE_INITIAL = 'TYPE_INITIAL'
 
     #: the transaction is a sale
-    TYPE_SALE = u'TYPE_SALE'
+    TYPE_SALE = 'TYPE_SALE'
 
     #: the transaction is a return of a sale
-    TYPE_RETURNED_SALE = u'TYPE_RETURNED_SALE'
+    TYPE_RETURNED_SALE = 'TYPE_RETURNED_SALE'
 
     #: the transaction is the cancellation of a sale
-    TYPE_CANCELED_SALE = u'TYPE_CANCELED_SALE'
+    TYPE_CANCELED_SALE = 'TYPE_CANCELED_SALE'
 
     #: the transaction is the receival of a purchase
-    TYPE_RECEIVED_PURCHASE = u'TYPE_RECEIVED_PURCHASE'
+    TYPE_RECEIVED_PURCHASE = 'TYPE_RECEIVED_PURCHASE'
 
     #: the transaction is a return of a purchase
-    TYPE_RETURNED_PURCHASE = u'TYPE_RETURNED_PURCHASE'
+    TYPE_RETURNED_PURCHASE = 'TYPE_RETURNED_PURCHASE'
 
     #: the transaction is the receival of a purchase
-    TYPE_RETURNED_LOAN = u'TYPE_RETURNED_LOAN'
+    TYPE_RETURNED_LOAN = 'TYPE_RETURNED_LOAN'
 
     #: the transaction is a loan
-    TYPE_LOANED = u'TYPE_LOANED'
+    TYPE_LOANED = 'TYPE_LOANED'
 
     #: the transaction is a stock decrease
-    TYPE_STOCK_DECREASE = u'TYPE_STOCK_DECREASE'
+    TYPE_STOCK_DECREASE = 'TYPE_STOCK_DECREASE'
 
     #: the transaction is a transfer from a branch
-    TYPE_TRANSFER_FROM = u'TYPE_TRANSFER_FROM'
+    TYPE_TRANSFER_FROM = 'TYPE_TRANSFER_FROM'
 
     #: the transaction is a transfer to a branch
-    TYPE_TRANSFER_TO = u'TYPE_TRANSFER_TO'
+    TYPE_TRANSFER_TO = 'TYPE_TRANSFER_TO'
 
     #: the transaction is the adjustment of an inventory
-    TYPE_INVENTORY_ADJUST = u'TYPE_INVENTORY_ADJUST'
+    TYPE_INVENTORY_ADJUST = 'TYPE_INVENTORY_ADJUST'
 
     #: the transaction is a stock decrease by product failure
-    TYPE_FAILURE_DECREASE = u'TYPE_FAILURE_DECREASE'
+    TYPE_FAILURE_DECREASE = 'TYPE_FAILURE_DECREASE'
 
     types = {
-        TYPE_INITIAL: u'Stock inicial',
-        TYPE_SALE: u'Venta %s',
-        TYPE_RETURNED_SALE: u'Devolución de venta %s',
-        TYPE_CANCELED_SALE: u'Devolución por cancelación de venta %s',
-        TYPE_RECEIVED_PURCHASE: u'Recepción de compra %s',
-        TYPE_RETURNED_PURCHASE: u'Devolución de compra %s',
-        TYPE_RETURNED_LOAN: u'Devolución de prestamo',
-        TYPE_LOANED: u'Prestamo',
-        TYPE_STOCK_DECREASE: u'Disminución de stock %s',
-        TYPE_TRANSFER_FROM: u'Transferencia desde %s',
-        TYPE_TRANSFER_TO: u'Transferencia hacia %s',
-        TYPE_INVENTORY_ADJUST: u'Ajuste por inventario %s',
-        TYPE_FAILURE_DECREASE: u'Disminución por Producto fallado %s',
+        TYPE_INITIAL: 'Stock inicial',
+        TYPE_SALE: 'Venta %s',
+        TYPE_RETURNED_SALE: 'Devolución de venta %s',
+        TYPE_CANCELED_SALE: 'Devolución por cancelación de venta %s',
+        TYPE_RECEIVED_PURCHASE: 'Recepción de compra %s',
+        TYPE_RETURNED_PURCHASE: 'Devolución de compra %s',
+        TYPE_RETURNED_LOAN: 'Devolución de prestamo',
+        TYPE_LOANED: 'Prestamo',
+        TYPE_STOCK_DECREASE: 'Disminución de stock %s',
+        TYPE_TRANSFER_FROM: 'Transferencia desde %s',
+        TYPE_TRANSFER_TO: 'Transferencia hacia %s',
+        TYPE_INVENTORY_ADJUST: 'Ajuste por inventario %s',
+        TYPE_FAILURE_DECREASE: 'Disminución por Producto fallado %s',
     }
 
     id = db.Column(db.Integer, primary_key=True)

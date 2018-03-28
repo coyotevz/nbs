@@ -31,17 +31,17 @@ class FiscalMixin(object):
     #       fiscal_type_str   -> Complete 'Factura A', 'Nota de Crédito B', etc
 
     #: Fiscal type 'A' for 'Responsable Inscripto' customer
-    FISCAL_TYPE_A = u'FISCAL_A'
+    FISCAL_TYPE_A = 'FISCAL_A'
 
     #: Fiscal type 'B' for 'Consumidor Final' customer
-    FISCAL_TYPE_B = u'FISCAL_B'
+    FISCAL_TYPE_B = 'FISCAL_B'
 
     _fiscal_type = {
-        FISCAL_TYPE_A: u'A',
-        FISCAL_TYPE_B: u'B',
+        FISCAL_TYPE_A: 'A',
+        FISCAL_TYPE_B: 'B',
     }
 
-    fiscal_type = db.Column(db.Enum(*_fiscal_type.keys(),
+    fiscal_type = db.Column(db.Enum(*list(_fiscal_type.keys()),
                                     name='document_fiscal_type'),
                             default=FISCAL_TYPE_B,
                             nullable=False)

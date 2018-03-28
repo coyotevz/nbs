@@ -16,7 +16,7 @@ def jsonify_status_code(status_code, headers=None, *args, **kwargs):
     :func:`flask.jsonify` function which creates the response.
     """
 
-    for key, value in kwargs.items():
+    for key, value in list(kwargs.items()):
         if isinstance(value, datetime.date):
             kwrags[key] = value.isoformat()
         elif isinstance(value, (uuid.UUID, decimal.Decimal)):
@@ -27,7 +27,7 @@ def jsonify_status_code(status_code, headers=None, *args, **kwargs):
     response = jsonify(*args, **kwargs)
     response.status_code = status_code
     if headers:
-        for key, value in headers.iteritems():
+        for key, value in headers.items():
             response.headers[key] = value
     return response
 

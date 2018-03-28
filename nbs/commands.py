@@ -73,7 +73,7 @@ class GunicornServer(Command):
             sys.exit("You must have installed gunicorn to run this command")
 
         if version_info < (0, 9, 0):
-            print "We can't run this yet"
+            print("We can't run this yet")
         else:
             from gunicorn.app.base import Application
 

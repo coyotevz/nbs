@@ -60,7 +60,7 @@ def add():
         url = url_for('.get', id=result['id'])
         headers = dict(Location=url)
         return jsonify_status_code(201, headers=headers, **result)
-    except IntegrityError, exception:
+    except IntegrityError as exception:
         current_app.logger.exception(exception.message)
         rest.rest_abort(400, message=exception.message)
 

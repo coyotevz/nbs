@@ -8,7 +8,7 @@ from nbs.models.entity import Entity
 
 class Contact(Entity):
     __tablename__ = 'contact'
-    __mapper_args__ = {'polymorphic_identity': u'contact'}
+    __mapper_args__ = {'polymorphic_identity': 'contact'}
 
     contact_id = db.Column(db.Integer, db.ForeignKey('entity.id'),
                            primary_key=True)

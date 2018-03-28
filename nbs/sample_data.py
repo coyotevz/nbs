@@ -13,17 +13,17 @@ from nbs.models.places import Warehouse, Branch, Office
 from nbs.models.document import DocumentItem, SaleInvoice
 
 def install_fixtures():
-    accesorios = ProductCategory(name=u'Accesorios')
-    root = ProductCategory(name=u'Instalaciones Domiciliarias', children=[
-        ProductCategory(name=u'Agua Fría y Caliente', children=[
-            ProductCategory(name=u'GEN', children=[
-                ProductCategory(name=u'GEN FUSION', children=[
+    accesorios = ProductCategory(name='Accesorios')
+    root = ProductCategory(name='Instalaciones Domiciliarias', children=[
+        ProductCategory(name='Agua Fría y Caliente', children=[
+            ProductCategory(name='GEN', children=[
+                ProductCategory(name='GEN FUSION', children=[
                     accesorios,
-                    ProductCategory(name=u'Tubos'),
+                    ProductCategory(name='Tubos'),
                 ]),
-                ProductCategory(name=u'GEN ROSCA', children=[
-                    ProductCategory(name=u'Accesorios'),
-                    ProductCategory(name=u'Tubos'),
+                ProductCategory(name='GEN ROSCA', children=[
+                    ProductCategory(name='Accesorios'),
+                    ProductCategory(name='Tubos'),
                 ]),
             ]),
         ]),
@@ -32,61 +32,61 @@ def install_fixtures():
     db.session.add(root)
     db.session.commit()
 
-    gen = Supplier(name=u'GEN S.A.C.I. y F.', fancy_name=u'GEN', supplier_contacts=[
-        SupplierContact(contact=Contact(first_name=u'Julio', last_name=u'Firchak'),
-                        role=u'Representante Técnico'),
-        SupplierContact(contact=Contact(first_name=u'Tereso', last_name=u'Acuña'),
-                        role=u'Vendedor'),
-        SupplierContact(contact=Contact(first_name=u'Sanguango', last_name=u'Quevedo'),
-                        role=u'Representante Técnico'),
+    gen = Supplier(name='GEN S.A.C.I. y F.', fancy_name='GEN', supplier_contacts=[
+        SupplierContact(contact=Contact(first_name='Julio', last_name='Firchak'),
+                        role='Representante Técnico'),
+        SupplierContact(contact=Contact(first_name='Tereso', last_name='Acuña'),
+                        role='Vendedor'),
+        SupplierContact(contact=Contact(first_name='Sanguango', last_name='Quevedo'),
+                        role='Representante Técnico'),
     ], fiscal_type=Supplier.FISCAL_RESPONSABLE_INSCRIPTO)
-    der = Supplier(name=u'DER S.A.', supplier_contacts=[
-        SupplierContact(contact=Contact(first_name=u'Ferrucio', last_name=u'Casimiro'),
-                        role=u'Vendedor')
+    der = Supplier(name='DER S.A.', supplier_contacts=[
+        SupplierContact(contact=Contact(first_name='Ferrucio', last_name='Casimiro'),
+                        role='Vendedor')
     ], fiscal_type=Supplier.FISCAL_RESPONSABLE_INSCRIPTO)
 
     db.session.add_all([gen, der])
     db.session.commit()
 
-    w1 = Warehouse(name=u'Depósito Central')
-    w2 = Warehouse(name=u'Depósito Godoy Cruz')
-    b1 = Branch(name=u'Casa Central', fiscal_pos=1, warehouse=w1)
-    b2 = Branch(name=u'Sucursal Godoy Cruz', fiscal_pos=2, warehouse=w2)
-    o1 = Office(name=u'Oficina Administrativa')
+    w1 = Warehouse(name='Depósito Central')
+    w2 = Warehouse(name='Depósito Godoy Cruz')
+    b1 = Branch(name='Casa Central', fiscal_pos=1, warehouse=w1)
+    b2 = Branch(name='Sucursal Godoy Cruz', fiscal_pos=2, warehouse=w2)
+    o1 = Office(name='Oficina Administrativa')
 
     db.session.add_all([b1, b2, o1])
     db.session.commit()
 
     products = [
-        {'s': u'20120','d': u'CODO 90° HH Ø20 GEN FUSION','p': '2.21'},
-        {'s': u'20125','d': u'CODO 90° HH Ø25 GEN FUSION','p': '3.82'},
-        {'s': u'20132','d': u'CODO 90° HH Ø32 GEN FUSION','p': '5.32'},
-        {'s': u'20140','d': u'CODO 90° HH Ø40 GEN FUSION','p': '11.78'},
-        {'s': u'20150','d': u'CODO 90° HH Ø50 GEN FUSION','p': '22.14'},
-        {'s': u'20163','d': u'CODO 90° HH Ø63 GEN FUSION','p': '33.24'},
-        {'s': u'20175','d': u'CODO 90° HH Ø75 GEN FUSION','p': '87.51'},
-        {'s': u'20190','d': u'CODO 90° HH Ø90 GEN FUSION','p': '181.19'},
-        {'s': u'20320','d': u'TE HHH Ø20 GEN FUSION','p': '2.92'},
-        {'s': u'20325','d': u'TE HHH Ø25 GEN FUSION','p': '5.51'},
-        {'s': u'20332','d': u'TE HHH Ø32 GEN FUSION','p': '8.04'},
-        {'s': u'20340','d': u'TE HHH Ø40 GEN FUSION','p': '17.64'},
-        {'s': u'20350','d': u'TE HHH Ø50 GEN FUSION','p': '31.85'},
-        {'s': u'20363','d': u'TE HHH Ø63 GEN FUSION','p': '46.24'},
-        {'s': u'20375','d': u'TE HHH Ø75 GEN FUSION','p': '104.02'},
-        {'s': u'20390','d': u'TE HHH Ø90 GEN FUSION','p': '222.05'},
-        {'s': u'20520','d': u'CUPLA HH Ø20 GEN FUSION','p': '1.64'},
-        {'s': u'20525','d': u'CUPLA HH Ø25 GEN FUSION','p': '2.92'},
-        {'s': u'20532','d': u'CUPLA HH Ø32 GEN FUSION','p': '4.06'},
-        {'s': u'20540','d': u'CUPLA HH Ø40 GEN FUSION','p': '9.22'},
-        {'s': u'20550','d': u'CUPLA HH Ø50 GEN FUSION','p': '15.49'},
-        {'s': u'20563','d': u'CUPLA HH Ø63 GEN FUSION','p': '27.21'},
-        {'s': u'20575','d': u'CUPLA HH Ø75 GEN FUSION','p': '60.71'},
-        {'s': u'20590','d': u'CUPLA HH Ø90 GEN FUSION','p': '102.19'},
+        {'s': '20120','d': 'CODO 90° HH Ø20 GEN FUSION','p': '2.21'},
+        {'s': '20125','d': 'CODO 90° HH Ø25 GEN FUSION','p': '3.82'},
+        {'s': '20132','d': 'CODO 90° HH Ø32 GEN FUSION','p': '5.32'},
+        {'s': '20140','d': 'CODO 90° HH Ø40 GEN FUSION','p': '11.78'},
+        {'s': '20150','d': 'CODO 90° HH Ø50 GEN FUSION','p': '22.14'},
+        {'s': '20163','d': 'CODO 90° HH Ø63 GEN FUSION','p': '33.24'},
+        {'s': '20175','d': 'CODO 90° HH Ø75 GEN FUSION','p': '87.51'},
+        {'s': '20190','d': 'CODO 90° HH Ø90 GEN FUSION','p': '181.19'},
+        {'s': '20320','d': 'TE HHH Ø20 GEN FUSION','p': '2.92'},
+        {'s': '20325','d': 'TE HHH Ø25 GEN FUSION','p': '5.51'},
+        {'s': '20332','d': 'TE HHH Ø32 GEN FUSION','p': '8.04'},
+        {'s': '20340','d': 'TE HHH Ø40 GEN FUSION','p': '17.64'},
+        {'s': '20350','d': 'TE HHH Ø50 GEN FUSION','p': '31.85'},
+        {'s': '20363','d': 'TE HHH Ø63 GEN FUSION','p': '46.24'},
+        {'s': '20375','d': 'TE HHH Ø75 GEN FUSION','p': '104.02'},
+        {'s': '20390','d': 'TE HHH Ø90 GEN FUSION','p': '222.05'},
+        {'s': '20520','d': 'CUPLA HH Ø20 GEN FUSION','p': '1.64'},
+        {'s': '20525','d': 'CUPLA HH Ø25 GEN FUSION','p': '2.92'},
+        {'s': '20532','d': 'CUPLA HH Ø32 GEN FUSION','p': '4.06'},
+        {'s': '20540','d': 'CUPLA HH Ø40 GEN FUSION','p': '9.22'},
+        {'s': '20550','d': 'CUPLA HH Ø50 GEN FUSION','p': '15.49'},
+        {'s': '20563','d': 'CUPLA HH Ø63 GEN FUSION','p': '27.21'},
+        {'s': '20575','d': 'CUPLA HH Ø75 GEN FUSION','p': '60.71'},
+        {'s': '20590','d': 'CUPLA HH Ø90 GEN FUSION','p': '102.19'},
     ]
 
-    bc = PriceComponent(name=u'Bonificación 36%', value=Decimal('36.00'))
-    mc = PriceComponent(name=u'Markup 35%', value=Decimal('35.00'))
-    unidad = ProductUnit.query.filter(ProductUnit.description==u'Unidad').one()
+    bc = PriceComponent(name='Bonificación 36%', value=Decimal('36.00'))
+    mc = PriceComponent(name='Markup 35%', value=Decimal('35.00'))
+    unidad = ProductUnit.query.filter(ProductUnit.description=='Unidad').one()
 
     for p in products:
 
@@ -110,16 +110,16 @@ def install_fixtures():
 
     inv1 = SaleInvoice(issue_place=b1, number=12)
     inv1.items = [
-        DocumentItem(product=p(u'20120'), quantity=5),
-        DocumentItem(product=p(u'20125'), quantity=1),
-        DocumentItem(product=p(u'20132'), quantity=7),
+        DocumentItem(product=p('20120'), quantity=5),
+        DocumentItem(product=p('20125'), quantity=1),
+        DocumentItem(product=p('20132'), quantity=7),
     ]
 
     db.session.add(inv1)
 
     inv2 = SaleInvoice(issue_place=b2, number=12, items=[
-        DocumentItem(product=p(u'20350'), quantity=1),
-        DocumentItem(product=p(u'20132'), quantity=3)
+        DocumentItem(product=p('20350'), quantity=1),
+        DocumentItem(product=p('20132'), quantity=3)
     ])
     inv2.fiscal_type = SaleInvoice.FISCAL_TYPE_A
 

@@ -98,7 +98,7 @@ class QueryParameters(object):
         per_page = data.pop('per_page', None)
         single = data.pop('single', False)
         filters = []
-        for key, value in data.iteritems():
+        for key, value in data.items():
             filters.extend([Filter(key, f[0], f[1]) for f in value])
         return QueryParameters(fields=fields, filters=filters, page=page,
                                per_page=per_page, sort=sort, single=single,
@@ -166,7 +166,7 @@ def parse_param(key, value):
     if key not in _keywords:
         value = [(op, v) for v in value]
     elif key == 'sort':
-        if op not in SORT_ORDER.keys():
+        if op not in list(SORT_ORDER.keys()):
             op = 'asc'
         value = [(op, v) for v in value]
     elif key == 'single':
@@ -178,7 +178,7 @@ def parse_param(key, value):
 
 def unroll_params(params):
     for k in ('page', 'per_page', 'single'):
-        if params.has_key(k):
+        if k in params:
             params[k] = params[k][0]
 
 
@@ -220,14 +220,14 @@ def rest_abort(code=400, message=None):
 
 def get_data():
     if not is_json(request):
-        msg = u'Request must have "Content-Type: application/json" header'
+        msg = 'Request must have "Content-Type: application/json" header'
         rest_abort(415, message=msg)
 
     try:
         params = json.loads(request.data)
     except (TypeError, ValueError, OverflowError) as exception:
         current_app.logger.exception(exception.message)
-        rest_abort(400, message=u'Unable to decode data')
+        rest_abort(400, message='Unable to decode data')
 
     return params
 
@@ -239,7 +239,7 @@ def get_to_update(model, params):
                                                            field)
             rest_abort(400, message=msg)
 
-    props = set(cols).intersection(params.keys())
+    props = set(cols).intersection(list(params.keys()))
     return dict((p, params[p]) for p in props)
 
 def get_query(model, params):
@@ -251,13 +251,13 @@ def filter_fields(query, params):
     # retrieve available columns for model involved in query
     model = query.column_descriptions[0]['type']
     columns = get_columns(model)
-    columns = set(columns + fields.get('map', {}).keys())
+    columns = set(columns + list(fields.get('map', {}).keys()))
 
 
     if fields['requested']:
         requested = set(fields['requested'])
     else:
-        if (len(fields['defaults']) == 1 and fields['defaults'][0] == u'*') or\
+        if (len(fields['defaults']) == 1 and fields['defaults'][0] == '*') or\
             len(fields['defaults']) == 0:
             requested = set(columns)
         else:
@@ -270,7 +270,7 @@ def filter_fields(query, params):
 
     # TODO: Work with authorized fields
 
-    for key, value in fields['map'].iteritems():
+    for key, value in fields['map'].items():
         if key in requested:
             requested.remove(key)
             requested.add((key, value))
@@ -325,7 +325,7 @@ def to_dict(obj, fields=None, extra=None, exclude=None):
     if extra is not None:
         if isinstance(extra, (list, tuple)):
             extra = list(extra)
-        elif isinstance(extra, basestring):
+        elif isinstance(extra, str):
             extra = [extra]
         else:
             raise TypeError("extra= argument of to_dict() must be an iterable "
@@ -335,7 +335,7 @@ def to_dict(obj, fields=None, extra=None, exclude=None):
     if exclude is not None:
         if isinstance(exclude, (list, tuple)):
             exclude = list(exclude)
-        elif isinstance(exclude, basestring):
+        elif isinstance(exclude, str):
             exclude = [exclude]
         else:
             raise TypeError("exclude= argument of to_dict() must be an "
@@ -343,7 +343,7 @@ def to_dict(obj, fields=None, extra=None, exclude=None):
         fields = fields - set(exclude)
 
     result = dict((col, _getcol(obj, col)) for col in fields\
-                  if isinstance(col, basestring))
+                  if isinstance(col, str))
 
     result.update(dict((m[0], m[1](obj)) for m in fields\
                   if isinstance(m, tuple)))
@@ -351,7 +351,7 @@ def to_dict(obj, fields=None, extra=None, exclude=None):
     # Check for objects in the dictionary that may not be serializable by
     # default. Specifically, convert datetime and date objects to ISO8601
     # format, UUID objects to exadecimal and Decimal objects to string.
-    for key, value in result.items():
+    for key, value in list(result.items()):
         result[key] = _clean(value)
 
     return result
@@ -364,7 +364,7 @@ def _clean(value):
     elif is_mapped_class(type(value)):
         return to_dict(value)
     elif isinstance(value, dict):
-        return {k: _clean(v) for k, v in value.iteritems()}
+        return {k: _clean(v) for k, v in value.items()}
     elif isinstance(value, list):
         return [_clean(v) for v in value]
     return value
@@ -374,7 +374,7 @@ def get_columns(model):
                if isinstance(p, (ColumnProperty, SynonymProperty)) \
                   and not p.key.startswith('_')]
     for parent in model.mro():
-        columns += [key for key, value in parent.__dict__.iteritems()
+        columns += [key for key, value in parent.__dict__.items()
                     if isinstance(value, hybrid_property)]
     return columns
 
@@ -387,7 +387,7 @@ def get_required_columns(model):
 def get_instance(model, data):
     cols = get_to_update(model, data)
     required = set(get_required_columns(model))
-    if required.intersection(cols.keys()) != required:
+    if required.intersection(list(cols.keys())) != required:
         msg = "Missing fields for model '%s'" % (model.__name__,)
         rest_abort(400, message=msg)
     return model(**cols)

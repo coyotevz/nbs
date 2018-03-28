@@ -21,7 +21,7 @@ class UserQuery(BaseQuery):
 
 class User(Entity):
     __tablename__ = 'user'
-    __mapper_args__ = {'polymorphic_identity': u'user'}
+    __mapper_args__ = {'polymorphic_identity': 'user'}
 
     query_class = UserQuery
 
@@ -48,7 +48,7 @@ class User(Entity):
 
     @password.setter
     def password(self, password):
-        self._pw_hash = unicode(generate_password_hash(password))
+        self._pw_hash = str(generate_password_hash(password))
 
     def check_password(self, password):
         if self.password is None:
@@ -56,7 +56,7 @@ class User(Entity):
         return check_password_hash(self.password, password)
 
     def has_role(self, role):
-        if isinstance(role, basestring):
+        if isinstance(role, str):
             return role in (role.name for role in self.roles)
         else:
             return role in self.roles
@@ -136,9 +136,9 @@ rolepermission_table = db.Table('role_permission', db.Model.metadata,
 )
 
 def create_admin_user():
-    admin = User(username=u'admin', password=u'admin', first_name=u'Admin')
-    admin_role = Role(name=u'superuser', description=u'Administration Role')
+    admin = User(username='admin', password='admin', first_name='Admin')
+    admin_role = Role(name='superuser', description='Administration Role')
     admin.roles.append(admin_role)
     db.session.add(admin)
     db.session.commit()
-    print(u'Init first session with username: admin, password: admin')
+    print('Init first session with username: admin, password: admin')

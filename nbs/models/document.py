@@ -36,25 +36,25 @@ class Document(db.Model, TimestampMixin):
     # TODO: Redesign statuses
 
     #: the document is in draft status
-    STATUS_DRAFT = u'STATUS_DRAFT'
+    STATUS_DRAFT = 'STATUS_DRAFT'
 
-    STATUS_PENDING = u'STATUS_PENDING'
-    STATUS_CONFIRMED = u'STATUS_CONFIRMED'
+    STATUS_PENDING = 'STATUS_PENDING'
+    STATUS_CONFIRMED = 'STATUS_CONFIRMED'
 
     #: this document has been issued and can't be modified
-    STATUS_ISSUED = u'STATUS_ISSUED'
-    STATUS_CLOSED = u'SATUS_CLOSED'
+    STATUS_ISSUED = 'STATUS_ISSUED'
+    STATUS_CLOSED = 'SATUS_CLOSED'
 
     _statuses = {
-        STATUS_DRAFT: u'Borrador',
-        STATUS_PENDING: u'Pendiente',
-        STATUS_CONFIRMED: u'Confirmada',
-        STATUS_ISSUED: u'Emitido',
-        STATUS_CLOSED: u'Cerrado',
+        STATUS_DRAFT: 'Borrador',
+        STATUS_PENDING: 'Pendiente',
+        STATUS_CONFIRMED: 'Confirmada',
+        STATUS_ISSUED: 'Emitido',
+        STATUS_CLOSED: 'Cerrado',
     }
 
-    doc_name = u'Unknown'
-    full_doc_name = u'Unknown'
+    doc_name = 'Unknown'
+    full_doc_name = 'Unknown'
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -69,7 +69,7 @@ class Document(db.Model, TimestampMixin):
     issue_date = db.Column(db.DateTime)
     expiration_date = db.Column(db.DateTime)
 
-    status = db.Column(db.Enum(*_statuses.keys(), name='document_status_enum'),
+    status = db.Column(db.Enum(*list(_statuses.keys()), name='document_status_enum'),
                        default=STATUS_DRAFT,
                        nullable=False)
 
@@ -110,14 +110,14 @@ class DocumentItem(db.Model):
 class SaleInvoice(FiscalItemizedMixin, Document):
     """A sale invoice is a sale document and contains sale items"""
     __tablename__ = 'sale_invoice'
-    _full_name = u'Factura de Venta'
-    _name = u'Factura'
+    _full_name = 'Factura de Venta'
+    _name = 'Factura'
 
     invoice_id = db.Column(db.Integer,
                            db.ForeignKey('document.id'),
                            primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_invoice',
+        'polymorphic_identity': 'sale_invoice',
         'inherit_condition': invoice_id == Document.id
     }
 
@@ -125,14 +125,14 @@ class SaleInvoice(FiscalItemizedMixin, Document):
 # Orden de Venta
 class SaleOrder(NumberedItemizedMixin, Document):
     __tablename__ = 'sale_order'
-    full_doc_name = u'Orden de Venta'
-    doc_name = u'Ordern de Venta'
+    full_doc_name = 'Orden de Venta'
+    doc_name = 'Ordern de Venta'
 
     order_id = db.Column(db.Integer,
                          db.ForeignKey('document.id'),
                          primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_order',
+        'polymorphic_identity': 'sale_order',
         'inherit_condition': order_id == Document.id
     }
 
@@ -140,14 +140,14 @@ class SaleOrder(NumberedItemizedMixin, Document):
 # Presupuesto de Venta
 class SaleQuotation(NumberedItemizedMixin, Document):
     __tablename__ = 'sale_quotation'
-    full_doc_name = u'Presupuesto de Venta'
-    doc_name = u'Presupuesto'
+    full_doc_name = 'Presupuesto de Venta'
+    doc_name = 'Presupuesto'
 
     quotation_id = db.Column(db.Integer,
                              db.ForeignKey('document.id'),
                              primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_quotation',
+        'polymorphic_identity': 'sale_quotation',
         'inherit_condition': quotation_id == Document.id
     }
 
@@ -155,14 +155,14 @@ class SaleQuotation(NumberedItemizedMixin, Document):
 # Remito de Venta
 class SaleRefer(NumberedItemizedMixin, Document):
     __tablename__ = 'sale_refer'
-    full_doc_name = u'Remito de Venta'
-    doc_name = u'Remito'
+    full_doc_name = 'Remito de Venta'
+    doc_name = 'Remito'
 
     refer_id = db.Column(db.Integer,
                          db.ForeignKey('document.id'),
                          primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_refer',
+        'polymorphic_identity': 'sale_refer',
         'inherit_condition': refer_id == Document.id
     }
 
@@ -170,14 +170,14 @@ class SaleRefer(NumberedItemizedMixin, Document):
 # Devolución de Venta
 class SaleReturn(NumberedItemizedMixin, Document):
     __tablename__ = 'sale_return'
-    full_doc_name = u'Devolución de Venta'
-    doc_name = u'Devolución'
+    full_doc_name = 'Devolución de Venta'
+    doc_name = 'Devolución'
 
     return_id = db.Column(db.Integer,
                           db.ForeignKey('document.id'),
                           primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_return',
+        'polymorphic_identity': 'sale_return',
         'inherit_condition': return_id == Document.id
     }
 
@@ -185,14 +185,14 @@ class SaleReturn(NumberedItemizedMixin, Document):
 # Solicitud de Mercadería (interno)
 class StockRequest(NumberedItemizedMixin, RefBranchesMixin, Document):
     __tablename__ = 'stock_request'
-    full_doc_name = u'Solicitud de Mercadería'
-    doc_name = u'Solicitud de Mercadería'
+    full_doc_name = 'Solicitud de Mercadería'
+    doc_name = 'Solicitud de Mercadería'
 
     request_id = db.Column(db.Integer,
                            db.ForeignKey('document.id'),
                            primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'stock_request',
+        'polymorphic_identity': 'stock_request',
         'inherit_condition': request_id == Document.id
     }
 
@@ -205,7 +205,7 @@ class StockTransfer(NumberedItemizedMixin, RefBranchesMixin, Document):
                             db.ForeignKey('document.id'),
                             primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'stock_transfer',
+        'polymorphic_identity': 'stock_transfer',
         'inherit_condition': transfer_id == Document.id
     }
 
@@ -220,7 +220,7 @@ class PurchaseInvoice(FiscalItemizedMixin, Document):
                            db.ForeignKey('document.id'),
                            primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_invoice',
+        'polymorphic_identity': 'purchase_invoice',
         'inherit_condition': invoice_id == Document.id,
     }
 
@@ -232,7 +232,7 @@ class PurchaseOrder(NumberedItemizedMixin, Document):
                          db.ForeignKey('document.id'),
                          primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_order',
+        'polymorphic_identity': 'purchase_order',
         'inherit_condition': order_id == Document.id,
     }
 
@@ -244,7 +244,7 @@ class PurchaseQuotation(NumberedItemizedMixin, Document):
                              db.ForeignKey('document.id'),
                              primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_quotation',
+        'polymorphic_identity': 'purchase_quotation',
         'inherit_condition': quotation_id == Document.id,
     }
 
@@ -256,7 +256,7 @@ class PurchaseRefer(NumberedItemizedMixin, Document):
                          db.ForeignKey('document.id'),
                          primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_refer',
+        'polymorphic_identity': 'purchase_refer',
         'inherit_condition': refer_id == Document.id,
     }
 
@@ -268,7 +268,7 @@ class PurchaseReturn(NumberedItemizedMixin, Document):
                           db.ForeignKey('document.id'),
                           primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_return',
+        'polymorphic_identity': 'purchase_return',
         'inherit_condition': return_id == Document.id,
     }
 
@@ -283,7 +283,7 @@ class SaleCreditNote(NumberedMixin, Document):
     note_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                         primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_credit_note',
+        'polymorphic_identity': 'sale_credit_note',
         'inherit_condition': note_id == Document.id,
     }
 
@@ -294,7 +294,7 @@ class PurchaseCreditNote(NumberedMixin, Document):
     note_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                         primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_credit_note',
+        'polymorphic_identity': 'purchase_credit_note',
         'inherit_condition': note_id == Document.id,
     }
 
@@ -305,7 +305,7 @@ class SaleDebitNote(NumberedMixin, Document):
     note_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                         primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_debit_note',
+        'polymorphic_identity': 'sale_debit_note',
         'inherit_condition': note_id == Document.id,
     }
 
@@ -316,7 +316,7 @@ class PurchaseDebitNote(NumberedMixin, Document):
     note_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                         primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_debit_note',
+        'polymorphic_identity': 'purchase_debit_note',
         'inherit_condition': note_id == Document.id,
     }
 
@@ -327,7 +327,7 @@ class SaleReceipt(NumberedMixin, Document):
     receipt_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                            primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'sale_receipt',
+        'polymorphic_identity': 'sale_receipt',
         'inherit_condition': receipt_id == Document.id,
     }
 
@@ -338,7 +338,7 @@ class PurchaseReceipt(NumberedMixin, Document):
     receipt_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                            primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'purchase_receipt',
+        'polymorphic_identity': 'purchase_receipt',
         'inherit_condition': receipt_id == Document.id,
     }
 
@@ -349,7 +349,7 @@ class PaymentOrder(NumberedMixin, Document):
     order_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                          primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'payment_order',
+        'polymorphic_identity': 'payment_order',
         'inherit_condition': order_id == Document.id,
     }
 
@@ -360,7 +360,7 @@ class CreditCupon(NumberedMixin, Document):
     cupon_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                          primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'credit_cupon',
+        'polymorphic_identity': 'credit_cupon',
         'inherit_condition': cupon_id == Document.id,
     }
 
@@ -371,7 +371,7 @@ class SupplyRequest(NumberedMixin, RefBranchesMixin, Document):
     request_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                            primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'supply_request',
+        'polymorphic_identity': 'supply_request',
         'inherit_condition': request_id == Document.id,
     }
 
@@ -382,23 +382,23 @@ class SupplyTransfer(NumberedMixin, RefBranchesMixin, Document):
     transfer_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             primary_key=True)
     __mapper_args__ = {
-        'polymorphic_identity': u'supply_transfer',
+        'polymorphic_identity': 'supply_transfer',
         'inherit_condition': transfer_id == Document.id,
     }
 
 
 doc_map_code = {
-    u'FAA': (SaleInvoice, ({'fiscal_type': u'A'})),
-    u'FAB': (SaleInvoice, ({'fiscal_type': u'B'})),
-    u'PRE': (SaleQuotation, ()),
-    u'OV':  (SaleOrder, ()),
-    u'REM': (SaleRefer, ()),
-    u'DEV': (SaleReturn, ()),
-    u'FCA': (PurchaseInvoice, ({'fiscal_type': u'A'})),
-    u'FCB': (PurchaseInvoice, ({'fiscal_type': u'B'})), # not used
-    u'FCC': (PurchaseInvoice, ({'fiscal_type': u'C'})), # monotributista
-    u'FCM': (PurchaseInvoice, ({'fiscal_type': u'M'})), # resp.inscr. nuevo
-    u'OC':  (PurchaseOrder, ()),
-    u'PRC': (PurchaseQuotation, ()),
-    u'REC': (PurchaseRefer, ()),
+    'FAA': (SaleInvoice, ({'fiscal_type': 'A'})),
+    'FAB': (SaleInvoice, ({'fiscal_type': 'B'})),
+    'PRE': (SaleQuotation, ()),
+    'OV':  (SaleOrder, ()),
+    'REM': (SaleRefer, ()),
+    'DEV': (SaleReturn, ()),
+    'FCA': (PurchaseInvoice, ({'fiscal_type': 'A'})),
+    'FCB': (PurchaseInvoice, ({'fiscal_type': 'B'})), # not used
+    'FCC': (PurchaseInvoice, ({'fiscal_type': 'C'})), # monotributista
+    'FCM': (PurchaseInvoice, ({'fiscal_type': 'M'})), # resp.inscr. nuevo
+    'OC':  (PurchaseOrder, ()),
+    'PRC': (PurchaseQuotation, ()),
+    'REC': (PurchaseRefer, ()),
 }

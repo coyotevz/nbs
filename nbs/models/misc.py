@@ -30,20 +30,20 @@ class RefEntityMixin(object):
 
 class FiscalDataMixin(object):
 
-    FISCAL_CONSUMIDOR_FINAL = u'FISCAL_CONSUMIDOR_FINAL'
-    FISCAL_RESPONSABLE_INSCRIPTO = u'FISCAL_RESPONSABLE_INSCRIPTO'
-    FISCAL_EXCENTO = u'FISCAL_EXCENTO'
-    FISCAL_MONOTRIBUTO = u'FISCAL_MONOTRIBUTO'
+    FISCAL_CONSUMIDOR_FINAL = 'FISCAL_CONSUMIDOR_FINAL'
+    FISCAL_RESPONSABLE_INSCRIPTO = 'FISCAL_RESPONSABLE_INSCRIPTO'
+    FISCAL_EXCENTO = 'FISCAL_EXCENTO'
+    FISCAL_MONOTRIBUTO = 'FISCAL_MONOTRIBUTO'
 
     _fiscal_types = {
-        FISCAL_CONSUMIDOR_FINAL: u'Consumidor Final',
-        FISCAL_RESPONSABLE_INSCRIPTO: u'Responsable Inscripto',
-        FISCAL_EXCENTO: u'Excento',
-        FISCAL_MONOTRIBUTO: u'Monotributo',
+        FISCAL_CONSUMIDOR_FINAL: 'Consumidor Final',
+        FISCAL_RESPONSABLE_INSCRIPTO: 'Responsable Inscripto',
+        FISCAL_EXCENTO: 'Excento',
+        FISCAL_MONOTRIBUTO: 'Monotributo',
     }
 
     cuit = db.Column(db.UnicodeText(13))
-    fiscal_type = db.Column(db.Enum(*_fiscal_types.keys(),
+    fiscal_type = db.Column(db.Enum(*list(_fiscal_types.keys()),
                                     name='fiscal_type_enum'),
                             default=FISCAL_CONSUMIDOR_FINAL)
 
@@ -69,7 +69,7 @@ class Address(RefEntityMixin, db.Model):
     postal_code = db.Column(db.Unicode(32))
 
     def __str__(eslf):
-        retval = unicode(self.street)
+        retval = str(self.street)
         if self.city:
             retval += ", {}".format(self.city)
         retval += ", {}".format(self.province)
@@ -89,7 +89,7 @@ class Phone(RefEntityMixin, db.Model):
     extension = db.Column(db.Unicode(5))
 
     def __str__(self):
-        retval = unicode(self.phone_type+': ' if self.phone_type else '')
+        retval = str(self.phone_type+': ' if self.phone_type else '')
         if self.prefix:
             retval += "({})".format(self.prefix)
         retval += self.number

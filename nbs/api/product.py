@@ -86,7 +86,7 @@ def add():
             db.session.add(obj)
             db.session.commit()
             return jsonify_status_code(201, **rest.to_dict(obj))
-        except Exception, e:
+        except Exception as e:
             current_app.logger.exception(e.message)
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
@@ -100,7 +100,7 @@ def update(id):
         try:
             db.session.commit()
             return jsonify_status_code(201, **rest.to_dict(product))
-        except Exception, e:
+        except Exception as e:
             current_app.logger.exception(e.message)
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)
@@ -124,13 +124,13 @@ def add_supplier_info(id):
     form = ProductSupplierInfoForm(product_id=product.id, csrf_enabled=False)
     if form.validate_on_submit():
         data = dict(form.patch_data, product_id=product.id)
-        print "data:", data
+        print("data:", data)
         obj = rest.get_instance(ProductSupplierInfo, data)
         try:
             db.session.add(obj)
             db.session.commit()
             return jsonify_status_code(201, **rest.to_dict(obj))
-        except Exception, e:
+        except Exception as e:
             current_app.logger.exception(e.message)
             return rest.rest_abort(409, message='Conflict')
     return jsonify_form(form)

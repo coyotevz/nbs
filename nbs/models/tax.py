@@ -6,18 +6,18 @@ class TaxConstant(db.Model):
     __tablename__ = 'tax_constant'
 
     #: used for sale operations
-    OPERATION_SALE = u'OPERATION_SALE'
+    OPERATION_SALE = 'OPERATION_SALE'
 
     #: used for purchase operation
-    OPERATION_PURCHASE = u'OPERATION_PURCHASE'
+    OPERATION_PURCHASE = 'OPERATION_PURCHASE'
 
     #: used for other operations
-    OPERATION_OTHER = u'OPERATION_OTHER'
+    OPERATION_OTHER = 'OPERATION_OTHER'
 
     _operation_types = {
-        OPERATION_SALE: u'Venta',
-        OPERATION_PURCHASE: u'Compra',
-        OPERATION_OTHER: u'Otras operaciones',
+        OPERATION_SALE: 'Venta',
+        OPERATION_PURCHASE: 'Compra',
+        OPERATION_OTHER: 'Otras operaciones',
     }
 
     id = db.Column(db.Integer, primary_key=True)
@@ -32,7 +32,7 @@ class TaxConstant(db.Model):
     value = db.Column(db.Numeric(10, 4), nullable=False)
 
     #: operation type
-    operation_type = db.Column(db.Enum(*_operation_types.keys(),
+    operation_type = db.Column(db.Enum(*list(_operation_types.keys()),
                                        name='tax_constant_operation_type'),
                                default=OPERATION_SALE)
 

@@ -11,13 +11,13 @@ UserData = namedtuple('UserData', ['user_id', 'login_time', 'last_access',
 def generate_private_token(size=20, chars=None):
     if not chars:
         chars = string.ascii_letters + string.digits
-    return "".join(random.choice(chars) for x in xrange(size))
+    return "".join(random.choice(chars) for x in range(size))
 
 def check_expired(remove=True):
     meth = dict.pop if remove else dict.get
     now = datetime.utcnow()
     retlist = []
-    for key, data in current_app.user_data.items():
+    for key, data in list(current_app.user_data.items()):
         user_timeout = data.timeout
         if user_timeout > 0 and\
            now - login_time > datetime.timedelta(seconds=user_timeout):
@@ -25,7 +25,7 @@ def check_expired(remove=True):
     return retlist
 
 def check_unique(user_id, retrieve=False):
-    for key, data in current_app.user_data.iteritems():
+    for key, data in current_app.user_data.items():
         if data.user_id == user_id:
             return data if retrieve else False
     return True

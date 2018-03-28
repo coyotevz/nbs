@@ -84,31 +84,31 @@ class Product(db.Model, TimestampMixin):
     __tablename__ = 'product'
 
     #: the product is available and can be used on a |purchase|/|sale|
-    STATUS_AVAILABLE = u'STATUS_AVAILABLE'
+    STATUS_AVAILABLE = 'STATUS_AVAILABLE'
 
     #: the product is closed, that is, it still exists for references,
     #: but it should no be possible to create |purchase|/|sale| with it
-    STATUS_CLOSED = u'STATUS_CLOSED'
+    STATUS_CLOSED = 'STATUS_CLOSED'
 
     #: the product is suspended, that is, it still exists for future references
     #: but it should not be possible to create a |purchase|/|sale| with it
     #: until back to available status.
-    STATUS_SUSPENDED = u'STATUS_SUSPENDED'
+    STATUS_SUSPENDED = 'STATUS_SUSPENDED'
 
     _statuses = {
-        STATUS_AVAILABLE: u'Disponible',
-        STATUS_CLOSED: u'Cerrado',
-        STATUS_SUSPENDED: u'Suspendido',
+        STATUS_AVAILABLE: 'Disponible',
+        STATUS_CLOSED: 'Cerrado',
+        STATUS_SUSPENDED: 'Suspendido',
     }
 
-    TYPE_PERMANENT = u'TYPE_PERMANENT'
-    TYPE_ON_REQUEST = u'TYPE_ON_REQUEST'
-    TYPE_CONSIGMENT = u'TYPE_CONSIGMENT'
+    TYPE_PERMANENT = 'TYPE_PERMANENT'
+    TYPE_ON_REQUEST = 'TYPE_ON_REQUEST'
+    TYPE_CONSIGMENT = 'TYPE_CONSIGMENT'
 
     _product_types = {
-        TYPE_PERMANENT: u'Permanente',
-        TYPE_ON_REQUEST: u'Bajo Pedido',
-        TYPE_CONSIGMENT: u'Consignacion',
+        TYPE_PERMANENT: 'Permanente',
+        TYPE_ON_REQUEST: 'Bajo Pedido',
+        TYPE_CONSIGMENT: 'Consignacion',
     }
 
     id = db.Column(db.Integer, primary_key=True)
@@ -159,10 +159,10 @@ class Product(db.Model, TimestampMixin):
                                    backref=db.backref('products',
                                                       lazy='dynamic'))
 
-    status = db.Column(db.Enum(*_statuses.keys(), name='product_status_enum'),
+    status = db.Column(db.Enum(*list(_statuses.keys()), name='product_status_enum'),
                        default=STATUS_AVAILABLE)
 
-    product_type = db.Column(db.Enum(*_product_types.keys(),
+    product_type = db.Column(db.Enum(*list(_product_types.keys()),
                              name='product_type_enum'), default=TYPE_PERMANENT)
 
     #: 'created' field added by TimestampMixin
@@ -242,9 +242,9 @@ class Product(db.Model, TimestampMixin):
         assert (type in StockTransaction.types)
 
         if quantity <= 0:
-            raise ValueError(u'quantity must be a positive integer')
+            raise ValueError('quantity must be a positive integer')
         if warehouse is None:
-            raise ValueError(u'warehouse cannot be None')
+            raise ValueError('warehouse cannot be None')
 
         stock = self.get_stock_for_warehouse(warehouse)
         stock.increase_stock(quantity, warehouse, type, unit_cost)
@@ -262,15 +262,15 @@ class Product(db.Model, TimestampMixin):
         assert (type in StockTransaction.types)
 
         if quantity <= 0:
-            raise ValueError(u'quantity must be positive integer')
+            raise ValueError('quantity must be positive integer')
         if warehouse is None:
-            raise ValueError(u'warehouse cannot be None')
+            raise ValueError('warehouse cannot be None')
 
         stock = self.get_stock_for_warehouse(warehouse)
 
         if quantity > stock.quantity:
-            raise ValueError(u'quantity to decrease is greater than the '
-                             u'available stock.')
+            raise ValueError('quantity to decrease is greater than the '
+                             'available stock.')
 
         stock.decrease_stock(quantity, warehouse, type)
         return stock
@@ -286,8 +286,8 @@ class Product(db.Model, TimestampMixin):
         """
         stock = self.get_stock_for_warehouse(warehouse, create=False)
         if stock is not None and stock.transactions.count() > 0:
-            raise ValueError(u"initial stock can't be registered on stock "
-                             u"with previous transactions")
+            raise ValueError("initial stock can't be registered on stock "
+                             "with previous transactions")
 
         self.increase_stock(quantity, warehouse, StockTransaction.TYPE_INITIAL,
                             unit_cost)
@@ -497,7 +497,7 @@ class PriceComponent(db.Model):
             other = self.supplier_bonus.all()
         if len(other) > 3:
             other = other[:3] + ['...']
-        return u"<PriceComponent of {0}, {1}, {2} %>".format(
+        return "<PriceComponent of {0}, {1}, {2} %>".format(
                 repr(other), self.name, self.value).encode('utf-8')
 
 
@@ -569,16 +569,16 @@ class ProductUnit(db.Model):
     """
     __tablename__ = 'unit'
 
-    UNIT_TYPE_LENGTH = u'UNIT_TYPE_LENGTH'
-    UNIT_TYPE_WEIGHT = u'UNIT_TYPE_WEIGHT'
-    UNIT_TYPE_VOLUME = u'UNIT_TYPE_VOLUME'
-    UNIT_TYPE_CUSTOM = u'UNIT_TYPE_CUSTOM'
+    UNIT_TYPE_LENGTH = 'UNIT_TYPE_LENGTH'
+    UNIT_TYPE_WEIGHT = 'UNIT_TYPE_WEIGHT'
+    UNIT_TYPE_VOLUME = 'UNIT_TYPE_VOLUME'
+    UNIT_TYPE_CUSTOM = 'UNIT_TYPE_CUSTOM'
 
     _unit_types = {
-        UNIT_TYPE_LENGTH: u'Longitud',
-        UNIT_TYPE_WEIGHT: u'Peso',
-        UNIT_TYPE_VOLUME: u'Volumen',
-        UNIT_TYPE_CUSTOM: u'Custom',
+        UNIT_TYPE_LENGTH: 'Longitud',
+        UNIT_TYPE_WEIGHT: 'Peso',
+        UNIT_TYPE_VOLUME: 'Volumen',
+        UNIT_TYPE_CUSTOM: 'Custom',
     }
 
     id = db.Column(db.Integer, primary_key=True)
@@ -589,7 +589,7 @@ class ProductUnit(db.Model):
     abbr = db.Column(db.Unicode, nullable=False)
     allow_fraction = db.Column(db.Boolean, default=False)
     
-    unit_type = db.Column(db.Enum(*_unit_types.keys(), name='unit_type_enum'),
+    unit_type = db.Column(db.Enum(*list(_unit_types.keys()), name='unit_type_enum'),
                           default=UNIT_TYPE_CUSTOM)
 
     def __repr__(self):
@@ -598,18 +598,18 @@ class ProductUnit(db.Model):
 
 def create_primitive_units():
     units = [
-        ProductUnit(description=u'Metro', plural=u'Metros', abbr=u'm',
+        ProductUnit(description='Metro', plural='Metros', abbr='m',
              allow_fraction=True, unit_type=ProductUnit.UNIT_TYPE_LENGTH),
-        ProductUnit(description=u'Kilogramo', plural=u'Kilogramos', abbr=u'kg',
+        ProductUnit(description='Kilogramo', plural='Kilogramos', abbr='kg',
              allow_fraction=True, unit_type=ProductUnit.UNIT_TYPE_WEIGHT),
-        ProductUnit(description=u'Litro', plural=u'Litros', abbr=u'l',
+        ProductUnit(description='Litro', plural='Litros', abbr='l',
              allow_fraction=True, unit_type=ProductUnit.UNIT_TYPE_VOLUME),
-        ProductUnit(description=u'Unidad', plural=u'Unidades', abbr=u'u',
+        ProductUnit(description='Unidad', plural='Unidades', abbr='u',
              allow_fraction=False, unit_type=ProductUnit.UNIT_TYPE_CUSTOM),
     ]
     db.session.add_all(units)
     db.session.commit()
-    print(u'Added basic unit types: Metro, Kilogramo, Litro, Unidad.')
+    print('Added basic unit types: Metro, Kilogramo, Litro, Unidad.')
 
 
 class ProductImage(db.Model):

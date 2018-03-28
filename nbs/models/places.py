@@ -14,7 +14,7 @@ class Place(Entity):
     responsible = db.relationship('User', lazy='joined',
                             primaryjoin="User.user_id==Place.responsible_id")
     
-    __mapper_args__ = {'polymorphic_identity': u'place'}
+    __mapper_args__ = {'polymorphic_identity': 'place'}
 
     def __repr__(self):
         return "<{0}({1})>".format(self.__class__.__name__,
@@ -23,7 +23,7 @@ class Place(Entity):
 
 class Warehouse(Place):
     __tablename__ = 'warehouse'
-    __mapper_args__ = {'polymorphic_identity': u'warehouse'}
+    __mapper_args__ = {'polymorphic_identity': 'warehouse'}
 
     warehouse_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
                              primary_key=True)
@@ -31,7 +31,7 @@ class Warehouse(Place):
 
 class Branch(Place):
     __tablename__ = 'branch'
-    __mapper_args__ = {'polymorphic_identity': u'branch'}
+    __mapper_args__ = {'polymorphic_identity': 'branch'}
 
     branch_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
                           primary_key=True)
@@ -46,7 +46,7 @@ class Branch(Place):
 
 class Office(Place):
     __tablename__ = 'office'
-    __mapper_args__ = {'polymorphic_identity': u'office'}
+    __mapper_args__ = {'polymorphic_identity': 'office'}
 
     office_id = db.Column(db.Integer, db.ForeignKey('place.place_id'),
                           primary_key=True)
