@@ -4,6 +4,7 @@
 *.egg-info
 docs/_build
 .sass-cache
+.pytest_cache
 node_modules
 nbs-pos*.js
 nbs-admin*.js
