@@ -65,8 +65,8 @@ class TestGetParams(TestCase):
 
     def test_fields(self):
         params = self.get_params_for('/?fields=sku')
-        assert params.fields == [u'sku']
+        assert params.fields == ['sku']
         params = self.get_params_for('/?fields=sku&fields=description')
-        assert params.fields == [u'sku', u'description']
+        assert params.fields == ['sku', 'description']
         params = self.get_params_for('/?fields:gt=sku&sort=sku&fields:noop=test')
-        assert params.fields == [u'sku', u'test']
+        assert params.fields == ['sku', 'test']

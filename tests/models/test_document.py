@@ -17,16 +17,16 @@ class TestDocument(DBTestCase):
             self.db.session.commit()
 
     def test_default_status(self):
-        p = Place(name=u'p')
+        p = Place(name='p')
         doc = Document(issue_place=p)
         self.db.session.add(doc)
         self.db.session.commit()
 
         assert doc.status == Document.STATUS_DRAFT
-        assert doc.status_str == u'Borrador'
+        assert doc.status_str == 'Borrador'
 
     def test_issue_method(self):
-        p = Place(name=u'p')
+        p = Place(name='p')
         doc = Document(issue_place=p)
         self.db.session.add(doc)
         self.db.session.commit()
@@ -38,7 +38,7 @@ class TestDocument(DBTestCase):
         assert doc.issue_date is not None
 
     def test_can_modify(self):
-        p = Place(name=u'p')
+        p = Place(name='p')
         doc = Document(issue_place=p)
         self.db.session.add(doc)
         self.db.session.commit()
@@ -52,45 +52,45 @@ class TestDocument(DBTestCase):
 class TestSaleInvoice(DBTestCase):
 
     def test_default_fiscal_type(self):
-        b = Branch(name=u'b', fiscal_pos=1)
+        b = Branch(name='b', fiscal_pos=1)
         invoice = SaleInvoice(issue_place=b)
         self.db.session.add(invoice)
         self.db.session.commit()
 
         assert invoice.fiscal_type == SaleInvoice.FISCAL_TYPE_B
-        assert invoice.fiscal_type_str == u'B'
+        assert invoice.fiscal_type_str == 'B'
 
     def test_enum_fiscal_types(self):
-        b = Branch(name=u'b', fiscal_pos=1)
+        b = Branch(name='b', fiscal_pos=1)
         invoice = SaleInvoice(issue_place=b)
         self.db.session.add(invoice)
         self.db.session.commit()
 
-        for _type in SaleInvoice._fiscal_type.keys():
+        for _type in list(SaleInvoice._fiscal_type.keys()):
             invoice.fiscal_type = _type
             self.db.session.commit()
             assert invoice.fiscal_type == _type
 
-        invoice.fiscal_type = u'INVALID'
+        invoice.fiscal_type = 'INVALID'
         with raises(IntegrityError):
             self.db.session.commit()
 
     def test_defaults(self):
-        b = Branch(name=u'b', fiscal_pos=1)
+        b = Branch(name='b', fiscal_pos=1)
         invoice = SaleInvoice(issue_place=b)
         self.db.session.add(invoice)
         self.db.session.commit()
 
         assert invoice.number is None
-        assert invoice._type == u'sale_invoice'
+        assert invoice._type == 'sale_invoice'
 
     def test_unique_constraint(self):
         """
         Document.number is unique for a determined 'issue_place' and determined
         'fiscal_type'.
         """
-        b1 = Branch(name=u'b1', fiscal_pos=1)
-        b2 = Branch(name=u'b2', fiscal_pos=2)
+        b1 = Branch(name='b1', fiscal_pos=1)
+        b2 = Branch(name='b2', fiscal_pos=2)
 
         si1 = SaleInvoice(fiscal_type=SaleInvoice.FISCAL_TYPE_A,
                           number=10, issue_place=b1)
